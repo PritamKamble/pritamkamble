@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pritam Kamble - ML Engineer & Tech Mentor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,725 +17,405 @@
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 20px;
         }
 
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #667eea;
-        }
-
-        /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 120px 0 80px;
             text-align: center;
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            animation: fadeInUp 1s ease;
+            font-size: 3em;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .hero .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease 0.3s both;
-        }
-
-        .hero .description {
-            font-size: 1.1rem;
+            font-size: 1.3em;
+            color: #f0f0f0;
+            margin-bottom: 30px;
             max-width: 800px;
-            margin: 0 auto 2rem;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease 0.6s both;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .cta-button {
-            display: inline-block;
+        .main-content {
             background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
             color: #667eea;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeInUp 1s ease 0.9s both;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Main Content */
-        main {
-            background: white;
-            margin-top: -50px;
-            border-radius: 30px 30px 0 0;
+            font-size: 2.2em;
+            margin-bottom: 30px;
             position: relative;
-            z-index: 2;
+            padding-bottom: 15px;
         }
 
-        section {
-            padding: 4rem 0;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: #333;
-            position: relative;
-        }
-
-        .section-title::after {
+        .section h2::after {
             content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 60px;
             height: 4px;
             background: linear-gradient(45deg, #667eea, #764ba2);
-            display: block;
-            margin: 1rem auto;
             border-radius: 2px;
         }
 
-        /* Learning Path Grid */
-        .learning-grid {
+        .track-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            gap: 30px;
+            margin-top: 30px;
         }
 
-        .learning-card {
-            background: white;
+        .track-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8efff 100%);
+            padding: 30px;
             border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #f0f0f0;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .learning-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        .track-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
         }
 
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .track-card h3 {
+            color: #764ba2;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .card-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .card-content ul {
+        .track-card ul {
             list-style: none;
             padding-left: 0;
         }
 
-        .card-content li {
-            padding: 0.3rem 0;
-            padding-left: 1.5rem;
+        .track-card li {
+            margin-bottom: 12px;
+            padding-left: 25px;
             position: relative;
+            color: #555;
         }
 
-        .card-content li::before {
+        .track-card li::before {
             content: '✓';
-            color: #667eea;
-            font-weight: bold;
             position: absolute;
             left: 0;
-        }
-
-        .card-content strong {
             color: #667eea;
+            font-weight: bold;
         }
 
-        /* Services Grid */
-        .services-grid {
+        .highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .highlight-section h2 {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .highlight-section h2::after {
+            background: white;
+        }
+
+        .help-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            gap: 20px;
+            margin-top: 30px;
         }
 
-        .service-card {
-            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
-            border-radius: 15px;
-            padding: 2rem;
+        .help-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
-            transition: transform 0.3s;
+            backdrop-filter: blur(10px);
         }
 
-        .service-card:hover {
-            transform: translateY(-5px);
+        .help-item i {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: #fff;
         }
 
-        .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Success Stories */
-        .success-stories {
-            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-        }
-
-        .success-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            color: #666;
-            margin-top: 0.5rem;
-        }
-
-        /* Links Grid */
         .links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 15px;
+            margin-top: 30px;
         }
 
-        .link-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .link-btn {
+            display: inline-block;
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-            padding: 1.5rem;
+            text-decoration: none;
             border-radius: 10px;
             text-align: center;
-            text-decoration: none;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
+            font-weight: 600;
         }
 
-        .link-card:hover {
-            transform: translateY(-3px);
-            text-decoration: none;
-            color: white;
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        /* Footer */
-        footer {
-            background: #333;
+        .cta-section {
+            background: #2c3e50;
             color: white;
+            padding: 40px;
+            border-radius: 15px;
             text-align: center;
-            padding: 2rem 0;
         }
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+        .whatsapp-sticky {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            padding: 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
         }
 
-        .footer-section h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
+        .whatsapp-sticky:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .whatsapp-sticky i {
+            font-size: 1.5em;
         }
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s, transform 0.8s;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav ul {
-                gap: 1rem;
-            }
-
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2em;
             }
-
+            
             .hero .subtitle {
-                font-size: 1.2rem;
+                font-size: 1.1em;
             }
-
-            .learning-grid {
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .track-grid {
                 grid-template-columns: 1fr;
             }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Mobile menu toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            nav ul {
+            
+            .whatsapp-sticky span {
                 display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: white;
-                flex-direction: column;
-                padding: 1rem;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-
-            nav ul.active {
-                display: flex;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Pritam Kamble</div>
-                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-                <nav>
-                    <ul id="navMenu">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#learn">What You'll Learn</a></li>
-                        <li><a href="#help">How I Help</a></li>
-                        <li><a href="#success">Success</a></li>
-                        <li><a href="#links">Resources</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
+    <div class="container">
+        <div class="hero">
             <h1>Welcome! 🚀</h1>
-            <div class="subtitle">Machine Learning AI Engineer at PayPal</div>
-            <div class="description">
+            <div class="subtitle">
+                I am <strong>Pritam Kamble</strong>, a Machine Learning AI Engineer at PayPal.<br>
                 I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
             </div>
-            <a href="#learn" class="cta-button">Start Your Journey</a>
         </div>
-    </section>
 
-    <!-- Main Content -->
-    <main>
-        <!-- What You'll Learn Section -->
-        <section id="learn">
-            <div class="container">
-                <h2 class="section-title">📚 What You'll Learn</h2>
-                <div class="learning-grid">
-                    <!-- Programming Foundations -->
-                    <div class="learning-card fade-in">
-                        <div class="card-icon">💻</div>
-                        <h3 class="card-title">1. Programming Foundations</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Python</strong> (must-have for AI, Data Science, Automation)</li>
-                                <li><strong>JavaScript</strong> (must-have for Web & Mobile apps)</li>
-                                <li><strong>OOP Concepts</strong> (with basics in Java/C++)</li>
-                            </ul>
-                        </div>
+        <div class="main-content">
+            <div class="section">
+                <h2>📚 What You'll Learn</h2>
+                
+                <div class="track-grid">
+                    <div class="track-card">
+                        <h3><i class="fas fa-code"></i> Programming Foundations</h3>
+                        <ul>
+                            <li>Python (must-have for AI, Data Science, Automation)</li>
+                            <li>JavaScript (must-have for Web & Mobile apps)</li>
+                            <li>OOP Concepts (with basics in Java/C++)</li>
+                            <li>Go & Rust (Intro) – fast, modern languages rising in demand</li>
+                        </ul>
                     </div>
 
-                    <!-- Web & App Development -->
-                    <div class="learning-card fade-in">
-                        <div class="card-icon">🌐</div>
-                        <h3 class="card-title">2. Web & App Development</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Front-end:</strong> HTML, CSS, JavaScript, React/Next.js</li>
-                                <li><strong>Back-end:</strong> Node.js/Express, Django, Spring Boot</li>
-                                <li><strong>Databases:</strong> MySQL, PostgreSQL, MongoDB, Firebase</li>
-                                <li><strong>Mobile Apps:</strong> React Native/Flutter</li>
-                            </ul>
-                        </div>
+                    <div class="track-card">
+                        <h3><i class="fas fa-globe"></i> Web & App Development</h3>
+                        <ul>
+                            <li><strong>Front-end:</strong> HTML, CSS, JavaScript</li>
+                            <li><strong>Frameworks:</strong> React / Next.js, Angular, Vue</li>
+                            <li><strong>Back-end:</strong> Node.js, Django, Spring Boot, FastAPI</li>
+                            <li><strong>Databases:</strong> MySQL, PostgreSQL, MongoDB, Neo4j</li>
+                            <li><strong>Mobile:</strong> React Native, Flutter, Kotlin, Swift</li>
+                        </ul>
                     </div>
 
-                    <!-- Data & AI -->
-                    <div class="learning-card fade-in">
-                        <div class="card-icon">🤖</div>
-                        <h3 class="card-title">3. Data & AI (Beginner Path)</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Python Libraries:</strong> NumPy, Pandas, Matplotlib</li>
-                                <li><strong>Data Analysis:</strong> Excel, Power BI, Tableau</li>
-                                <li><strong>Machine Learning:</strong> scikit-learn, ML projects</li>
-                                <li><strong>Generative AI:</strong> OpenAI APIs, LangChain, vector DBs</li>
-                            </ul>
-                        </div>
+                    <div class="track-card">
+                        <h3><i class="fas fa-chart-bar"></i> Data Science Track</h3>
+                        <ul>
+                            <li>Statistics, Probability, Linear Algebra</li>
+                            <li>Python for Data Science: NumPy, Pandas, Matplotlib</li>
+                            <li>Data Cleaning & Preprocessing</li>
+                            <li>Power BI, Tableau</li>
+                            <li>Mini-Projects: Sales insights, customer segmentation</li>
+                        </ul>
                     </div>
 
-                    <!-- Cloud & DevOps -->
-                    <div class="learning-card fade-in">
-                        <div class="card-icon">☁️</div>
-                        <h3 class="card-title">4. Cloud & DevOps Basics</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Cloud Fundamentals:</strong> AWS/Azure/GCP (free tier)</li>
-                                <li><strong>Version Control:</strong> Git + GitHub</li>
-                                <li><strong>CI/CD:</strong> GitHub Actions, Vercel, Netlify</li>
-                            </ul>
-                        </div>
+                    <div class="track-card">
+                        <h3><i class="fas fa-brain"></i> AI & Machine Learning Track</h3>
+                        <ul>
+                            <li>ML Foundations: Regression, Classification, Clustering</li>
+                            <li>Deep Learning: TensorFlow, PyTorch</li>
+                            <li>NLP: Sentiment analysis, Chatbots</li>
+                            <li>Computer Vision: Image classification</li>
+                            <li>Generative AI: OpenAI APIs, LangChain</li>
+                            <li>Projects: Spam detection, recommendation system</li>
+                        </ul>
                     </div>
 
-                    <!-- Placement-Ready Skills -->
-                    <div class="learning-card fade-in">
-                        <div class="card-icon">🎯</div>
-                        <h3 class="card-title">5. Placement-Ready Skills</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Problem Solving & DSA:</strong> Arrays, strings, recursion, trees, graphs</li>
-                                <li><strong>Communication & Aptitude:</strong> Mock interviews, aptitude prep</li>
-                                <li><strong>Portfolio:</strong> Build 2+ live projects</li>
-                                <li><strong>Experience:</strong> Internship & Hackathon participation</li>
-                            </ul>
-                        </div>
+                    <div class="track-card">
+                        <h3><i class="fas fa-cloud"></i> Cloud & DevOps Basics</h3>
+                        <ul>
+                            <li>AWS / Azure / GCP (free tier)</li>
+                            <li>Git + GitHub (version control)</li>
+                            <li>CI/CD: GitHub Actions, Vercel</li>
+                            <li>Docker, Kubernetes (intro)</li>
+                            <li>Terraform (industry trending skill)</li>
+                        </ul>
+                    </div>
+
+                    <div class="track-card">
+                        <h3><i class="fas fa-shield-alt"></i> Cybersecurity & IT</h3>
+                        <ul>
+                            <li>Networking: OSI Model, TCP/IP, DNS</li>
+                            <li>Linux Essentials (command line)</li>
+                            <li>Application Security: OWASP Top 10</li>
+                            <li>Cloud Security Basics (IAM)</li>
+                            <li>Ethical Hacking Intro (CTFs)</li>
+                        </ul>
+                    </div>
+
+                    <div class="track-card">
+                        <h3><i class="fas fa-briefcase"></i> Placement-Ready Skills</h3>
+                        <ul>
+                            <li>Problem Solving & DSA (LeetCode, HackerRank)</li>
+                            <li>System Design Basics</li>
+                            <li>Communication & Aptitude</li>
+                            <li>Portfolio: 2+ live projects</li>
+                            <li>Internship & Hackathon participation</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- How I Help Section -->
-        <section id="help">
-            <div class="container">
-                <h2 class="section-title">🛠️ How I Help</h2>
-                <div class="services-grid">
-                    <div class="service-card fade-in">
-                        <div class="service-icon">📖</div>
-                        <h3>Step-by-step lessons</h3>
-                        <p>Practical examples and hands-on learning approach</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">💻</div>
-                        <h3>Live coding sessions</h3>
-                        <p>Project walkthroughs and real-time problem solving</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">🎤</div>
-                        <h3>Interview preparation</h3>
-                        <p>Soft skills training and mock interview sessions</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">📝</div>
-                        <h3>Resume & portfolio building</h3>
-                        <p>Professional profile development and showcase projects</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">🚀</div>
-                        <h3>Career guidance</h3>
-                        <p>Internships, hackathons, and first job opportunities</p>
-                    </div>
+        <div class="highlight-section">
+            <h2>🛠️ How Can I Help</h2>
+            <div class="help-grid">
+                <div class="help-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Step-by-step lessons with practical examples</h3>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-code"></i>
+                    <h3>Live coding sessions and project walkthroughs</h3>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Interview preparation and soft skills training</h3>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>Resume and portfolio building</h3>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Guidance for internships and first jobs</h3>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Success Stories Section -->
-        <section id="success">
-            <div class="container">
-                <h2 class="section-title">⭐ Success Stories</h2>
-                <div class="success-stories fade-in">
-                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Many of my students have landed roles at top companies</h3>
-                    <p>By following this curriculum and actively engaging with the community and projects, students have successfully transitioned into tech careers.</p>
-                    
-                    <div class="success-stats">
-                        <div class="stat-card">
-                            <div class="stat-number">100+</div>
-                            <div class="stat-label">Students Mentored</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">85%</div>
-                            <div class="stat-label">Job Placement Rate</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">Live Projects Built</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">24/7</div>
-                            <div class="stat-label">Community Support</div>
-                        </div>
-                    </div>
+        <div class="main-content">
+            <div class="section">
+                <h2>⭐ Success Stories</h2>
+                <p style="font-size: 1.2em; color: #555; text-align: center;">Many of my students have landed roles at top companies by following this curriculum and actively engaging with the community and projects.</p>
+            </div>
+
+            <div class="section">
+                <h2>📣 Get Involved</h2>
+                <div style="text-align: center; font-size: 1.1em; color: #555;">
+                    <p>✅ Follow this roadmap and track your progress</p>
+                    <p>✅ Join my sessions for personalized guidance</p>
+                    <p>✅ Contribute to project ideas and discussions</p>
+                    <p style="font-weight: bold; color: #667eea; font-size: 1.3em; margin-top: 30px;">Build. Learn. Share. Get Hired!</p>
                 </div>
             </div>
-        </section>
 
-        <!-- Get Involved Section -->
-        <section>
-            <div class="container">
-                <h2 class="section-title">📣 Get Involved</h2>
-                <div class="services-grid">
-                    <div class="service-card fade-in">
-                        <div class="service-icon">📈</div>
-                        <h3>Follow the roadmap</h3>
-                        <p>Track your progress through the structured curriculum</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">👥</div>
-                        <h3>Join live sessions</h3>
-                        <p>Get personalized guidance and direct mentorship</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">💡</div>
-                        <h3>Contribute to projects</h3>
-                        <p>Share ideas and participate in collaborative development</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-icon">🎯</div>
-                        <h3>Build. Learn. Share. Get Hired!</h3>
-                        <p>Complete the cycle from learning to career success</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Useful Links Section -->
-        <section id="links">
-            <div class="container">
-                <h2 class="section-title">📂 Useful Links</h2>
+            <div class="section">
+                <h2>📂 Useful Links</h2>
                 <div class="links-grid">
-                    <a href="https://leetcode.com" class="link-card" target="_blank">
-                        <h4>LeetCode</h4>
-                        <p>Practice DSA Problems</p>
-                    </a>
-                    <a href="https://hackerrank.com" class="link-card" target="_blank">
-                        <h4>HackerRank</h4>
-                        <p>Coding Challenges</p>
-                    </a>
-                    <a href="https://reactjs.org" class="link-card" target="_blank">
-                        <h4>React</h4>
-                        <p>Frontend Framework</p>
-                    </a>
-                    <a href="https://nodejs.org" class="link-card" target="_blank">
-                        <h4>Node.js</h4>
-                        <p>Backend Development</p>
-                    </a>
-                    <a href="https://python.org" class="link-card" target="_blank">
-                        <h4>Python</h4>
-                        <p>Programming Language</p>
-                    </a>
-                    <a href="https://scikit-learn.org" class="link-card" target="_blank">
-                        <h4>scikit-learn</h4>
-                        <p>Machine Learning</p>
-                    </a>
-                    <a href="https://openai.com" class="link-card" target="_blank">
-                        <h4>OpenAI</h4>
-                        <p>AI Development</p>
-                    </a>
-                    <a href="https://aws.amazon.com/free" class="link-card" target="_blank">
-                        <h4>AWS Free Tier</h4>
-                        <p>Cloud Services</p>
-                    </a>
-                    <a href="https://github.com/features/actions" class="link-card" target="_blank">
-                        <h4>GitHub Actions</h4>
-                        <p>CI/CD Pipeline</p>
-                    </a>
+                    <a href="https://leetcode.com" class="link-btn" target="_blank">LeetCode</a>
+                    <a href="https://hackerrank.com" class="link-btn" target="_blank">HackerRank</a>
+                    <a href="https://reactjs.org" class="link-btn" target="_blank">React</a>
+                    <a href="https://nodejs.org" class="link-btn" target="_blank">Node.js</a>
+                    <a href="https://python.org" class="link-btn" target="_blank">Python</a>
+                    <a href="https://scikit-learn.org" class="link-btn" target="_blank">scikit-learn</a>
+                    <a href="https://openai.com" class="link-btn" target="_blank">OpenAI</a>
+                    <a href="https://aws.amazon.com/free" class="link-btn" target="_blank">AWS Free Tier</a>
+                    <a href="https://github.com/features/actions" class="link-btn" target="_blank">GitHub Actions</a>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Ready to start your tech journey?</p>
-                    <p>Connect with me for personalized mentorship!</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <p><a href="#learn" style="color: white; text-decoration: none;">Learning Path</a></p>
-                    <p><a href="#help" style="color: white; text-decoration: none;">Mentorship</a></p>
-                    <p><a href="#links" style="color: white; text-decoration: none;">Resources</a></p>
-                </div>
-                <div class="footer-section">
-                    <h3>Follow the Journey</h3>
-                    <p>Join hundreds of students who have successfully transitioned into tech careers.</p>
-                </div>
-            </div>
-            <hr style="margin: 2rem 0; border: none; border-top: 1px solid #555;">
-            <p>&copy; 2024 Pritam Kamble. Empowering the next generation of tech professionals.</p>
         </div>
-    </footer>
 
-    <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const navMenu = document.getElementById('navMenu');
-            navMenu.classList.toggle('active');
-        }
+        <div class="cta-section">
+            <h2>Let's code your future together!</h2>
+            <p style="font-size: 1.2em; margin-top: 20px;">Feel free to reach out or connect with me on LinkedIn or GitHub.</p>
+        </div>
+    </div>
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-                // Close mobile menu if open
-                document.getElementById('navMenu').classList.remove('active');
-            });
-        });
-
-        // Intersection Observer for fade-in animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Add some interactive elements
-        document.querySelectorAll('.learning-card, .service-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Header background on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(255, 255, 255, 0.98)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-            }
-        });
-
-        // Add a simple loading animation
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease-in-out';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
-    </script>
+    <!-- WhatsApp Sticky Button -->
+    <a href="https://wa.me/917276279026?text=Hi%20Pritam,%20I%20would%20like%20to%20learn%20more%20about%20your%20tech%20mentoring%20program!" class="whatsapp-sticky" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>Chat on WhatsApp</span>
+    </a>
 </body>
 </html>
