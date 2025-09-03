@@ -1,15 +1,740 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Pritam Kamble</title>
+    <title>Pritam Kamble - ML Engineer & Tech Mentor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease 0.9s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content */
+        main {
+            background: white;
+            margin-top: -50px;
+            border-radius: 30px 30px 0 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: block;
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        /* Learning Path Grid */
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .learning-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+
+        .learning-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .card-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card-content li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-content li::before {
+            content: '✓';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .card-content strong {
+            color: #667eea;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Success Stories */
+        .success-stories {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .success-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Links Grid */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .link-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .learning-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    Hello World 2
-</body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Pritam Kamble</div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+                <nav>
+                    <ul id="navMenu">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#learn">What You'll Learn</a></li>
+                        <li><a href="#help">How I Help</a></li>
+                        <li><a href="#success">Success</a></li>
+                        <li><a href="#links">Resources</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
 
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Welcome! 🚀</h1>
+            <div class="subtitle">Machine Learning AI Engineer at PayPal</div>
+            <div class="description">
+                I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
+            </div>
+            <a href="#learn" class="cta-button">Start Your Journey</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- What You'll Learn Section -->
+        <section id="learn">
+            <div class="container">
+                <h2 class="section-title">📚 What You'll Learn</h2>
+                <div class="learning-grid">
+                    <!-- Programming Foundations -->
+                    <div class="learning-card fade-in">
+                        <div class="card-icon">💻</div>
+                        <h3 class="card-title">1. Programming Foundations</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Python</strong> (must-have for AI, Data Science, Automation)</li>
+                                <li><strong>JavaScript</strong> (must-have for Web & Mobile apps)</li>
+                                <li><strong>OOP Concepts</strong> (with basics in Java/C++)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Web & App Development -->
+                    <div class="learning-card fade-in">
+                        <div class="card-icon">🌐</div>
+                        <h3 class="card-title">2. Web & App Development</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Front-end:</strong> HTML, CSS, JavaScript, React/Next.js</li>
+                                <li><strong>Back-end:</strong> Node.js/Express, Django, Spring Boot</li>
+                                <li><strong>Databases:</strong> MySQL, PostgreSQL, MongoDB, Firebase</li>
+                                <li><strong>Mobile Apps:</strong> React Native/Flutter</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Data & AI -->
+                    <div class="learning-card fade-in">
+                        <div class="card-icon">🤖</div>
+                        <h3 class="card-title">3. Data & AI (Beginner Path)</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Python Libraries:</strong> NumPy, Pandas, Matplotlib</li>
+                                <li><strong>Data Analysis:</strong> Excel, Power BI, Tableau</li>
+                                <li><strong>Machine Learning:</strong> scikit-learn, ML projects</li>
+                                <li><strong>Generative AI:</strong> OpenAI APIs, LangChain, vector DBs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Cloud & DevOps -->
+                    <div class="learning-card fade-in">
+                        <div class="card-icon">☁️</div>
+                        <h3 class="card-title">4. Cloud & DevOps Basics</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Cloud Fundamentals:</strong> AWS/Azure/GCP (free tier)</li>
+                                <li><strong>Version Control:</strong> Git + GitHub</li>
+                                <li><strong>CI/CD:</strong> GitHub Actions, Vercel, Netlify</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Placement-Ready Skills -->
+                    <div class="learning-card fade-in">
+                        <div class="card-icon">🎯</div>
+                        <h3 class="card-title">5. Placement-Ready Skills</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Problem Solving & DSA:</strong> Arrays, strings, recursion, trees, graphs</li>
+                                <li><strong>Communication & Aptitude:</strong> Mock interviews, aptitude prep</li>
+                                <li><strong>Portfolio:</strong> Build 2+ live projects</li>
+                                <li><strong>Experience:</strong> Internship & Hackathon participation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How I Help Section -->
+        <section id="help">
+            <div class="container">
+                <h2 class="section-title">🛠️ How I Help</h2>
+                <div class="services-grid">
+                    <div class="service-card fade-in">
+                        <div class="service-icon">📖</div>
+                        <h3>Step-by-step lessons</h3>
+                        <p>Practical examples and hands-on learning approach</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">💻</div>
+                        <h3>Live coding sessions</h3>
+                        <p>Project walkthroughs and real-time problem solving</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">🎤</div>
+                        <h3>Interview preparation</h3>
+                        <p>Soft skills training and mock interview sessions</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">📝</div>
+                        <h3>Resume & portfolio building</h3>
+                        <p>Professional profile development and showcase projects</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">🚀</div>
+                        <h3>Career guidance</h3>
+                        <p>Internships, hackathons, and first job opportunities</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Stories Section -->
+        <section id="success">
+            <div class="container">
+                <h2 class="section-title">⭐ Success Stories</h2>
+                <div class="success-stories fade-in">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Many of my students have landed roles at top companies</h3>
+                    <p>By following this curriculum and actively engaging with the community and projects, students have successfully transitioned into tech careers.</p>
+                    
+                    <div class="success-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">100+</div>
+                            <div class="stat-label">Students Mentored</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Job Placement Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Live Projects Built</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Community Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Get Involved Section -->
+        <section>
+            <div class="container">
+                <h2 class="section-title">📣 Get Involved</h2>
+                <div class="services-grid">
+                    <div class="service-card fade-in">
+                        <div class="service-icon">📈</div>
+                        <h3>Follow the roadmap</h3>
+                        <p>Track your progress through the structured curriculum</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">👥</div>
+                        <h3>Join live sessions</h3>
+                        <p>Get personalized guidance and direct mentorship</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">💡</div>
+                        <h3>Contribute to projects</h3>
+                        <p>Share ideas and participate in collaborative development</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-icon">🎯</div>
+                        <h3>Build. Learn. Share. Get Hired!</h3>
+                        <p>Complete the cycle from learning to career success</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Useful Links Section -->
+        <section id="links">
+            <div class="container">
+                <h2 class="section-title">📂 Useful Links</h2>
+                <div class="links-grid">
+                    <a href="https://leetcode.com" class="link-card" target="_blank">
+                        <h4>LeetCode</h4>
+                        <p>Practice DSA Problems</p>
+                    </a>
+                    <a href="https://hackerrank.com" class="link-card" target="_blank">
+                        <h4>HackerRank</h4>
+                        <p>Coding Challenges</p>
+                    </a>
+                    <a href="https://reactjs.org" class="link-card" target="_blank">
+                        <h4>React</h4>
+                        <p>Frontend Framework</p>
+                    </a>
+                    <a href="https://nodejs.org" class="link-card" target="_blank">
+                        <h4>Node.js</h4>
+                        <p>Backend Development</p>
+                    </a>
+                    <a href="https://python.org" class="link-card" target="_blank">
+                        <h4>Python</h4>
+                        <p>Programming Language</p>
+                    </a>
+                    <a href="https://scikit-learn.org" class="link-card" target="_blank">
+                        <h4>scikit-learn</h4>
+                        <p>Machine Learning</p>
+                    </a>
+                    <a href="https://openai.com" class="link-card" target="_blank">
+                        <h4>OpenAI</h4>
+                        <p>AI Development</p>
+                    </a>
+                    <a href="https://aws.amazon.com/free" class="link-card" target="_blank">
+                        <h4>AWS Free Tier</h4>
+                        <p>Cloud Services</p>
+                    </a>
+                    <a href="https://github.com/features/actions" class="link-card" target="_blank">
+                        <h4>GitHub Actions</h4>
+                        <p>CI/CD Pipeline</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Ready to start your tech journey?</p>
+                    <p>Connect with me for personalized mentorship!</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#learn" style="color: white; text-decoration: none;">Learning Path</a></p>
+                    <p><a href="#help" style="color: white; text-decoration: none;">Mentorship</a></p>
+                    <p><a href="#links" style="color: white; text-decoration: none;">Resources</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow the Journey</h3>
+                    <p>Join hundreds of students who have successfully transitioned into tech careers.</p>
+                </div>
+            </div>
+            <hr style="margin: 2rem 0; border: none; border-top: 1px solid #555;">
+            <p>&copy; 2024 Pritam Kamble. Empowering the next generation of tech professionals.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Close mobile menu if open
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+
+        // Intersection Observer for fade-in animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add some interactive elements
+        document.querySelectorAll('.learning-card, .service-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Add a simple loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-in-out';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
 </html>
