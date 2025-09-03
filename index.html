@@ -3,8 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pritam Kamble - ML Engineer & Tech Mentor</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <title>Placement-Ready Tech Roadmap | Pritam Kamble - PayPal ML Engineer & Tech Mentor</title>
+    <meta name="description" content="Learn from Pritam Kamble, PayPal ML Engineer. Get job-ready with our comprehensive tech roadmap covering Python, JavaScript, Web Development, AI/ML, Data Science, Cloud & DevOps. Land your first tech job with expert mentoring.">
+    <meta name="keywords" content="tech mentoring, machine learning engineer, PayPal, Python programming, JavaScript, web development, data science, AI training, placement preparation, tech jobs, fresher guidance, coding bootcamp, programming courses, tech career">
+    <meta name="author" content="Pritam Kamble">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Placement-Ready Tech Roadmap | Pritam Kamble - PayPal ML Engineer">
+    <meta property="og:description" content="Get job-ready in tech with comprehensive mentoring from PayPal ML Engineer. Master Python, JavaScript, Web Dev, AI/ML, and land your first tech job.">
+    <meta property="og:url" content="https://pritamkamble.tech">
+    <meta property="og:site_name" content="Pritam Kamble Tech Mentoring">
+    <meta property="og:image" content="https://pritamkamble.tech/og-image.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Placement-Ready Tech Roadmap | Pritam Kamble">
+    <meta name="twitter:description" content="Learn from PayPal ML Engineer. Master tech skills and land your first job.">
+    <meta name="twitter:image" content="https://pritamkamble.tech/twitter-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://pritamkamble.tech">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Pritam Kamble",
+      "jobTitle": "Machine Learning AI Engineer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "PayPal"
+      },
+      "description": "Machine Learning AI Engineer at PayPal who teaches and mentors freshers to become job-ready in tech",
+      "url": "https://pritamkamble.tech",
+      "sameAs": [
+        "https://linkedin.com/in/pritamkamble",
+        "https://github.com/pritamkamble"
+      ],
+      "teaches": [
+        "Python Programming",
+        "JavaScript",
+        "Machine Learning",
+        "Data Science",
+        "Web Development",
+        "Cloud Computing"
+      ]
+    }
+    </script>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -13,7 +74,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -28,48 +89,51 @@
 
         .hero {
             text-align: center;
-            padding: 60px 0;
+            padding: 60px 20px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border-radius: 20px;
             margin-bottom: 40px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .hero h1 {
-            font-size: 3em;
+            font-size: 3.2em;
             color: white;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
         }
 
         .hero .subtitle {
             font-size: 1.3em;
             color: #f0f0f0;
             margin-bottom: 30px;
-            max-width: 800px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
+            font-weight: 400;
         }
 
         .main-content {
             background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             margin-bottom: 40px;
         }
 
         .section {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
 
         .section h2 {
             color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 30px;
+            font-size: 2.4em;
+            margin-bottom: 35px;
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            font-weight: 600;
         }
 
         .section h2::after {
@@ -77,73 +141,121 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 60px;
+            width: 80px;
             height: 4px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             border-radius: 2px;
         }
 
-        .track-grid {
+        .learning-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 30px;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
-        .track-card {
+        .learning-card {
             background: linear-gradient(135deg, #f8f9ff 0%, #e8efff 100%);
-            padding: 30px;
-            border-radius: 15px;
-            border-left: 5px solid #667eea;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 35px;
+            border-radius: 20px;
+            border-left: 6px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .track-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+        .learning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
         }
 
-        .track-card h3 {
+        .learning-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25);
+            border-left-color: #764ba2;
+        }
+
+        .learning-card h3 {
             color: #764ba2;
-            font-size: 1.4em;
-            margin-bottom: 20px;
+            font-size: 1.5em;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-weight: 600;
         }
 
-        .track-card ul {
+        .learning-card ul {
             list-style: none;
             padding-left: 0;
         }
 
-        .track-card li {
-            margin-bottom: 12px;
-            padding-left: 25px;
+        .learning-card li {
+            margin-bottom: 15px;
+            padding-left: 30px;
             position: relative;
             color: #555;
+            font-weight: 400;
         }
 
-        .track-card li::before {
+        .learning-card li::before {
             content: '✓';
             position: absolute;
             left: 0;
             color: #667eea;
             font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .learning-card .sublist {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .learning-card .sublist li {
+            font-size: 0.95em;
+            color: #666;
         }
 
         .highlight-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px;
-            border-radius: 15px;
+            padding: 50px;
+            border-radius: 20px;
             text-align: center;
-            margin: 40px 0;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .highlight-section h2 {
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
         }
 
         .highlight-section h2::after {
@@ -152,87 +264,169 @@
 
         .help-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
         }
 
         .help-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .help-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .help-item i {
-            font-size: 2.5em;
-            margin-bottom: 15px;
+            font-size: 3em;
+            margin-bottom: 20px;
             color: #fff;
+        }
+
+        .help-item h3 {
+            font-size: 1.1em;
+            font-weight: 500;
         }
 
         .links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
+            gap: 20px;
+            margin-top: 40px;
         }
 
         .link-btn {
             display: inline-block;
-            padding: 15px 20px;
+            padding: 18px 25px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             text-decoration: none;
-            border-radius: 10px;
+            border-radius: 12px;
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             font-weight: 600;
+            font-size: 1em;
         }
 
         .link-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .success-section {
+            background: #f8f9ff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #e8efff;
+        }
+
+        .success-section p {
+            font-size: 1.3em;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .get-involved {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .get-involved ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .get-involved li {
+            margin: 20px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .get-involved li::before {
+            content: '🚀';
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        .cta-highlight {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.4em;
+            margin-top: 40px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .cta-section {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 40px;
-            border-radius: 15px;
+            padding: 50px;
+            border-radius: 20px;
             text-align: center;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2em;
+            margin-top: 25px;
+            font-style: italic;
         }
 
         .whatsapp-sticky {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             background: #25D366;
             color: white;
-            padding: 15px;
-            border-radius: 50px;
+            padding: 18px 22px;
+            border-radius: 60px;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            transition: transform 0.3s ease;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
             z-index: 1000;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: bold;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
         }
 
         .whatsapp-sticky:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+            box-shadow: 0 10px 35px rgba(37, 211, 102, 0.6);
+            background: #1ea952;
         }
 
         .whatsapp-sticky i {
-            font-size: 1.5em;
+            font-size: 1.8em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2em;
+                font-size: 2.2em;
             }
             
             .hero .subtitle {
@@ -240,181 +434,243 @@
             }
             
             .main-content {
-                padding: 20px;
+                padding: 30px 25px;
             }
             
-            .track-grid {
+            .learning-grid {
                 grid-template-columns: 1fr;
             }
             
             .whatsapp-sticky span {
                 display: none;
             }
+            
+            .whatsapp-sticky {
+                padding: 15px;
+            }
+            
+            .section h2 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .hero {
+                padding: 40px 15px;
+            }
+            
+            .main-content {
+                padding: 25px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <h1>Welcome! 🚀</h1>
-            <div class="subtitle">
-                I am <strong>Pritam Kamble</strong>, a Machine Learning AI Engineer at PayPal.<br>
-                I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
-            </div>
-        </div>
+    <!-- Schema.org for breadcrumbs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://pritamkamble.tech"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tech Roadmap",
+          "item": "https://pritamkamble.tech/roadmap"
+        }
+      ]
+    }
+    </script>
 
-        <div class="main-content">
-            <div class="section">
-                <h2>📚 What You'll Learn</h2>
-                
-                <div class="track-grid">
-                    <div class="track-card">
-                        <h3><i class="fas fa-code"></i> Programming Foundations</h3>
-                        <ul>
-                            <li>Python (must-have for AI, Data Science, Automation)</li>
-                            <li>JavaScript (must-have for Web & Mobile apps)</li>
-                            <li>OOP Concepts (with basics in Java/C++)</li>
-                            <li>Go & Rust (Intro) – fast, modern languages rising in demand</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-globe"></i> Web & App Development</h3>
-                        <ul>
-                            <li><strong>Front-end:</strong> HTML, CSS, JavaScript</li>
-                            <li><strong>Frameworks:</strong> React / Next.js, Angular, Vue</li>
-                            <li><strong>Back-end:</strong> Node.js, Django, Spring Boot, FastAPI</li>
-                            <li><strong>Databases:</strong> MySQL, PostgreSQL, MongoDB, Neo4j</li>
-                            <li><strong>Mobile:</strong> React Native, Flutter, Kotlin, Swift</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-chart-bar"></i> Data Science Track</h3>
-                        <ul>
-                            <li>Statistics, Probability, Linear Algebra</li>
-                            <li>Python for Data Science: NumPy, Pandas, Matplotlib</li>
-                            <li>Data Cleaning & Preprocessing</li>
-                            <li>Power BI, Tableau</li>
-                            <li>Mini-Projects: Sales insights, customer segmentation</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-brain"></i> AI & Machine Learning Track</h3>
-                        <ul>
-                            <li>ML Foundations: Regression, Classification, Clustering</li>
-                            <li>Deep Learning: TensorFlow, PyTorch</li>
-                            <li>NLP: Sentiment analysis, Chatbots</li>
-                            <li>Computer Vision: Image classification</li>
-                            <li>Generative AI: OpenAI APIs, LangChain</li>
-                            <li>Projects: Spam detection, recommendation system</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-cloud"></i> Cloud & DevOps Basics</h3>
-                        <ul>
-                            <li>AWS / Azure / GCP (free tier)</li>
-                            <li>Git + GitHub (version control)</li>
-                            <li>CI/CD: GitHub Actions, Vercel</li>
-                            <li>Docker, Kubernetes (intro)</li>
-                            <li>Terraform (industry trending skill)</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-shield-alt"></i> Cybersecurity & IT</h3>
-                        <ul>
-                            <li>Networking: OSI Model, TCP/IP, DNS</li>
-                            <li>Linux Essentials (command line)</li>
-                            <li>Application Security: OWASP Top 10</li>
-                            <li>Cloud Security Basics (IAM)</li>
-                            <li>Ethical Hacking Intro (CTFs)</li>
-                        </ul>
-                    </div>
-
-                    <div class="track-card">
-                        <h3><i class="fas fa-briefcase"></i> Placement-Ready Skills</h3>
-                        <ul>
-                            <li>Problem Solving & DSA (LeetCode, HackerRank)</li>
-                            <li>System Design Basics</li>
-                            <li>Communication & Aptitude</li>
-                            <li>Portfolio: 2+ live projects</li>
-                            <li>Internship & Hackathon participation</li>
-                        </ul>
-                    </div>
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>Placement-Ready Tech Roadmap 🚀</h1>
+                <div class="subtitle">
+                    Welcome! I am <strong>Pritam Kamble</strong>, a Machine Learning AI Engineer at PayPal.<br>
+                    I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
                 </div>
             </div>
         </div>
+    </header>
 
-        <div class="highlight-section">
-            <h2>🛠️ How Can I Help</h2>
-            <div class="help-grid">
-                <div class="help-item">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <h3>Step-by-step lessons with practical examples</h3>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-code"></i>
-                    <h3>Live coding sessions and project walkthroughs</h3>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-user-tie"></i>
-                    <h3>Interview preparation and soft skills training</h3>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-file-alt"></i>
-                    <h3>Resume and portfolio building</h3>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-handshake"></i>
-                    <h3>Guidance for internships and first jobs</h3>
-                </div>
+    <main>
+        <div class="container">
+            <div class="main-content">
+                <section class="section">
+                    <h2>📚 What You'll Learn</h2>
+                    
+                    <div class="learning-grid">
+                        <article class="learning-card">
+                            <h3><i class="fas fa-code"></i> 1. Programming Foundations</h3>
+                            <ul>
+                                <li><strong>Python</strong> (must-have for AI, Data Science, Automation)</li>
+                                <li><strong>JavaScript</strong> (must-have for Web & Mobile apps)</li>
+                                <li><strong>OOP Concepts</strong> (with basics in Java/C++)</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-globe"></i> 2. Web & App Development</h3>
+                            <ul>
+                                <li><strong>Front-end:</strong>
+                                    <ul class="sublist">
+                                        <li>HTML, CSS, JavaScript</li>
+                                        <li>Frameworks: React / Next.js</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Back-end:</strong>
+                                    <ul class="sublist">
+                                        <li>Node.js / Express (JavaScript)</li>
+                                        <li>Django (Python)</li>
+                                        <li>Spring Boot (Java)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Databases:</strong>
+                                    <ul class="sublist">
+                                        <li>SQL: MySQL, PostgreSQL</li>
+                                        <li>NoSQL: MongoDB, Firebase</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Mobile Apps:</strong>
+                                    <ul class="sublist">
+                                        <li>React Native / Flutter</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-chart-bar"></i> 3. Data & AI (Beginner Path)</h3>
+                            <ul>
+                                <li><strong>Python Libraries:</strong> NumPy, Pandas, Matplotlib</li>
+                                <li><strong>Data Analysis & Visualization:</strong> Excel, Power BI, Tableau</li>
+                                <li><strong>Machine Learning Basics:</strong> scikit-learn, simple ML projects</li>
+                                <li><strong>Generative AI Introduction:</strong> OpenAI APIs, LangChain basics, vector DBs (pgvector, Pinecone)</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-cloud"></i> 4. Cloud & DevOps Basics</h3>
+                            <ul>
+                                <li><strong>Cloud Fundamentals:</strong> AWS / Azure / GCP (free tier)</li>
+                                <li><strong>Version Control:</strong> Git + GitHub (version control, teamwork)</li>
+                                <li><strong>CI/CD:</strong> GitHub Actions, Vercel, Netlify</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-briefcase"></i> 5. Placement-Ready Skills</h3>
+                            <ul>
+                                <li><strong>Problem Solving & DSA:</strong> Arrays, strings, recursion, trees, graphs (LeetCode, HackerRank, etc.)</li>
+                                <li><strong>Communication & Aptitude:</strong> For interviews (mock interviews, aptitude prep)</li>
+                                <li><strong>Portfolio:</strong> Build 2+ live projects (with README & deployment)</li>
+                                <li><strong>Experience:</strong> Internship & Hackathon participation</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-shield-alt"></i> 6. Cybersecurity & IT Fundamentals</h3>
+                            <ul>
+                                <li><strong>Networking Basics:</strong> OSI Model, TCP/IP, DNS, HTTP/HTTPS</li>
+                                <li><strong>Linux Essentials</strong> (command line, shell scripting)</li>
+                                <li><strong>Application Security:</strong> OWASP Top 10 awareness</li>
+                                <li><strong>Cloud Security Basics</strong> (IAM in AWS/Azure)</li>
+                                <li><strong>Ethical Hacking Intro</strong> (CTFs, penetration basics)</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
             </div>
+
+            <section class="highlight-section">
+                <h2>🛠️ How Can I Help</h2>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h3>Step-by-step lessons with practical examples</h3>
+                    </div>
+                    <div class="help-item">
+                        <i class="fas fa-code"></i>
+                        <h3>Live coding sessions and project walkthroughs</h3>
+                    </div>
+                    <div class="help-item">
+                        <i class="fas fa-user-tie"></i>
+                        <h3>Interview preparation and soft skills training</h3>
+                    </div>
+                    <div class="help-item">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Resume and portfolio building</h3>
+                    </div>
+                    <div class="help-item">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Guidance for internships, hackathons, and first jobs</h3>
+                    </div>
+                </div>
+            </section>
+
+            <div class="main-content">
+                <section class="section">
+                    <h2>⭐ Success Stories</h2>
+                    <div class="success-section">
+                        <p>Many of my students have landed roles at top companies by following this curriculum and actively engaging with the community and projects.</p>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📣 Get Involved</h2>
+                    <div class="get-involved">
+                        <ul>
+                            <li>Follow this roadmap and track your progress</li>
+                            <li>Join my sessions for personalized guidance</li>
+                            <li>Contribute to project ideas and discussions</li>
+                        </ul>
+                        <div class="cta-highlight">Build. Learn. Share. Get Hired!</div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📂 Useful Links</h2>
+                    <div class="links-grid">
+                        <a href="https://leetcode.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Visit LeetCode for coding practice">LeetCode</a>
+                        <a href="https://hackerrank.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Visit HackerRank for programming challenges">HackerRank</a>
+                        <a href="https://reactjs.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn React JavaScript library">React</a>
+                        <a href="https://nodejs.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Node.js runtime environment">Node.js</a>
+                        <a href="https://python.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Python programming language">Python</a>
+                        <a href="https://scikit-learn.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn scikit-learn machine learning library">scikit-learn</a>
+                        <a href="https://openai.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Explore OpenAI and generative AI">OpenAI</a>
+                        <a href="https://aws.amazon.com/free" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Start with AWS Free Tier">AWS Free Tier</a>
+                        <a href="https://github.com/features/actions" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn GitHub Actions for CI/CD">GitHub Actions</a>
+                    </div>
+                </section>
+            </div>
+
+            <footer>
+                <div class="cta-section">
+                    <h2>Let's code your future together!</h2>
+                    <p>Feel free to reach out or connect with me on LinkedIn or GitHub.</p>
+                </div>
+            </footer>
         </div>
-
-        <div class="main-content">
-            <div class="section">
-                <h2>⭐ Success Stories</h2>
-                <p style="font-size: 1.2em; color: #555; text-align: center;">Many of my students have landed roles at top companies by following this curriculum and actively engaging with the community and projects.</p>
-            </div>
-
-            <div class="section">
-                <h2>📣 Get Involved</h2>
-                <div style="text-align: center; font-size: 1.1em; color: #555;">
-                    <p>✅ Follow this roadmap and track your progress</p>
-                    <p>✅ Join my sessions for personalized guidance</p>
-                    <p>✅ Contribute to project ideas and discussions</p>
-                    <p style="font-weight: bold; color: #667eea; font-size: 1.3em; margin-top: 30px;">Build. Learn. Share. Get Hired!</p>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>📂 Useful Links</h2>
-                <div class="links-grid">
-                    <a href="https://leetcode.com" class="link-btn" target="_blank">LeetCode</a>
-                    <a href="https://hackerrank.com" class="link-btn" target="_blank">HackerRank</a>
-                    <a href="https://reactjs.org" class="link-btn" target="_blank">React</a>
-                    <a href="https://nodejs.org" class="link-btn" target="_blank">Node.js</a>
-                    <a href="https://python.org" class="link-btn" target="_blank">Python</a>
-                    <a href="https://scikit-learn.org" class="link-btn" target="_blank">scikit-learn</a>
-                    <a href="https://openai.com" class="link-btn" target="_blank">OpenAI</a>
-                    <a href="https://aws.amazon.com/free" class="link-btn" target="_blank">AWS Free Tier</a>
-                    <a href="https://github.com/features/actions" class="link-btn" target="_blank">GitHub Actions</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <h2>Let's code your future together!</h2>
-            <p style="font-size: 1.2em; margin-top: 20px;">Feel free to reach out or connect with me on LinkedIn or GitHub.</p>
-        </div>
-    </div>
+    </main>
 
     <!-- WhatsApp Sticky Button -->
-    <a href="https://wa.me/917276279026?text=Hi%20Pritam,%20I%20would%20like%20to%20learn%20more%20about%20your%20tech%20mentoring%20program!" class="whatsapp-sticky" target="_blank">
-        <i class="fab fa-whatsapp"></i>
+    <a href="https://wa.me/917276279026?text=Hi%20Pritam,%20I%20would%20like%20to%20learn%20more%20about%20your%20placement-ready%20tech%20roadmap%20and%20mentoring%20program!" 
+       class="whatsapp-sticky" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact Pritam Kamble on WhatsApp for tech mentoring">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
         <span>Chat on WhatsApp</span>
     </a>
 </body>
