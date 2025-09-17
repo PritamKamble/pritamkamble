@@ -223,8 +223,9 @@
           <p class="subtitle"><strong>Full-Stack • GenAI • Cloud/DevOps • Interview Prep</strong><br/>I'm <strong>Pritam</strong> (AI/ML Engineer @ PayPal). We learn by building, showcase real projects, and practice interviews weekly so you can land your first role.</p>
           <div class="hero-ctas">
             <a id="apply" class="btn btn-primary" href="#lead" aria-label="Apply to the program"><i class="fa-solid fa-paper-plane"></i> Apply for the next cohort</a>
-            <a class="btn btn-ghost" href="https://calendly.com/pritamkamble/15min" target="_blank" rel="noopener"> <i class="fa-regular fa-calendar"></i> 15‑min Call</a>
+            <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"> <i class="fa-regular fa-calendar"></i> 15‑min Call</a>
             <a class="btn btn-ghost" href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener" aria-label="Connect on LinkedIn"><i class="fa-brands fa-linkedin"></i> Connect on LinkedIn</a>
+            <a class="btn btn-ghost" href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener" aria-label="Subscribe on YouTube"><i class="fa-brands fa-youtube"></i> YouTube</a>
           </div>
           <p class="subtitle" style="margin-top:10px"><strong>Next kickoff:</strong> 01 Oct 2025 • <span id="countdown" aria-live="polite"></span></p>
         </div>
@@ -472,25 +473,11 @@
     <!-- Lead / Apply form -->
     <section class="surface" id="lead">
       <h2 class="section-title">📮 Apply for the Next Cohort</h2>
-      <p class="sub">Fill this quick form; you’ll receive the syllabus PDF + next steps on WhatsApp/Email.</p>
-      <!-- WhatsApp Lead Form -->
-      <form class="lead-form" id="wa-lead-form" autocomplete="off">
-        <input required name="name" placeholder="Full name" aria-label="Full name" />
-        <input required name="phone" placeholder="WhatsApp number" aria-label="WhatsApp number" />
-        <input required type="email" name="email" placeholder="Email" aria-label="Email" />
-        <select name="track" aria-label="Preferred track">
-          <option value="Full-Stack">Full‑Stack</option>
-          <option value="GenAI">GenAI</option>
-          <option value="Cloud/DevOps">Cloud/DevOps</option>
-          <option value="QA-Automation">QA‑Automation</option>
-        </select>
-        <button class="btn btn-primary" type="submit"><i class="fa-brands fa-whatsapp"></i> Send on WhatsApp</button>
-      </form>
-      <div style="font-size:0.98em; color:#555; margin-top:8px;">After clicking, WhatsApp will open with your details. Just hit send!</div>
-      <div class="hero-ctas" style="margin-top:14px">
-        <a class="btn btn-ghost" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</a>
-        <button id="copy-msg" class="btn btn-ghost" type="button"><i class="fa-regular fa-copy"></i> Copy joining message</button>
+      <p class="sub">No forms—just message me directly on WhatsApp to apply or ask questions. Quickest response guaranteed!</p>
+      <div class="hero-ctas" style="margin-top:18px">
+        <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program.%20My%20name%20is%20%3Cyour%20name%3E%2C%20preferred%20track%20%3CFull-Stack%2FGenAI%2FDevOps%2FQA%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply on WhatsApp</a>
       </div>
+      <div style="font-size:0.98em; color:#555; margin-top:10px;">Tap the button, edit your name and track, and send your message. I’ll reply with next steps!</div>
     </section>
 
     <!-- FAQ -->
@@ -534,6 +521,10 @@
           <i class="fa-brands fa-github"></i> GitHub
         </a>
         &nbsp;|&nbsp;
+        <a href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+        &nbsp;|&nbsp;
         <a href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program." target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
           <i class="fa-brands fa-whatsapp"></i> WhatsApp
         </a>
@@ -575,22 +566,7 @@
     }
     updateCountdown(); setInterval(updateCountdown, 60000);
 
-    // WhatsApp Lead Form Submission
-    const waForm = document.getElementById('wa-lead-form');
-    if (waForm) {
-      waForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = waForm.elements['name'].value.trim();
-        const phone = waForm.elements['phone'].value.trim();
-        const email = waForm.elements['email'].value.trim();
-        const track = waForm.elements['track'].value;
-        const msg =
-          `Hi Pritam, I want to apply for the Job-Ready IT Fresher Program.\n` +
-          `Name: ${name}\nWhatsApp: ${phone}\nEmail: ${email}\nTrack: ${track}`;
-        const waUrl = `https://wa.me/917276279026?text=${encodeURIComponent(msg)}`;
-        window.open(waUrl, '_blank');
-      });
-    }
+    // No form: WhatsApp CTA only
   </script>
 </body>
 </html>
