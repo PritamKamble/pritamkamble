@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>Placement-Ready Tech Roadmap | Pritam Kamble - PayPal ML Engineer & Tech Mentor</title>
-    <meta name="description" content="Learn from Pritam Kamble, PayPal ML Engineer. Get job-ready with our comprehensive tech roadmap covering Python, JavaScript, Web Development, AI/ML, Data Science, Cloud & DevOps. Land your first tech job with expert mentoring.">
-    <meta name="keywords" content="tech mentoring, machine learning engineer, PayPal, Python programming, JavaScript, web development, data science, AI training, placement preparation, tech jobs, fresher guidance, coding bootcamp, programming courses, tech career">
+    <title>Job-Ready IT Fresher Syllabus (2025) | Pritam Kamble - PayPal ML Engineer & Tech Mentor</title>
+    <meta name="description" content="Learn from Pritam Kamble, PayPal ML Engineer. Complete 24-week job-ready IT syllabus covering Full-Stack Development, GenAI, Cloud/DevOps. TypeScript, React, Next.js, Node.js, PostgreSQL, AWS, Docker, and more. Land your first tech job.">
+    <meta name="keywords" content="tech mentoring, machine learning engineer, PayPal, TypeScript, JavaScript, React, Next.js, Node.js, GenAI, full-stack development, PostgreSQL, AWS, Docker, placement preparation, tech jobs, fresher guidance, coding bootcamp, IT syllabus">
     <meta name="author" content="Pritam Kamble">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Placement-Ready Tech Roadmap | Pritam Kamble - PayPal ML Engineer">
-    <meta property="og:description" content="Get job-ready in tech with comprehensive mentoring from PayPal ML Engineer. Master Python, JavaScript, Web Dev, AI/ML, and land your first tech job.">
+    <meta property="og:title" content="Job-Ready IT Fresher Syllabus (2025) | Pritam Kamble - PayPal ML Engineer">
+    <meta property="og:description" content="Get job-ready in tech with comprehensive 24-week syllabus from PayPal ML Engineer. Master TypeScript, React, Node.js, GenAI, AWS, and land your first tech job.">
     <meta property="og:url" content="https://pritamkamble.tech">
     <meta property="og:site_name" content="Pritam Kamble Tech Mentoring">
     <meta property="og:image" content="https://pritamkamble.tech/og-image.jpg">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Placement-Ready Tech Roadmap | Pritam Kamble">
+    <meta name="twitter:title" content="Job-Ready IT Fresher Syllabus (2025) | Pritam Kamble">
     <meta name="twitter:description" content="Learn from PayPal ML Engineer. Master tech skills and land your first job.">
     <meta name="twitter:image" content="https://pritamkamble.tech/twitter-image.jpg">
     
@@ -95,6 +95,42 @@
             border-radius: 20px;
             margin-bottom: 40px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero grid with instructor image */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 30px;
+            text-align: left;
+        }
+
+        .hero-text {
+            text-align: left;
+        }
+
+        .hero-photo {
+            display: flex;
+            justify-content: center;
+        }
+
+        .instructor-photo {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            border: 6px solid rgba(255,255,255,0.6);
+            background: #fff;
+        }
+
+        .photo-caption {
+            margin-top: 12px;
+            text-align: center;
+            color: #f0f0f0;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         .hero h1 {
@@ -424,7 +460,89 @@
             50% { transform: scale(1.1); }
         }
 
+        .program-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .program-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .program-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #e8efff;
+            vertical-align: top;
+        }
+
+        .program-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .program-table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+
+        .program-table tr:hover {
+            background: #e8efff;
+            transition: background 0.3s ease;
+        }
+
+        .week-cell {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .theme-cell {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .topics-cell {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .deliverables-cell {
+            color: #764ba2;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
+            .program-table {
+                font-size: 0.9em;
+            }
+            
+            .program-table th,
+            .program-table td {
+                padding: 12px 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text { text-align: center; }
+
+            .instructor-photo {
+                width: 200px;
+                height: 200px;
+            }
+
             .hero h1 {
                 font-size: 2.2em;
             }
@@ -494,11 +612,22 @@
 
     <header>
         <div class="container">
-            <div class="hero">
-                <h1>Placement-Ready Tech Roadmap 🚀</h1>
-                <div class="subtitle">
-                    Welcome! I am <strong>Pritam Kamble</strong>, a Machine Learning AI Engineer at PayPal.<br>
-                    I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
+            <div class="hero hero-grid">
+                <div class="hero-text">
+                    <h1>Job-Ready IT Fresher Syllabus (2025) 🚀</h1>
+                    <div class="subtitle">
+                        <strong>Full-Stack • GenAI • Cloud</strong><br><br>
+                        I'm <strong>Pritam</strong> — I teach students to learn by building. Together we'll ship real projects, master interviews, and launch your tech career.<br>
+                        <strong>Duration:</strong> 24 weeks (16-week Core + 8-week Specialization)<br>
+                        <strong>Audience:</strong> Final-year students & fresh graduates (CSE/IT/EEE/ENTC/Allied)<br>
+                        <strong>Outcomes:</strong> Build & deploy production-grade web apps, integrate GenAI/RAG, follow DevOps best practices, and clear entry-level interviews for Full-Stack, Backend, GenAI, QA-Automation, Cloud/DevOps roles.
+                    </div>
+                </div>
+                <div class="hero-photo">
+                    <div>
+                        <img src="img.jpeg" alt="Instructor portrait" class="instructor-photo" />
+                        <div class="photo-caption">Mentor & Instructor</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -508,85 +637,178 @@
         <div class="container">
             <div class="main-content">
                 <section class="section">
-                    <h2>📚 What You'll Learn</h2>
+                    <h2>👨‍🏫 About the Instructor</h2>
+                    <div class="learning-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: center;">
+                        <div>
+                            <p style="font-size:1.1em; color:#555; margin-bottom:18px;">
+                                I teach students with a project-first approach. You'll learn core concepts, build portfolio projects, and practice interviews every week.
+                            </p>
+                            <ul style="list-style:none; padding-left:0;">
+                                <li style="margin:10px 0; padding-left:28px; position:relative;">
+                                    <span style="position:absolute; left:0;">🎯</span>
+                                    Project-based learning with code reviews
+                                </li>
+                                <li style="margin:10px 0; padding-left:28px; position:relative;">
+                                    <span style="position:absolute; left:0;">🧠</span>
+                                    Weekly DSA + CS fundamentals for interviews
+                                </li>
+                                <li style="margin:10px 0; padding-left:28px; position:relative;">
+                                    <span style="position:absolute; left:0;">☁️</span>
+                                    Real deployments: Docker, CI/CD, AWS
+                                </li>
+                                <li style="margin:10px 0; padding-left:28px; position:relative;">
+                                    <span style="position:absolute; left:0;">🤝</span>
+                                    Mentorship, study plans, and doubt clearing
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="hero-photo">
+                            <img src="img.jpeg" alt="Instructor portrait" class="instructor-photo" />
+                        </div>
+                    </div>
+                </section>
+                                <section class="section">
+                    <h2>🎯 Learning Outcomes</h2>
+                    <p style="font-size: 1.1em; color: #555; margin-bottom: 30px;">By the end of the program, learners can:</p>
                     
                     <div class="learning-grid">
                         <article class="learning-card">
-                            <h3><i class="fas fa-code"></i> 1. Programming Foundations</h3>
+                            <h3><i class="fas fa-laptop-code"></i> Full-Stack Development</h3>
                             <ul>
-                                <li><strong>Python</strong> (must-have for AI, Data Science, Automation)</li>
-                                <li><strong>JavaScript</strong> (must-have for Web & Mobile apps)</li>
-                                <li><strong>OOP Concepts</strong> (with basics in Java/C++)</li>
+                                <li>Design, build, test, secure, and deploy full-stack applications</li>
+                                <li>Apply TypeScript across frontend (React/Next.js) and backend (Node/NestJS)</li>
+                                <li>Showcase 2-3 portfolio-ready projects with clean repos and live deployments</li>
                             </ul>
                         </article>
 
                         <article class="learning-card">
-                            <h3><i class="fas fa-globe"></i> 2. Web & App Development</h3>
+                            <h3><i class="fas fa-database"></i> Data & Database Management</h3>
                             <ul>
-                                <li><strong>Front-end:</strong>
-                                    <ul class="sublist">
-                                        <li>HTML, CSS, JavaScript</li>
-                                        <li>Frameworks: React / Next.js</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Back-end:</strong>
-                                    <ul class="sublist">
-                                        <li>Node.js / Express (JavaScript)</li>
-                                        <li>Django (Python)</li>
-                                        <li>Spring Boot (Java)</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Databases:</strong>
-                                    <ul class="sublist">
-                                        <li>SQL: MySQL, PostgreSQL</li>
-                                        <li>NoSQL: MongoDB, Firebase</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Mobile Apps:</strong>
-                                    <ul class="sublist">
-                                        <li>React Native / Flutter</li>
-                                    </ul>
-                                </li>
+                                <li>Use SQL (PostgreSQL) and NoSQL effectively</li>
+                                <li>Model data and write optimized queries</li>
+                                <li>Implement caching strategies with Redis</li>
                             </ul>
                         </article>
 
                         <article class="learning-card">
-                            <h3><i class="fas fa-chart-bar"></i> 3. Data & AI (Beginner Path)</h3>
+                            <h3><i class="fas fa-cloud"></i> Cloud & DevOps</h3>
                             <ul>
-                                <li><strong>Python Libraries:</strong> NumPy, Pandas, Matplotlib</li>
-                                <li><strong>Data Analysis & Visualization:</strong> Excel, Power BI, Tableau</li>
-                                <li><strong>Machine Learning Basics:</strong> scikit-learn, simple ML projects</li>
-                                <li><strong>Generative AI Introduction:</strong> OpenAI APIs, LangChain basics, vector DBs (pgvector, Pinecone)</li>
+                                <li>Containerize services with Docker</li>
+                                <li>Ship via CI/CD to AWS (S3, CloudFront, Lambda/API Gateway, RDS/Aurora)</li>
+                                <li>Follow DevOps best practices for production deployments</li>
                             </ul>
                         </article>
 
                         <article class="learning-card">
-                            <h3><i class="fas fa-cloud"></i> 4. Cloud & DevOps Basics</h3>
+                            <h3><i class="fas fa-brain"></i> Generative AI Integration</h3>
                             <ul>
-                                <li><strong>Cloud Fundamentals:</strong> AWS / Azure / GCP (free tier)</li>
-                                <li><strong>Version Control:</strong> Git + GitHub (version control, teamwork)</li>
-                                <li><strong>CI/CD:</strong> GitHub Actions, Vercel, Netlify</li>
+                                <li>Master prompting, embeddings, RAG, evaluation, and guardrails</li>
+                                <li>Use OpenAI/AWS Bedrock & LangChain/LangGraph</li>
+                                <li>Build AI-powered applications with real-world use cases</li>
                             </ul>
                         </article>
 
                         <article class="learning-card">
-                            <h3><i class="fas fa-briefcase"></i> 5. Placement-Ready Skills</h3>
+                            <h3><i class="fas fa-user-tie"></i> Interview Readiness</h3>
                             <ul>
-                                <li><strong>Problem Solving & DSA:</strong> Arrays, strings, recursion, trees, graphs (LeetCode, HackerRank, etc.)</li>
-                                <li><strong>Communication & Aptitude:</strong> For interviews (mock interviews, aptitude prep)</li>
-                                <li><strong>Portfolio:</strong> Build 2+ live projects (with README & deployment)</li>
-                                <li><strong>Experience:</strong> Internship & Hackathon participation</li>
+                                <li>Demonstrate DSA, CS fundamentals, and system design basics</li>
+                                <li>Clear entry-level interviews for Full-Stack, Backend, GenAI roles</li>
+                                <li>Excel in QA-Automation and Cloud/DevOps positions</li>
                             </ul>
                         </article>
 
                         <article class="learning-card">
-                            <h3><i class="fas fa-shield-alt"></i> 6. Cybersecurity & IT Fundamentals</h3>
+                            <h3><i class="fas fa-code"></i> Modern Development Practices</h3>
                             <ul>
-                                <li><strong>Networking Basics:</strong> OSI Model, TCP/IP, DNS, HTTP/HTTPS</li>
-                                <li><strong>Linux Essentials</strong> (command line, shell scripting)</li>
-                                <li><strong>Application Security:</strong> OWASP Top 10 awareness</li>
-                                <li><strong>Cloud Security Basics</strong> (IAM in AWS/Azure)</li>
-                                <li><strong>Ethical Hacking Intro</strong> (CTFs, penetration basics)</li>
+                                <li>Follow industry-standard coding practices and patterns</li>
+                                <li>Implement comprehensive testing strategies</li>
+                                <li>Collaborate effectively using Git, PR workflows, and agile methodologies</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+            </div>
+
+            <div class="main-content">
+                <section class="section">
+                    <h2>⚡ Tech Stack & Tools</h2>
+                    
+                    <div class="learning-grid">
+                        <article class="learning-card">
+                            <h3><i class="fas fa-code"></i> Languages</h3>
+                            <ul>
+                                <li><strong>TypeScript</strong> (primary language)</li>
+                                <li><strong>JavaScript</strong> (ES6+)</li>
+                                <li><strong>Python</strong> (for data/ETL basics)</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-desktop"></i> Frontend</h3>
+                            <ul>
+                                <li><strong>React 18</strong> with hooks and context</li>
+                                <li><strong>Next.js 15</strong> (App Router)</li>
+                                <li><strong>TailwindCSS</strong> & shadcn/ui</li>
+                                <li><strong>Form validation:</strong> zod/react-hook-form</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-server"></i> Backend</h3>
+                            <ul>
+                                <li><strong>Node.js 20+</strong> runtime</li>
+                                <li><strong>Express</strong> or <strong>NestJS</strong> frameworks</li>
+                                <li><strong>REST APIs</strong> (with intro to GraphQL)</li>
+                                <li><strong>Authentication:</strong> JWT/OAuth2</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-database"></i> Data</h3>
+                            <ul>
+                                <li><strong>PostgreSQL</strong> with Prisma/Drizzle</li>
+                                <li><strong>Redis</strong> for caching/queues</li>
+                                <li><strong>MongoDB</strong> (NoSQL overview)</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-robot"></i> AI/GenAI</h3>
+                            <ul>
+                                <li><strong>OpenAI</strong> / AWS Bedrock</li>
+                                <li><strong>Embeddings:</strong> Titan-Embed-Text-v2, bge-m3</li>
+                                <li><strong>Frameworks:</strong> LangChain, LangGraph</li>
+                                <li><strong>Evaluation:</strong> RAGAS/LangSmith</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-cloud"></i> Cloud/DevOps</h3>
+                            <ul>
+                                <li><strong>AWS:</strong> S3, CloudFront, Lambda, RDS/Aurora</li>
+                                <li><strong>Docker</strong> containerization</li>
+                                <li><strong>GitHub Actions</strong> CI/CD</li>
+                                <li><strong>Monitoring:</strong> logging & observability</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-check-circle"></i> Testing/QA</h3>
+                            <ul>
+                                <li><strong>Unit Testing:</strong> Jest/Vitest</li>
+                                <li><strong>Component Testing:</strong> React Testing Library</li>
+                                <li><strong>E2E Testing:</strong> Playwright/Cypress</li>
+                                <li><strong>API Testing:</strong> Postman, contract tests</li>
+                            </ul>
+                        </article>
+
+                        <article class="learning-card">
+                            <h3><i class="fas fa-users"></i> Collaboration</h3>
+                            <ul>
+                                <li><strong>VS Code</strong> development environment</li>
+                                <li><strong>Git/GitHub</strong> version control</li>
+                                <li><strong>Code Quality:</strong> Prettier/ESLint</li>
+                                <li><strong>Workflows:</strong> Conventional Commits, PR templates</li>
                             </ul>
                         </article>
                     </div>
@@ -621,6 +843,68 @@
 
             <div class="main-content">
                 <section class="section">
+                    <h2>📅 Program Structure (16-Week Core)</h2>
+                    <p style="font-size: 1.1em; color: #555; margin-bottom: 30px;">
+                        <strong>Each week:</strong> 6–8 hrs class + 10–12 hrs labs/self-work. Friday quiz, weekend interview prep.
+                    </p>
+                    
+                    <table class="program-table">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Theme</th>
+                                <th>Key Topics</th>
+                                <th>Weekly Deliverables</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="week-cell">W0</td>
+                                <td class="theme-cell">Orientation & Tooling</td>
+                                <td class="topics-cell">Linux/CLI, Git branching/PRs, HTTP/JSON, APIs, VS Code, Nx basics</td>
+                                <td class="deliverables-cell">Repo setup, first PR, coding standards</td>
+                            </tr>
+                            <tr>
+                                <td class="week-cell">W1</td>
+                                <td class="theme-cell">Programming Foundations</td>
+                                <td class="topics-cell">JS → TypeScript, async, modules, FP vs OOP, error handling</td>
+                                <td class="deliverables-cell">TS kata set, utility lib with tests</td>
+                            </tr>
+                            <tr>
+                                <td class="week-cell">W2</td>
+                                <td class="theme-cell">DSA I + CS Basics</td>
+                                <td class="topics-cell">Arrays/strings/hashmaps, Big-O, OS/DBMS/Networks overview</td>
+                                <td class="deliverables-cell">15 problems (LC patterns), CS flashcards</td>
+                            </tr>
+                            <tr>
+                                <td class="week-cell">W3</td>
+                                <td class="theme-cell">Frontend I</td>
+                                <td class="topics-cell">HTML5/CSS3, responsive layout, Tailwind, a11y</td>
+                                <td class="deliverables-cell">Landing page from Figma, responsive grid</td>
+                            </tr>
+                            <tr>
+                                <td class="week-cell">W4</td>
+                                <td class="theme-cell">Frontend II</td>
+                                <td class="topics-cell">React hooks, state mgmt, Next.js App Router, forms, SSR/ISR, SEO</td>
+                                <td class="deliverables-cell">Next.js blog with auth + comments</td>
+                            </tr>
+                            <tr>
+                                <td class="week-cell">W5</td>
+                                <td class="theme-cell">Backend I</td>
+                                <td class="topics-cell">Node/NestJS, REST design, validation (zod/class-validator), auth (JWT), Prisma/Drizzle</td>
+                                <td class="deliverables-cell">User management API with auth</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="margin-top: 30px; text-align: center; font-style: italic; color: #666;">
+                        Complete 16-week curriculum available upon enrollment. Includes weeks 6-15 covering Backend II, Database Design, Testing, DevOps, GenAI Integration, Cloud Deployment, and Full-Stack Projects.
+                    </p>
+                </section>
+            </div>
+
+            <div class="main-content">
+                <section class="section">
                     <h2>⭐ Success Stories</h2>
                     <div class="success-section">
                         <p>Many of my students have landed roles at top companies by following this curriculum and actively engaging with the community and projects.</p>
@@ -642,15 +926,18 @@
                 <section class="section">
                     <h2>📂 Useful Links</h2>
                     <div class="links-grid">
-                        <a href="https://leetcode.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Visit LeetCode for coding practice">LeetCode</a>
-                        <a href="https://hackerrank.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Visit HackerRank for programming challenges">HackerRank</a>
-                        <a href="https://reactjs.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn React JavaScript library">React</a>
-                        <a href="https://nodejs.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Node.js runtime environment">Node.js</a>
-                        <a href="https://python.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Python programming language">Python</a>
-                        <a href="https://scikit-learn.org" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn scikit-learn machine learning library">scikit-learn</a>
-                        <a href="https://openai.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Explore OpenAI and generative AI">OpenAI</a>
-                        <a href="https://aws.amazon.com/free" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Start with AWS Free Tier">AWS Free Tier</a>
+                        <a href="https://www.typescriptlang.org/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn TypeScript">TypeScript</a>
+                        <a href="https://nextjs.org/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Next.js framework">Next.js</a>
+                        <a href="https://react.dev/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn React 18">React 18</a>
+                        <a href="https://tailwindcss.com/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn TailwindCSS">TailwindCSS</a>
+                        <a href="https://nestjs.com/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn NestJS framework">NestJS</a>
+                        <a href="https://www.prisma.io/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Prisma ORM">Prisma</a>
+                        <a href="https://www.postgresql.org/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn PostgreSQL">PostgreSQL</a>
+                        <a href="https://docs.docker.com/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn Docker">Docker</a>
+                        <a href="https://aws.amazon.com/bedrock/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn AWS Bedrock">AWS Bedrock</a>
+                        <a href="https://www.langchain.com/" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn LangChain">LangChain</a>
                         <a href="https://github.com/features/actions" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Learn GitHub Actions for CI/CD">GitHub Actions</a>
+                        <a href="https://leetcode.com" class="link-btn" target="_blank" rel="noopener noreferrer" aria-label="Practice coding on LeetCode">LeetCode</a>
                     </div>
                 </section>
             </div>
@@ -665,7 +952,7 @@
     </main>
 
     <!-- WhatsApp Sticky Button -->
-    <a href="https://wa.me/917276279026?text=Hi%20Pritam,%20I%20would%20like%20to%20learn%20more%20about%20your%20placement-ready%20tech%20roadmap%20and%20mentoring%20program!" 
+    <a href="https://wa.me/917276279026?text=Hi%20Pritam,%20I%20would%20like%20to%20learn%20more%20about%20your%20Job-Ready%20IT%20Fresher%20Syllabus%20(2025)%20and%20the%2024-week%20Full-Stack%20+%20GenAI%20+%20Cloud%20program!" 
        class="whatsapp-sticky" 
        target="_blank" 
        rel="noopener noreferrer"
