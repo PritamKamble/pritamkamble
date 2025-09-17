@@ -1,95 +1,76 @@
-# Placement-Ready Tech Roadmap
+# Job‑Ready IT Fresher Roadmap (2025)
 
-Welcome! 🚀  
-I am [Pritam Kamble](https://github.com/PritamKamble), a Machine Learning AI Engineer at PayPal.  
-I teach and mentor freshers to become job-ready in tech by guiding them through the essential skills, tools, and projects required to stand out in interviews and land their first job.
+A concise, student‑friendly syllabus overview. For the full program page (with week‑by‑week tables, projects, and FAQs), visit:
 
----
+- Program site: https://pritamkamble.github.io/pritamkamble/
 
-## 📚 What You'll Learn
-
-### 1. Programming Foundations
-
-- **Python** (must-have for AI, Data Science, Automation)
-- **JavaScript** (must-have for Web & Mobile apps)
-- **OOP Concepts** (with basics in Java/C++)
-
-### 2. Web & App Development
-
-- **Front-end:**  
-  - HTML, CSS, JavaScript  
-  - Frameworks: React / Next.js
-- **Back-end:**  
-  - Node.js / Express (JavaScript)  
-  - Django (Python)  
-  - Spring Boot (Java)
-- **Databases:**  
-  - SQL: MySQL, PostgreSQL  
-  - NoSQL: MongoDB, Firebase
-- **Mobile Apps:**  
-  - React Native / Flutter
-
-### 3. Data & AI (Beginner Path)
-
-- **Python Libraries:** NumPy, Pandas, Matplotlib
-- **Data Analysis & Visualization:** Excel, Power BI, Tableau
-- **Machine Learning Basics:** scikit-learn, simple ML projects
-- **Generative AI Introduction:** OpenAI APIs, LangChain basics, vector DBs (pgvector, Pinecone)
-
-### 4. Cloud & DevOps Basics
-
-- **Cloud Fundamentals:** AWS / Azure / GCP (free tier)
-- **Version Control:** Git + GitHub (version control, teamwork)
-- **CI/CD:** GitHub Actions, Vercel, Netlify
-
-### 5. Placement-Ready Skills
-
-- **Problem Solving & DSA:** Arrays, strings, recursion, trees, graphs (LeetCode, HackerRank, etc.)
-- **Communication & Aptitude:** For interviews (mock interviews, aptitude prep)
-- **Portfolio:** Build 2+ live projects (with README & deployment)
-- **Experience:** Internship & Hackathon participation
+I’m Pritam Kamble (AI/ML Engineer @ PayPal). I help freshers become job‑ready with a practical program that blends full‑stack, GenAI, cloud/DevOps, and interview prep.
 
 ---
 
-## 🛠️ How I Help
+## Quick links
 
-- **Step-by-step lessons** with practical examples
-- **Live coding sessions** and project walkthroughs
-- **Interview preparation** and soft skills training
-- **Resume and portfolio building**
-- **Guidance for internships, hackathons, and first jobs**
-
----
-
-## ⭐ Success Stories
-
-Many of my students have landed roles at top companies by following this curriculum and actively engaging with the community and projects.
+- Apply on WhatsApp: https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program.%20My%20name%20is%20%3Cyour%20name%3E%2C%20preferred%20track%20%3CFull-Stack%2FGenAI%2FDevOps%2FQA%3E.
+- 15‑min call: https://calendly.com/7276279026-pk/new-meeting
+- LinkedIn: https://www.linkedin.com/in/pritam-kamble
+- YouTube: https://www.youtube.com/@pritamkamble353
+- GitHub: https://github.com/PritamKamble
 
 ---
 
-## 📣 Get Involved
+## Syllabus at a glance
 
-- Follow this roadmap and track your progress.
-- Join my sessions for personalized guidance.
-- Contribute to project ideas and discussions.
-- **Build. Learn. Share. Get Hired!**
+- Core (Weeks 0‑12)
+  - Tooling, JS→TS foundations, DSA + CS basics
+  - Frontend: HTML/CSS → React/Next.js
+  - Backend: Node/NestJS, REST, validation & auth
+  - DB: PostgreSQL with Prisma/Drizzle
+  - Testing: unit, component, E2E (Jest/Vitest, RTL, Playwright)
+  - Cloud: Docker, GitHub Actions, S3/CloudFront
+  - GenAI basics: prompting, embeddings, RAG
+  - Project sprints → Capstone v1 live
+- Specializations (Weeks 13‑20)
+  - Full‑Stack: API design, AuthN/Z, payments, performance, scaling, observability
+  - GenAI: LLM APIs, embeddings, RAG, agents, multimodal, evaluation, MLOps lite
+  - Cloud/DevOps: Docker deep‑dive, CI/CD, AWS infra, security, observability, cost/scale
+  - QA Automation: API tests, UI automation, mocking, perf/load, CI mastery
+- Placement pipeline
+  - Milestones → Weekly mocks → Referrals & drives → Applications tracking
+
+> Detailed week‑by‑week tables are on the site: Roadmap → track toggles.
 
 ---
 
-## 📂 Useful Links
+## Portfolio projects (recruiter‑friendly)
 
-- [LeetCode](https://leetcode.com/)
-- [HackerRank](https://www.hackerrank.com/)
-- [React](https://reactjs.org/)
-- [Node.js](https://nodejs.org/)
-- [Python](https://www.python.org/)
-- [scikit-learn](https://scikit-learn.org/)
-- [OpenAI](https://platform.openai.com/)
-- [AWS Free Tier](https://aws.amazon.com/free/)
-- [GitHub Actions](https://github.com/features/actions)
+- Next.js E‑Commerce (Auth + Payments + Admin)
+- AI Doc Q&A (RAG) with Bedrock/OpenAI
+- URL Shortener + Analytics (rate‑limit, Redis)
+- DevOps Pipeline (Docker + CI/CD to AWS)
+- QA Automation Suite (Playwright)
 
 ---
 
-**Let’s code your future together!**
+## How to apply
 
-*Feel free to reach out or connect with me on [LinkedIn](https://www.linkedin.com/in/pritamkamble/) or [GitHub](https://github.com/PritamKamble).*
+- Fastest: Message on WhatsApp with your name and preferred track
+- Or book a 15‑minute call on Calendly
+
+> No forms. Quick response guaranteed.
+
+---
+
+## FAQ
+
+- Beginner‑friendly? Yes. We start from fundamentals and ramp up with projects.
+- Time required? ~16–20 hrs/week (sessions + projects/DSA).
+- Recordings? Yes, plus notes/assignments.
+- Placement support? Mocks, feedback, and referrals when you hit milestones. No guarantees.
+
+---
+
+Let’s code your future together!
+
+• LinkedIn: https://www.linkedin.com/in/pritam-kamble  
+• GitHub: https://github.com/PritamKamble  
+• YouTube: https://www.youtube.com/@pritamkamble353
