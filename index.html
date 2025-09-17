@@ -359,6 +359,13 @@
             background: linear-gradient(45deg, #764ba2, #667eea);
         }
 
+        /* Responsive table wrapper */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .success-section {
             background: #f8f9ff;
             padding: 40px;
@@ -528,6 +535,16 @@
             .program-table td {
                 padding: 12px 10px;
             }
+
+            /* Stack hero image above text */
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-photo { order: 1; margin-bottom: 10px; }
+            .hero-text { order: 2; text-align: center; }
+            .hero { padding: 40px 16px; }
+            .main-content { padding: 24px 18px; }
+            .links-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
         }
 
         @media (max-width: 768px) {
@@ -574,16 +591,20 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px;
+                padding: 12px;
             }
             
             .hero {
-                padding: 40px 15px;
+                padding: 28px 12px;
             }
             
             .main-content {
-                padding: 25px 20px;
+                padding: 18px 14px;
             }
+
+            .links-grid { grid-template-columns: 1fr; }
+            .link-btn { font-size: 0.95em; padding: 14px 16px; }
+            .section h2 { font-size: 1.7em; }
         }
     </style>
 </head>
@@ -848,6 +869,7 @@
                         <strong>Each week:</strong> 6–8 hrs class + 10–12 hrs labs/self-work. Friday quiz, weekend interview prep.
                     </p>
                     
+                    <div class="table-responsive">
                     <table class="program-table">
                         <thead>
                             <tr>
@@ -896,6 +918,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                     
                     <p style="margin-top: 30px; text-align: center; font-style: italic; color: #666;">
                         Complete 16-week curriculum available upon enrollment. Includes weeks 6-15 covering Backend II, Database Design, Testing, DevOps, GenAI Integration, Cloud Deployment, and Full-Stack Projects.
