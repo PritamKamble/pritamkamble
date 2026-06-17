@@ -143,9 +143,34 @@
       border-bottom: 1px solid rgba(255,255,255,.15);
     }
     .logo { color: #fff; font-weight: 800; letter-spacing: .2px; }
+    .nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      cursor: pointer;
+    }
+    .nav-toggle:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
     .nav a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
     .nav a:hover { opacity: 1; }
-    .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    .nav-links.open {
+      display: flex;
+    }
+    .nav-links a { display: block; }
 
     /* Hero */
   .hero { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; }
@@ -153,6 +178,13 @@
     .hero h1 { font-size: clamp(1.8rem, 3.5vw, 3rem); color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.2); }
     .subtitle { color: #f0f0f0; margin-top: 10px; }
     .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .hero-badge { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 10px 14px; font-size: .95rem; }
+    .hero-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
+    .hero-text-link { color: #eef2ff; text-decoration: underline; opacity: .9; font-size: .95rem; }
+    .hero-text-link:hover { opacity: 1; }
+    .hero-quote { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 14px; color: #f7f7ff; padding: 16px 18px; margin-top: 18px; font-size: .98rem; line-height: 1.7; }
+    .hero-quote strong { color: #fff; }
     .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 18px; border-radius: 12px; border: none; cursor: pointer; text-decoration: none; font-weight: 700; }
     .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 30px rgba(102,126,234,.35); }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(102,126,234,.55); }
@@ -217,6 +249,35 @@
       .hero-ctas .btn { flex: 1 1 100%; justify-content: center; }
     }
 
+    @media (max-width: 860px) {
+      .nav { flex-wrap: wrap; }
+      .nav-toggle { display: inline-flex; }
+      .nav-links { margin-top: 12px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-ctas { flex-direction: column; }
+      .hero-ctas .btn { width: 100%; }
+      .hero-ctas .btn + .btn { margin-top: 8px; }
+    }
+
+    @media (max-width: 760px) {
+      .container { padding: 16px; }
+      .hero { padding: 22px; }
+      .section-title { font-size: 1.6rem; }
+      .table-wrap { overflow: visible; }
+      .track table { display: block; width: 100%; min-width: unset; }
+      .track thead { display: none; }
+      .track tr { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; padding: 16px; border: 1px solid #eef2ff; border-radius: 16px; background: #fff; }
+      .track td { display: block; padding: 0; border: none; }
+      .track td::before { display: block; font-size: .85rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
+      .track td:nth-of-type(1)::before { content: 'Week'; }
+      .track td:nth-of-type(2)::before { content: 'Theme'; }
+      .track td:nth-of-type(3)::before { content: 'Key Topics'; }
+      .track td:nth-of-type(4)::before { content: 'Deliverable'; }
+      .track td + td { margin-top: 12px; }
+      .hero-ctas { gap: 10px; }
+      .hero-ctas .btn { width: 100%; }
+    }
+
     /* Desktop enhancements (mobile-first) */
     @media (min-width: 861px) {
       .container { padding: 20px; }
@@ -224,6 +285,8 @@
       .hero-grid { grid-template-columns: 1.2fr .8fr; gap: 22px; }
       .surface { padding: 36px; margin: 28px 0; }
       table { min-width: 100%; }
+      .nav-toggle { display: none; }
+      .nav-links { display: flex !important; flex-direction: row; gap: 16px; width: auto; }
     }
 
     /* Improve contrast for link buttons on white surface */
@@ -247,7 +310,10 @@
   <header class="container">
     <nav class="nav" aria-label="Main Navigation">
       <div class="logo">Pritam Kamble • Mentor</div>
-      <div class="nav-links">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open main menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="nav-links" id="nav-links">
         <a href="#roadmap">Roadmap</a>
         <a href="#projects">Projects</a>
         <a href="#placement">Placement</a>
@@ -260,16 +326,25 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <h1>Job-Ready IT Fresher Roadmap (2025) 🚀</h1>
-          <p class="subtitle"><strong>Full-Stack • GenAI • Cloud/DevOps • Interview Prep</strong><br/>I'm <strong>Pritam</strong> (AI/ML Engineer @ PayPal). We learn by building, showcase real projects, and practice interviews weekly so you can land your first role.</p>
-          <div class="hero-ctas">
-            <a id="apply" class="btn btn-primary" href="#lead" aria-label="Apply to the program"><i class="fa-solid fa-paper-plane"></i> Apply for the next cohort</a>
-            <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"> <i class="fa-regular fa-calendar"></i> 15‑min Call</a>
-            <a class="btn btn-ghost" href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener" aria-label="Connect on LinkedIn"><i class="fa-brands fa-linkedin"></i> Connect on LinkedIn</a>
-            <a class="btn btn-ghost" href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener" aria-label="Subscribe on YouTube"><i class="fa-brands fa-youtube"></i> YouTube</a>
-            <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20please%20send%20me%20the%20latest%20Syllabus%20PDF." target="_blank" rel="noopener" aria-label="Get syllabus PDF on WhatsApp"><i class="fa-brands fa-whatsapp"></i> Get Syllabus PDF</a>
+          <h1>Pune Job-Ready IT Fresher Roadmap (2025) 🚀</h1>
+          <p class="subtitle"><strong>Full-Stack • GenAI • Cloud/DevOps • Interview Prep</strong><br/>I'm <strong>Pritam</strong> (AI/ML Engineer @ PayPal). Mentor-led, placement-first training for Pune and nearby learners—build real projects, polish your profile, and practice interviews every week.</p>
+          <div class="hero-badges">
+            <span class="hero-badge">Placement-first curriculum</span>
+            <span class="hero-badge">Flexible evening/weekend batches</span>
+            <span class="hero-badge">Pune-specific hiring support</span>
           </div>
+          <div class="hero-ctas">
+            <a id="apply" class="btn btn-primary" href="#lead" aria-label="Apply to the program"><i class="fa-solid fa-paper-plane"></i> Apply for the Pune cohort</a>
+            <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"> <i class="fa-regular fa-calendar"></i> Free Pune career call</a>
+          </div>
+          <div class="hero-links">
+            <a class="hero-text-link" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20please%20send%20me%20the%20latest%20Syllabus%20PDF." target="_blank" rel="noopener">Get Pune syllabus PDF</a>
+            <a class="hero-text-link" href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">Connect on LinkedIn</a>
+            <a class="hero-text-link" href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener">Watch YouTube samples</a>
+          </div>
+          <div class="hero-quote">“I help Pune freshers build live-project portfolios, master interview-ready skills, and connect with local hiring opportunities.”</div>
           <p class="subtitle" style="margin-top:10px"><strong>Next kickoff:</strong> 01 Oct 2025 • <span id="countdown" aria-live="polite"></span></p>
+          <p class="subtitle" style="margin-top:8px">Free 15-minute career call • Flexible timings for working learners • Placement-ready portfolio in Pune demand areas.</p>
         </div>
         <div style="text-align:center">
           <img src="img.jpeg" alt="Portrait of Pritam Kamble, AI/ML Engineer and mentor" class="instructor-photo" width="240" height="240" fetchpriority="high" decoding="async" />
@@ -280,10 +355,42 @@
   </header>
 
   <main class="container">
+    <!-- Pune trust and placement highlights -->
+    <section class="surface" id="local-trust">
+      <h2 class="section-title">📍 Built for Pune learners</h2>
+      <p class="sub">Local students choose this program for targeted placement support, flexible schedules, and job-ready projects aligned to Pune hiring demand.</p>
+      <div class="grid" style="margin-top: 12px;">
+        <div class="card">
+          <h3><i class="fa-solid fa-city"></i> Pune-focused support</h3>
+          <ul>
+            <li>Interview prep aligned to Pune tech hiring</li>
+            <li>Resume + LinkedIn feedback for local recruiters</li>
+            <li>Referral help for top Pune companies</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-clock"></i> Flexible timings</h3>
+          <ul>
+            <li>Evening and weekend-friendly batches</li>
+            <li>Designed for working professionals and students</li>
+            <li>Private WhatsApp support for quick guidance</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-briefcase"></i> Placement-ready outcomes</h3>
+          <ul>
+            <li>Portfolio projects recruiters in Pune care about</li>
+            <li>Mock interviews with detailed feedback</li>
+            <li>Live demo + case study ready by course end</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <!-- About / Outcomes -->
     <section class="surface" id="outcomes">
       <h2 class="section-title">🎯 What you will be able to do</h2>
-      <p class="sub">Graduate with 2 major projects + 3 micro‑projects, a polished GitHub, and proven interview performance.</p>
+      <p class="sub">Graduate with 2 major projects + 3 micro‑projects, a polished GitHub, and proven interview performance for Pune's high-demand hiring roles.</p>
       <div class="grid" style="margin-top: 12px;">
         <div class="card">
           <h3><i class="fa-solid fa-laptop-code"></i> Full‑Stack Engineering</h3>
@@ -322,16 +429,8 @@
 
     <!-- Roadmap -->
     <section class="surface" id="roadmap">
-      <h2 class="section-title">🗺️ 24‑Week Core + 8‑Week Specialization</h2>
-      <p class="sub">16‑20 hrs/week. Friday quiz • Weekend interview drills. Choose a specialization after Week 12.</p>
-
-      <div class="toggle-row" role="tablist" aria-label="Roadmap toggles">
-        <button class="toggle active" data-track="core" role="tab" aria-selected="true">Core (Weeks 0‑12)</button>
-        <button class="toggle" data-track="fs" role="tab" aria-selected="false">Full‑Stack (Weeks 13‑20)</button>
-        <button class="toggle" data-track="genai" role="tab" aria-selected="false">GenAI (Weeks 13‑20)</button>
-        <button class="toggle" data-track="devops" role="tab" aria-selected="false">Cloud/DevOps (Weeks 13‑20)</button>
-        <button class="toggle" data-track="qa" role="tab" aria-selected="false">QA‑Automation (Weeks 13‑20)</button>
-      </div>
+      <h2 class="section-title">🗺️ 12‑Week Core Roadmap</h2>
+      <p class="sub">16‑20 hrs/week. Friday quiz • Weekend interview drills. Finish with a job-ready capstone and placement preparation.</p>
 
       <!-- Core Weeks Table -->
       <div class="table-wrap track" id="track-core">
@@ -357,74 +456,6 @@
         </table>
       </div>
 
-      <!-- Full‑Stack Track -->
-      <div class="table-wrap track" id="track-fs" hidden>
-        <table aria-label="Full-Stack specialization weeks 13 to 20">
-          <thead><tr><th>Week</th><th>Theme</th><th>Key Topics</th><th>Deliverables</th></tr></thead>
-          <tbody>
-            <tr><td class="week">W13</td><td>API Design</td><td>Clean architecture, pagination, filters, caching</td><td class="deliver">Service with rate‑limit & cache</td></tr>
-            <tr><td class="week">W14</td><td>AuthN/Z</td><td>JWT/OAuth2, RBAC, OWASP basics</td><td class="deliver">RBAC roles + tests</td></tr>
-            <tr><td class="week">W15</td><td>Payments</td><td>Stripe/Razorpay sandbox, webhooks</td><td class="deliver">Checkout flow</td></tr>
-            <tr><td class="week">W16</td><td>Performance</td><td>SSR/ISR, DB optimizations, Redis</td><td class="deliver">Perf budget + dashboards</td></tr>
-            <tr><td class="week">W17</td><td>Scaling</td><td>Queues, workers, file uploads</td><td class="deliver">Background jobs</td></tr>
-            <tr><td class="week">W18</td><td>Observability</td><td>Logs, metrics, alerts</td><td class="deliver">Alerts on critical paths</td></tr>
-            <tr><td class="week">W19</td><td>Capstone Polish</td><td>UX, docs, tests</td><td class="deliver">Case study draft</td></tr>
-            <tr><td class="week">W20</td><td>Demo Day</td><td>Presentation & Q/A</td><td class="deliver">Public demo + blog</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- GenAI Track -->
-      <div class="table-wrap track" id="track-genai" hidden>
-        <table aria-label="GenAI specialization weeks 13 to 20">
-          <thead><tr><th>Week</th><th>Theme</th><th>Key Topics</th><th>Deliverables</th></tr></thead>
-          <tbody>
-            <tr><td class="week">W13</td><td>LLM APIs</td><td>OpenAI/Bedrock, cost & latency, streaming</td><td class="deliver">Chat UI + streaming</td></tr>
-            <tr><td class="week">W14</td><td>Embeddings</td><td>bge‑m3, Titan‑Embed‑Text‑v2, chunking</td><td class="deliver">Indexer service</td></tr>
-            <tr><td class="week">W15</td><td>RAG</td><td>Retrievers, evaluators, guardrails</td><td class="deliver">RAG pipeline + metrics</td></tr>
-            <tr><td class="week">W16</td><td>Agents</td><td>LangGraph tools, function calling</td><td class="deliver">Tool‑using agent</td></tr>
-            <tr><td class="week">W17</td><td>Vision & Multimodal</td><td>Image/PDF Q&A, OCR, embeddings</td><td class="deliver">Doc QA app</td></tr>
-            <tr><td class="week">W18</td><td>Evaluation</td><td>RAGAS/LangSmith, A/B tests</td><td class="deliver">Eval dashboard</td></tr>
-            <tr><td class="week">W19</td><td>MLOps Lite</td><td>Prompt/version mgmt, datasets</td><td class="deliver">Prompt registry</td></tr>
-            <tr><td class="week">W20</td><td>Demo Day</td><td>Case study & talk</td><td class="deliver">Public demo + blog</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- DevOps Track -->
-      <div class="table-wrap track" id="track-devops" hidden>
-        <table aria-label="Cloud/DevOps specialization weeks 13 to 20">
-          <thead><tr><th>Week</th><th>Theme</th><th>Key Topics</th><th>Deliverables</th></tr></thead>
-          <tbody>
-            <tr><td class="week">W13</td><td>Docker Deep‑Dive</td><td>Images, multi‑stage builds, compose</td><td class="deliver">Optimized images</td></tr>
-            <tr><td class="week">W14</td><td>CI/CD</td><td>GitHub Actions, secrets, caches</td><td class="deliver">Green pipeline</td></tr>
-            <tr><td class="week">W15</td><td>AWS Infra</td><td>S3/CloudFront, API GW + Lambda, RDS/Aurora</td><td class="deliver">Infra as code</td></tr>
-            <tr><td class="week">W16</td><td>Security</td><td>OWASP, IAM, WAF basics</td><td class="deliver">Threat model doc</td></tr>
-            <tr><td class="week">W17</td><td>Observability</td><td>CloudWatch logs/metrics</td><td class="deliver">Alerts + dashboards</td></tr>
-            <tr><td class="week">W18</td><td>Cost & Scale</td><td>Budgets, autoscale, queues</td><td class="deliver">Scale test report</td></tr>
-            <tr><td class="week">W19</td><td>Ops Runbook</td><td>Incident mgmt, SLOs, on‑call</td><td class="deliver">Runbook v1</td></tr>
-            <tr><td class="week">W20</td><td>Demo Day</td><td>Live infra walkthrough</td><td class="deliver">Public demo + blog</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- QA Track -->
-      <div class="table-wrap track" id="track-qa" hidden>
-        <table aria-label="QA Automation specialization weeks 13 to 20">
-          <thead><tr><th>Week</th><th>Theme</th><th>Key Topics</th><th>Deliverables</th></tr></thead>
-          <tbody>
-            <tr><td class="week">W13</td><td>Testing Foundations</td><td>Testing pyramid, CI basics</td><td class="deliver">Test strategy doc</td></tr>
-            <tr><td class="week">W14</td><td>API Tests</td><td>Contract tests, Postman</td><td class="deliver">API test suite</td></tr>
-            <tr><td class="week">W15</td><td>UI Automation</td><td>Playwright/Cypress</td><td class="deliver">E2E suite + reports</td></tr>
-            <tr><td class="week">W16</td><td>Mocking & Stubs</td><td>Test data mgmt</td><td class="deliver">Stable fixtures</td></tr>
-            <tr><td class="week">W17</td><td>Perf/Load</td><td>k6 basics, metrics</td><td class="deliver">Perf run report</td></tr>
-            <tr><td class="week">W18</td><td>CI Mastery</td><td>Flake mgmt, retries</td><td class="deliver">Flake‑free pipeline</td></tr>
-            <tr><td class="week">W19</td><td>Case Study</td><td>Defect triage & RCA</td><td class="deliver">Bug reports</td></tr>
-            <tr><td class="week">W20</td><td>Demo Day</td><td>Automation showcase</td><td class="deliver">Public demo + blog</td></tr>
-          </tbody>
-        </table>
-      </div>
-
       <div class="hero-ctas" style="margin-top:16px">
         <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20reviewed%20the%20Roadmap%20and%20want%20to%20apply.%20My%20track%20is%20%3CFull-Stack%2FGenAI%2FDevOps%2FQA%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply via WhatsApp</a>
         <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"><i class="fa-regular fa-calendar"></i> Book a 15‑min Call</a>
@@ -433,7 +464,7 @@
 
     <!-- Projects -->
     <section class="surface" id="projects">
-      <h2 class="section-title">🧱 Portfolio Projects (what recruiters want to see)</h2>
+      <h2 class="section-title">🧱 Portfolio Projects Pune Recruiters Want</h2>
       <div class="grid">
         <div class="project">
           <h3>1) Next.js E‑Commerce (Payments + Auth + Admin)</h3>
@@ -485,7 +516,7 @@
           <p>Apply to 10 roles/week with ATS‑ready resume; track outcomes.</p>
         </div>
       </div>
-      <p class="sub" style="margin-top:10px"><strong>Note:</strong> No one can promise a job, but this pipeline maximizes your chances—if you consistently hit the milestones.</p>
+      <p class="sub" style="margin-top:10px"><strong>Note:</strong> No one can promise a job, but this pipeline maximizes your chances—if you consistently hit the milestones. I also share Pune-specific referral opportunities and placement resources for strong performers.</p>
     </section>
 
     <!-- Interview Calendar & Resources -->
@@ -522,7 +553,7 @@
       <h2 class="section-title">📮 Apply for the Next Cohort</h2>
       <p class="sub">No forms—just message me directly on WhatsApp to apply or ask questions. Quickest response guaranteed!</p>
       <div class="hero-ctas" style="margin-top:18px">
-        <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program.%20My%20name%20is%20%3Cyour%20name%3E%2C%20preferred%20track%20%3CFull-Stack%2FGenAI%2FDevOps%2FQA%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply on WhatsApp</a>
+        <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program.%20My%20name%20is%20%3Cyour%20name%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply on WhatsApp</a>
       </div>
       <div style="font-size:0.98em; color:#555; margin-top:10px;">Tap the button, edit your name and track, and send your message. I’ll reply with next steps! <span style="color:#16a34a; font-weight:600">Avg reply ~15 min • No spam</span></div>
     </section>
@@ -586,16 +617,20 @@
 
   <!-- Scripts -->
   <script>
-    // Roadmap track toggles
-    const toggles = document.querySelectorAll('.toggle');
-    const tracks = document.querySelectorAll('.track');
-    toggles.forEach(btn => {
-      btn.addEventListener('click', () => {
-        toggles.forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        const track = btn.dataset.track;
-        tracks.forEach(w => w.hidden = true);
-        document.getElementById(`track-${track}`).hidden = false;
+    // Mobile navigation toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    navToggle?.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!expanded));
+      navLinks.classList.toggle('open');
+    });
+    navLinks?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (navLinks.classList.contains('open')) {
+          navLinks.classList.remove('open');
+          navToggle?.setAttribute('aria-expanded', 'false');
+        }
       });
     });
 
