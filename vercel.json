@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "has": [{ "type": "host", "value": "admin.pritamkamble.com" }], "destination": "/admin.html" }
+  ]
+}
