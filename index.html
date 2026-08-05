@@ -1,613 +1,768 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- SEO Meta Tags -->
-  <title>Job-Ready IT Fresher Roadmap (2025) | Pritam Kamble — PayPal AI/ML Engineer</title>
-  <meta name="description" content="A complete, action-first roadmap to get IT freshers job-ready in 24 weeks. Learn Full-Stack, GenAI, Cloud/DevOps, DSA, and interview prep with Pritam Kamble (PayPal AI/ML Engineer)." />
-  <meta name="keywords" content="IT fresher, job roadmap, full-stack, genAI, cloud, devops, DSA, placement, interview preparation, Next.js, TypeScript, AWS, Docker" />
-  <meta name="author" content="Pritam Kamble" />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#667eea" />
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Job-Ready IT Fresher Roadmap (2025) | Pritam Kamble" />
-  <meta property="og:description" content="Actionable 24-week path + 8-week specialization, real projects, mock interviews, and placement pipeline." />
-  <meta property="og:url" content="https://pritamkamble.github.io/pritamkamble/" />
-  <meta property="og:site_name" content="Pritam Kamble — Tech Mentoring" />
-  <meta property="og:locale" content="en_IN" />
-  <meta property="og:image" content="https://pritamkamble.github.io/pritamkamble/img.jpeg" />
-  <meta property="og:image:alt" content="Pritam Kamble - Job-Ready IT Fresher Program (2025)" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Job-Ready IT Fresher Roadmap (2025) | Pritam Kamble" />
-  <meta name="twitter:description" content="Get job-ready with Full-Stack + GenAI + Cloud, projects & mock interviews." />
-  <meta name="twitter:image" content="https://pritamkamble.github.io/pritamkamble/img.jpeg" />
-  <meta name="twitter:image:alt" content="Pritam Kamble - Job-Ready IT Fresher Program (2025)" />
-
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://pritamkamble.github.io/pritamkamble/" />
-  <link rel="preload" as="image" href="img.jpeg" />
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
-  <!-- Fonts and Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Structured Data: Person + Course + Event + FAQ -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Pritam Kamble",
-    "jobTitle": "AI/ML Engineer",
-    "worksFor": { "@type": "Organization", "name": "PayPal" },
-  "url": "https://pritamkamble.github.io/pritamkamble/",
-    "telephone": "+91-7276279026",
-    "sameAs": [
-      "https://www.linkedin.com/in/pritam-kamble",
-      "https://github.com/pritamkamble",
-      "https://www.youtube.com/@pritamkamble353"
-    ],
-    "image": "https://pritamkamble.github.io/pritamkamble/img.jpeg"
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pritam Kamble — Job-Ready Engineer Mentorship</title>
+<meta name="description" content="Mentor-led training in Full-Stack, GenAI and Cloud/DevOps for engineering students and freshers. Real projects, weekly mocks, placement pipeline." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1210;
+    --surface:#151B18;
+    --surface-2:#1B2320;
+    --line:#2A332E;
+    --ink:#EDEFEA;
+    --muted:#8B9690;
+    --muted-2:#5E6A64;
+    --amber:#E8A33D;
+    --green:#5FBF77;
+    --rust:#D1614A;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Inter', system-ui, sans-serif;
+    --maxw:1120px;
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Pritam Kamble — Tech Mentoring",
-    "url": "https://pritamkamble.github.io/pritamkamble/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://www.google.com/search?q=site:pritamkamble.github.io/pritamkamble+{search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "EducationalOccupationalProgram",
-    "name": "Job-Ready IT Fresher Program (Full-Stack + GenAI + Cloud)",
-    "provider": {"@type": "Organization", "name": "Pritam Kamble Tech Mentoring", "url": "https://pritamkamble.github.io/pritamkamble/"},
-    "timeOfDay": "Evening & Weekend",
-    "timeToComplete": "P6M",
-    "occupationalCategory": ["Software Developer", "Backend Engineer", "GenAI Engineer", "QA Automation", "Cloud/DevOps"],
-    "programPrerequisites": ["Laptop", "Basic programming knowledge (preferred)"]
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(95,191,119,0.06), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(232,163,61,0.05), transparent 35%);
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "New Cohort Kickoff — Job-Ready IT Fresher Program",
-    "startDate": "2025-10-01T19:00:00+05:30",
-    "endDate": "2025-10-01T21:00:00+05:30",
-    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": {"@type": "VirtualLocation", "url": "https://calendly.com/pritamkamble/kickoff"},
-    "organizer": {"@type": "Person", "name": "Pritam Kamble"}
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  .mono{font-family:var(--mono);}
+  ::selection{background:var(--amber); color:#0E1210;}
+  :focus-visible{outline:2px solid var(--amber); outline-offset:3px; border-radius:3px;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(14,18,16,0.82);
+    border-bottom:1px solid var(--line);
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"Will I get placement support?","acceptedAnswer":{"@type":"Answer","text":"Yes—mock interviews, referrals (on meeting milestones), and guidance for off-campus drives. Success depends on your consistent effort and project quality."}},
-      {"@type":"Question","name":"How many hours per week?","acceptedAnswer":{"@type":"Answer","text":"~16–20 hours. 6–8 hours live/recorded sessions + 10–12 hours projects/DSA practice."}},
-      {"@type":"Question","name":"Do I need prior coding experience?","acceptedAnswer":{"@type":"Answer","text":"Basics help but are not mandatory. We start from fundamentals and ramp up quickly with projects."}}
-    ]
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .logo{font-family:var(--mono); font-weight:700; font-size:15px; letter-spacing:-0.02em;}
+  .logo span{color:var(--green);}
+  .navlinks{display:flex; gap:28px; font-size:14px; color:var(--muted); font-weight:500;}
+  .navlinks a{text-decoration:none; transition:color .15s;}
+  .navlinks a:hover{color:var(--ink);}
+  .navcta{display:flex; gap:10px;}
+  @media (max-width:820px){ .navlinks{display:none;} }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 18px; border-radius:6px;
+    font-family:var(--mono); font-size:13px; font-weight:600;
+    text-decoration:none; border:1px solid transparent;
+    cursor:pointer; transition:transform .12s, background .15s, border-color .15s;
+    white-space:nowrap;
   }
-  </script>
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--green); color:#0B140E;}
+  .btn-primary:hover{background:#72cf88;}
+  .btn-ghost{border-color:var(--line); color:var(--ink); background:transparent;}
+  .btn-ghost:hover{border-color:var(--muted-2);}
 
-  <style>
-    :root {
-      --bg1: #667eea; /* indigo */
-      --bg2: #764ba2; /* purple */
-      --ink: #333;
-      --ink-2: #555;
-      --card: #ffffff;
-      --muted: #f8f9ff;
-      --muted-2: #e8efff;
-      --brand: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height: 1.6;
-      color: var(--ink);
-      background: var(--brand);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  /* HERO */
+  .hero{padding:72px 0 56px;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr; gap:36px;} .hero{padding:44px 0 40px;} }
 
-    /* Top Nav */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; margin-bottom: 10px; padding: 10px 0;
-      background: rgba(0,0,0,.15); backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(255,255,255,.15);
-    }
-    .logo { color: #fff; font-weight: 800; letter-spacing: .2px; }
-    .nav-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.35);
-      background: rgba(255,255,255,.12);
-      color: #fff;
-      cursor: pointer;
-    }
-    .nav-toggle:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 3px;
-    }
-    .nav a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
-    .nav a:hover { opacity: 1; }
-    .nav-links {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-    .nav-links.open {
-      display: flex;
-    }
-    .nav-links a { display: block; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--green);
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:18px;
+    padding:5px 10px; border:1px solid rgba(95,191,119,0.35); border-radius:20px;
+    background:rgba(95,191,119,0.06);
+  }
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green);}
 
-    /* Hero */
-  .hero { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; }
-  .hero-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: center; }
-    .hero h1 { font-size: clamp(1.8rem, 3.5vw, 3rem); color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.2); }
-    .subtitle { color: #f0f0f0; margin-top: 10px; }
-    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
-    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-    .hero-badge { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 10px 14px; font-size: .95rem; }
-    .hero-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
-    .hero-text-link { color: #eef2ff; text-decoration: underline; opacity: .9; font-size: .95rem; }
-    .hero-text-link:hover { opacity: 1; }
-    .hero-quote { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 14px; color: #f7f7ff; padding: 16px 18px; margin-top: 18px; font-size: .98rem; line-height: 1.7; }
-    .hero-quote strong { color: #fff; }
-    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 18px; border-radius: 12px; border: none; cursor: pointer; text-decoration: none; font-weight: 700; }
-    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 30px rgba(102,126,234,.35); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(102,126,234,.55); }
-    .btn-ghost { background: rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.35); }
-    .btn-ghost:hover { background: rgba(255,255,255,.25); }
-    .instructor-photo { width: 240px; height: 240px; object-fit: cover; border-radius: 50%; border: 6px solid rgba(255,255,255,.6); box-shadow: 0 18px 40px rgba(0,0,0,.25); background: #fff; }
-    .photo-caption { color: #f5f5f5; text-align: center; font-weight: 600; margin-top: 8px; }
+  h1{
+    font-family:var(--mono); font-weight:700; letter-spacing:-0.02em;
+    font-size:clamp(30px, 4.6vw, 46px); line-height:1.12; margin-bottom:20px;
+  }
+  h1 .accent{color:var(--amber);}
+  .hero p.lede{font-size:17px; color:var(--muted); max-width:52ch; margin-bottom:28px;}
+  .hero-actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;}
+  .hero-meta{display:flex; gap:22px; flex-wrap:wrap; font-size:13px; color:var(--muted-2); font-family:var(--mono);}
+  .hero-meta li{list-style:none; display:flex; gap:7px; align-items:center;}
+  .hero-meta li::before{content:'▸'; color:var(--amber);}
 
-    /* Cards & Sections */
-  .surface { background: #fff; border-radius: 18px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,.12); margin: 20px 0; }
-    .section-title { font-size: clamp(1.4rem, 2.5vw, 2.2rem); color: var(--bg1); margin-bottom: 18px; font-weight: 800; }
-    .sub { color: var(--ink-2); }
+  /* TERMINAL */
+  .term{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; box-shadow:0 20px 60px -20px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px; padding:11px 14px;
+    background:var(--surface-2); border-bottom:1px solid var(--line);
+  }
+  .term-dot{width:10px; height:10px; border-radius:50%;}
+  .term-body{padding:22px 20px; font-family:var(--mono); font-size:13.5px;}
+  .term-line{margin-bottom:13px; color:var(--muted);}
+  .term-line .prompt{color:var(--green);}
+  .term-line .out{color:var(--ink); display:block; margin-top:4px; margin-left:18px;}
+  .term-line .path{color:var(--amber);}
+  .cursor{display:inline-block; width:7px; height:15px; background:var(--amber); vertical-align:middle; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 20px; }
-    .card { background: linear-gradient(135deg, #f8f9ff 0%, #e8efff 100%); border-left: 6px solid var(--bg1); border-radius: 16px; padding: 22px; position: relative; overflow: hidden; }
-    .card:hover { transform: translateY(-6px); transition: .25s; box-shadow: 0 14px 34px rgba(102,126,234,.28); }
-    .card h3 { color: #764ba2; margin-bottom: 10px; font-size: 1.15rem; }
-    .card ul { list-style: none; }
-    .card li { margin: 8px 0; padding-left: 26px; position: relative; color: #555; }
-    .card li::before { content: '✓'; position: absolute; left: 0; color: var(--bg1); font-weight: 800; }
+  /* SECTION SHELL */
+  section{padding:64px 0;}
+  .section-head{max-width:640px; margin-bottom:40px;}
+  .kicker{font-family:var(--mono); font-size:12.5px; color:var(--amber); letter-spacing:.04em; margin-bottom:10px;}
+  h2{font-family:var(--mono); font-size:clamp(24px,3vw,32px); font-weight:700; letter-spacing:-0.01em; margin-bottom:12px;}
+  .section-head p{color:var(--muted); font-size:15.5px;}
 
-    /* Roadmap */
-  .toggle-row { display:flex; gap: 10px; margin: 10px 0 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
-  .toggle-row::-webkit-scrollbar { height: 6px; }
-  .toggle-row::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
-  .toggle { display: inline-flex; white-space: nowrap; }
-    .toggle { padding: 10px 14px; border-radius: 10px; background: var(--muted); border: 1px solid var(--muted-2); cursor:pointer; font-weight:600; }
-    .toggle.active { background: var(--bg1); color:#fff; border-color: transparent; }
+  /* CARDS - support */
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:820px){ .grid3{grid-template-columns:1fr;} }
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:26px;
+    transition:border-color .15s, transform .15s;
+  }
+  .card:hover{border-color:var(--muted-2); transform:translateY(-2px);}
+  .card h3{font-family:var(--mono); font-size:16px; margin-bottom:14px; display:flex; align-items:center; gap:9px;}
+  .card h3 .tag{font-size:11px; padding:2px 7px; border-radius:4px; background:var(--surface-2); color:var(--green); font-weight:600;}
+  .card ul{list-style:none; display:flex; flex-direction:column; gap:9px;}
+  .card li{font-size:14px; color:var(--muted); padding-left:18px; position:relative;}
+  .card li::before{content:'+'; position:absolute; left:0; color:var(--green); font-weight:700;}
 
-  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
-  table { width: 100%; min-width: 720px; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; }
-    th { background: var(--brand); color: #fff; padding: 16px; text-align: left; }
-    td { padding: 14px; border-bottom: 1px solid #eef2ff; vertical-align: top; }
-    tr:nth-child(even) { background: #f8f9ff; }
-    .week { color: var(--bg1); font-weight: 800; }
-    .deliver { color: #764ba2; font-weight: 600; }
+  /* ROADMAP - commit log */
+  .log{border-left:2px solid var(--line); margin-left:8px;}
+  .commit{position:relative; padding:0 0 30px 30px;}
+  .commit:last-child{padding-bottom:0;}
+  .commit::before{
+    content:''; position:absolute; left:-7px; top:2px; width:12px; height:12px;
+    border-radius:50%; background:var(--bg); border:2px solid var(--green);
+  }
+  .commit-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .commit-hash{font-family:var(--mono); color:var(--amber); font-size:13px;}
+  .commit-week{font-family:var(--mono); color:var(--muted-2); font-size:12px;}
+  .commit-msg{font-family:var(--mono); font-weight:600; font-size:15px;}
+  .commit-topics{color:var(--muted); font-size:14px; margin:6px 0 8px;}
+  .diffstat{font-family:var(--mono); font-size:12.5px; color:var(--muted-2);}
+  .diffstat .add{color:var(--green);}
 
-    /* Placement Pipeline */
-    .steps { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top: 16px; }
-    .step { background: #fff; border: 2px dashed var(--muted-2); border-radius: 14px; padding: 16px; }
-    .step h4 { margin-bottom: 6px; }
+  /* PROJECTS */
+  .grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media (max-width:820px){ .grid2{grid-template-columns:1fr;} }
+  .proj{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:24px;}
+  .proj-num{font-family:var(--mono); color:var(--muted-2); font-size:12.5px; margin-bottom:8px;}
+  .proj h3{font-family:var(--mono); font-size:16.5px; margin-bottom:10px;}
+  .proj p{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .chips{display:flex; gap:7px; flex-wrap:wrap;}
+  .chip{font-family:var(--mono); font-size:11.5px; padding:4px 9px; border-radius:5px; border:1px solid var(--line); color:var(--muted);}
 
-    /* Projects */
-    .project { background:#fff; border-radius:16px; padding:18px; border:1px solid #eef2ff; }
-    .project .meta { font-size:.9rem; color:#666; margin-top:6px; }
+  /* PIPELINE */
+  .pipeline{display:flex; gap:0; overflow-x:auto; padding-bottom:8px;}
+  .stage{
+    flex:1 1 0; min-width:210px; background:var(--surface); border:1px solid var(--line);
+    padding:22px; position:relative;
+  }
+  .stage:first-child{border-radius:10px 0 0 10px;}
+  .stage:last-child{border-radius:0 10px 10px 0;}
+  .stage:not(:last-child){border-right:none;}
+  .stage-status{
+    font-family:var(--mono); font-size:11px; color:var(--green); display:flex; align-items:center; gap:6px; margin-bottom:12px;
+  }
+  .stage h3{font-family:var(--mono); font-size:14.5px; margin-bottom:8px;}
+  .stage p{font-size:13px; color:var(--muted);}
+  .stage-arrow{
+    position:absolute; right:-11px; top:50%; transform:translateY(-50%); z-index:2;
+    width:22px; height:22px; border-radius:50%; background:var(--bg); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--amber);
+  }
+  @media (max-width:820px){
+    .pipeline{flex-direction:column;}
+    .stage{border-radius:0 !important; border:1px solid var(--line) !important; border-bottom:none !important;}
+    .stage:last-child{border-bottom:1px solid var(--line) !important;}
+    .stage-arrow{right:50%; top:auto; bottom:-11px; transform:translateX(50%) rotate(90deg);}
+  }
+  .note{font-family:var(--mono); font-size:12.5px; color:var(--muted-2); margin-top:16px; border-left:2px solid var(--amber); padding-left:12px;}
 
-    /* CTA Sticky WhatsApp */
-  .whatsapp-sticky { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); right: calc(24px + env(safe-area-inset-right)); background: #25D366; color: #fff; padding: 16px 20px; border-radius: 60px; text-decoration: none; display:flex; gap:10px; align-items:center; box-shadow: 0 12px 32px rgba(37,211,102,.45); font-weight:800; z-index: 1000; }
-    .whatsapp-sticky:hover { transform: translateY(-3px); }
+  /* FAQ */
+  details{border-bottom:1px solid var(--line); padding:18px 0;}
+  summary{
+    cursor:pointer; font-family:var(--mono); font-size:15px; font-weight:600;
+    display:flex; justify-content:space-between; align-items:center; list-style:none;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'+'; color:var(--amber); font-size:20px; transition:transform .2s;}
+  details[open] summary::after{transform:rotate(45deg);}
+  details p{color:var(--muted); font-size:14.5px; margin-top:12px; max-width:60ch;}
 
-    /* Footer CTA */
-    .cta { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: #fff; text-align:center; padding: 34px; border-radius: 18px; }
+  /* CTA */
+  .cta-block{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:44px; text-align:center;
+    background-image:radial-gradient(circle at 50% 0%, rgba(232,163,61,0.08), transparent 60%);
+  }
+  .cta-block h2{margin-bottom:10px;}
+  .cta-block p{color:var(--muted); margin-bottom:24px; max-width:52ch; margin-left:auto; margin-right:auto;}
+  .cta-actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .cta-fine{font-family:var(--mono); font-size:12px; color:var(--muted-2); margin-top:18px;}
 
-    /* Simple form */
-    .lead-form { display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
-    .lead-form input, .lead-form select { padding: 12px; border-radius: 10px; border:1px solid #e4e8ff; }
-    .lead-form button { grid-column: 1 / -1; }
+  footer{border-top:1px solid var(--line); padding:36px 0; margin-top:20px;}
+  .foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .foot-links{display:flex; gap:22px; font-size:13.5px; color:var(--muted); flex-wrap:wrap;}
+  .foot-links a{text-decoration:none; transition:color .15s;}
+  .foot-links a:hover{color:var(--ink);}
+  .foot-copy{font-family:var(--mono); font-size:12px; color:var(--muted-2);}
 
-    /* Small-screen optimizations */
-    @media (max-width: 520px) {
-      .hero-ctas { gap: 8px; }
-      .hero-ctas .btn { flex: 1 1 100%; justify-content: center; }
-    }
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+  .reveal.in{opacity:1; transform:none;}
 
-    @media (max-width: 860px) {
-      .nav { flex-wrap: wrap; }
-      .nav-toggle { display: inline-flex; }
-      .nav-links { margin-top: 12px; }
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-ctas { flex-direction: column; }
-      .hero-ctas .btn { width: 100%; }
-      .hero-ctas .btn + .btn { margin-top: 8px; }
-    }
+  /* APPLY FORM */
+  .apply-panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:36px; position:relative; overflow:hidden;}
+  .apply-panel::before{content:''; position:absolute; inset:0; background:radial-gradient(circle at 100% 0%, rgba(95,191,119,0.07), transparent 55%); pointer-events:none;}
+  .apply-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:start; position:relative;}
+  @media (max-width:820px){ .apply-grid{grid-template-columns:1fr;} .apply-panel{padding:26px;} }
+  .apply-pitch h3{font-family:var(--mono); font-size:19px; margin-bottom:12px;}
+  .apply-pitch p{color:var(--muted); font-size:14.5px; margin-bottom:16px;}
+  .apply-stat{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:13px; color:var(--green); margin-bottom:10px;}
+  .apply-stat b{color:var(--ink); font-size:15px;}
+  .referral-perk{border-left:2px solid var(--amber); padding-left:14px; margin-top:18px;}
+  .referral-perk p{color:var(--muted); font-size:13.5px; margin:0;}
+  .referral-perk b{color:var(--amber);}
 
-    @media (max-width: 760px) {
-      .container { padding: 16px; }
-      .hero { padding: 22px; }
-      .section-title { font-size: 1.6rem; }
-      .table-wrap { overflow: visible; }
-      .track table { display: block; width: 100%; min-width: unset; }
-      .track thead { display: none; }
-      .track tr { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; padding: 16px; border: 1px solid #eef2ff; border-radius: 16px; background: #fff; }
-      .track td { display: block; padding: 0; border: none; }
-      .track td::before { display: block; font-size: .85rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
-      .track td:nth-of-type(1)::before { content: 'Week'; }
-      .track td:nth-of-type(2)::before { content: 'Theme'; }
-      .track td:nth-of-type(3)::before { content: 'Key Topics'; }
-      .track td:nth-of-type(4)::before { content: 'Deliverable'; }
-      .track td + td { margin-top: 12px; }
-      .hero-ctas { gap: 10px; }
-      .hero-ctas .btn { width: 100%; }
-    }
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:6px;
+    padding:11px 12px; color:var(--ink); font-family:var(--sans); font-size:14px;
+  }
+  .field input:focus, .field select:focus{border-color:var(--green); outline:none;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:480px){ .field-row{grid-template-columns:1fr;} }
+  .form-note{font-size:12px; color:var(--muted-2); margin-top:10px;}
+  .form-error{color:var(--rust); font-family:var(--mono); font-size:12.5px; margin-top:10px; display:none;}
 
-    /* Desktop enhancements (mobile-first) */
-    @media (min-width: 861px) {
-      .container { padding: 20px; }
-      .hero { padding: 28px 22px; }
-      .hero-grid { grid-template-columns: 1.2fr .8fr; gap: 22px; }
-      .surface { padding: 36px; margin: 28px 0; }
-      table { min-width: 100%; }
-      .nav-toggle { display: none; }
-      .nav-links { display: flex !important; flex-direction: row; gap: 16px; width: auto; }
-    }
-
-    /* Improve contrast for link buttons on white surface */
-    #links .btn-ghost { background: #f7f9ff; color: #334155; border-color: #e4e8ff; }
-    #links .btn-ghost:hover { background: #eef2ff; color: #1f2937; }
-  </style>
+  .success-panel{display:none;}
+  .success-panel.show{display:block;}
+  .success-badge{font-family:var(--mono); font-size:12px; color:var(--green); display:flex; align-items:center; gap:6px; margin-bottom:14px;}
+  .ref-box{background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; display:flex; align-items:center; gap:10px; margin:14px 0;}
+  .ref-box input{flex:1; background:transparent; border:none; color:var(--ink); font-family:var(--mono); font-size:12.5px; min-width:0;}
+  .ref-box input:focus{outline:none;}
+</style>
 </head>
 <body>
-  <!-- Breadcrumbs -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pritamkamble.github.io/pritamkamble/"},
-      {"@type": "ListItem", "position": 2, "name": "Roadmap", "item": "https://pritamkamble.github.io/pritamkamble/#roadmap"}
-    ]
+
+<header>
+  <nav class="wrap">
+    <div class="logo">~/<span>pritam</span>.mentor</div>
+    <div class="navlinks">
+      <a href="#apply">apply</a>
+      <a href="#roadmap">roadmap</a>
+      <a href="#projects">projects</a>
+      <a href="#placement">placement</a>
+      <a href="#portal">portal</a>
+      <a href="#faq">faq</a>
+      <a href="login.html">student login</a>
+      <a href="login.html?role=hr">for employers</a>
+    </div>
+    <div class="navcta">
+      <a class="btn btn-primary" href="#apply">Join the waitlist</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> accepting new batch · 2 seats mentored personally</div>
+        <h1>Turn beginners into<br>industry-<span class="accent">ready</span> engineers.</h1>
+        <p class="lede">1-on-1 mentorship in Full-Stack &amp; GenAI, taught by a working AI/ML Engineer. Real projects, production code, weekly mock interviews — not another recorded course.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#apply">Join the waitlist →</a>
+          <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener">Book a free 15-min call</a>
+        </div>
+        <ul class="hero-meta">
+          <li>Evening &amp; weekend batches</li>
+          <li>Live sessions, recorded too</li>
+          <li>Mentor-reviewed code, not auto-graded</li>
+        </ul>
+      </div>
+
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#D1614A"></div>
+          <div class="term-dot" style="background:#E8A33D"></div>
+          <div class="term-dot" style="background:#5FBF77"></div>
+          <span class="mono" style="color:var(--muted-2); font-size:12px; margin-left:6px;">mentor@pritam ~ %</span>
+        </div>
+        <div class="term-body">
+          <div class="term-line"><span class="prompt">$</span> whoami</div>
+          <div class="term-line" style="margin-top:-8px;"><span class="out">Pritam Kamble — AI/ML Engineer @ PayPal</span></div>
+
+          <div class="term-line"><span class="prompt">$</span> cat mission.txt</div>
+          <div class="term-line" style="margin-top:-8px;"><span class="out">Build engineers who ship, not just students who finish courses.</span></div>
+
+          <div class="term-line"><span class="prompt">$</span> ./teach --format=1-on-1 --track=fullstack,genai</div>
+          <div class="term-line" style="margin-top:-8px;"><span class="out"><span class="path">✓</span> live mentoring &nbsp; <span class="path">✓</span> real projects &nbsp; <span class="path">✓</span> mock interviews</span></div>
+
+          <div class="term-line" style="margin-bottom:0;"><span class="prompt">$</span> <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apply">
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// join the waitlist</div>
+        <h2>Apply for a mentored seat</h2>
+        <p>I mentor a small number of people at a time, personally. Applying puts you in the queue — referring friends moves you up it.</p>
+      </div>
+
+      <div class="apply-panel">
+        <div class="apply-grid">
+          <div class="apply-pitch">
+            <h3>Why it's worth skipping ahead</h3>
+            <p>Every seat is 1-on-1 mentorship from someone actually working as an AI/ML Engineer — not a TA, not a recorded video. That doesn't scale, which is exactly why getting in early matters.</p>
+            <div class="apply-stat"><span class="dot"></span> <b id="waitlistCount">—</b>&nbsp;people on the waitlist right now</div>
+            <div class="referral-perk">
+              <p><b>Refer 2 friends</b> who apply through your link and skip to the front of the queue — plus an instant syllabus PDF and a free 15-min priority call, no waiting.</p>
+            </div>
+          </div>
+
+          <div>
+            <form id="applyForm">
+              <div class="field">
+                <label for="fName">Full name</label>
+                <input id="fName" name="name" type="text" required autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="fPhone">WhatsApp number</label>
+                <input id="fPhone" name="phone" type="tel" required autocomplete="tel" placeholder="+91 ..." />
+              </div>
+              <div class="field">
+                <label for="fCollege">College / Company</label>
+                <input id="fCollege" name="college" type="text" placeholder="e.g. VJTI Mumbai, or TCS" />
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="fTrack">Track</label>
+                  <select id="fTrack" name="track" required>
+                    <option value="fullstack">Full-Stack</option>
+                    <option value="genai">GenAI</option>
+                    <option value="fullstack_genai" selected>Full-Stack + GenAI</option>
+                    <option value="cloud">Cloud/DevOps</option>
+                    <option value="not_sure">Not sure yet</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="fLevel">Current level</label>
+                  <select id="fLevel" name="level" required>
+                    <option value="beginner">Beginner</option>
+                    <option value="some_experience" selected>Some experience</option>
+                    <option value="job_ready_prep">Job-ready prep</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-primary" type="submit" id="applySubmit" style="width:100%; justify-content:center; padding:13px;">Join the waitlist →</button>
+              <div class="form-error" id="formError">Something went wrong — try again, or <a href="https://wa.me/917276279026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.</div>
+              <div class="form-note">No spam. Used only to reach you about your application.</div>
+            </form>
+
+            <div class="success-panel" id="successPanel">
+              <div class="success-badge"><span class="dot"></span> you're on the list</div>
+              <p style="color:var(--muted); font-size:14.5px;">You're applicant <b id="posNum" style="color:var(--ink);"></b> in line. One last step — confirm your number on WhatsApp so it's not lost in the queue.</p>
+
+              <div class="ref-box" style="border-color:var(--amber);">
+                <div style="flex:1;">
+                  <div style="font-family:var(--mono); font-size:11px; color:var(--muted-2); text-transform:uppercase; margin-bottom:2px;">Your verification code</div>
+                  <div id="verifyCodeDisplay" style="font-family:var(--mono); font-size:18px; font-weight:700; color:var(--amber); letter-spacing:2px;"></div>
+                </div>
+              </div>
+              <a class="btn btn-primary" id="verifyWa" href="#" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-bottom:18px;">Confirm via WhatsApp →</a>
+
+              <p style="color:var(--muted); font-size:14.5px;">Share your link below — every friend who applies through it moves you up the queue.</p>
+              <div class="ref-box">
+                <input id="refLink" readonly />
+                <button class="btn btn-ghost" id="copyBtn" type="button" style="padding:8px 12px;">Copy</button>
+              </div>
+              <a class="btn btn-primary" id="shareWa" href="#" target="_blank" rel="noopener" style="width:100%; justify-content:center;">Share on WhatsApp →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// why this, not another course</div>
+        <h2>Built for people who need a job, not a certificate</h2>
+        <p>Students choose this over recorded courses for the accountability, the flexible hours around college or work, and outcomes tied to actual hiring.</p>
+      </div>
+      <div class="grid3">
+        <div class="card">
+          <h3>Career-focused <span class="tag">1:1</span></h3>
+          <ul>
+            <li>Interview prep matched to current hiring bar</li>
+            <li>Resume &amp; LinkedIn rewritten for recruiters</li>
+            <li>Referrals when your portfolio is ready</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Flexible timing <span class="tag">async-friendly</span></h3>
+          <ul>
+            <li>Evening &amp; weekend sessions</li>
+            <li>Built around college or your day job</li>
+            <li>Direct WhatsApp access for quick unblocks</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Placement-ready <span class="tag">outcome</span></h3>
+          <ul>
+            <li>Portfolio projects recruiters actually ask about</li>
+            <li>Weekly mocks with a scored feedback rubric</li>
+            <li>A capstone demo ready by the end</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// git log --oneline --all</div>
+        <h2>The 24-week roadmap</h2>
+        <p>16 weeks of core engineering, 8 weeks of specialization. Every week ships something real — no week ends without a working commit.</p>
+      </div>
+
+      <div class="log">
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w00-02</span>
+            <span class="commit-msg">Foundations: JS→TS, DSA I, CS basics</span>
+            <span class="commit-week">weeks 0–2</span>
+          </div>
+          <div class="commit-topics">Git workflow, async JS, arrays/hashmaps, Big-O, OS/DBMS/networking overview.</div>
+          <div class="diffstat"><span class="add">+15 problems solved</span> · repo initialized · first PR merged</div>
+        </div>
+
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w03-05</span>
+            <span class="commit-msg">Frontend + backend fundamentals</span>
+            <span class="commit-week">weeks 3–5</span>
+          </div>
+          <div class="commit-topics">HTML/CSS/Tailwind, React hooks, Next.js App Router, Node/NestJS, JWT auth.</div>
+          <div class="diffstat"><span class="add">+2 shipped apps</span> · blog with auth · user service API</div>
+        </div>
+
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w06-08</span>
+            <span class="commit-msg">Data layer, testing, cloud basics</span>
+            <span class="commit-week">weeks 6–8</span>
+          </div>
+          <div class="commit-topics">PostgreSQL + Prisma, Jest/Playwright, Docker, GitHub Actions, AWS S3/CloudFront.</div>
+          <div class="diffstat"><span class="add">+green CI pipeline</span> · site live on AWS</div>
+        </div>
+
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w09-11</span>
+            <span class="commit-msg">GenAI: embeddings, RAG, agents</span>
+            <span class="commit-week">weeks 9–11</span>
+          </div>
+          <div class="commit-topics">Prompting, vector stores, LangChain/LangGraph, RAG evaluation, MCP basics.</div>
+          <div class="diffstat"><span class="add">+doc-Q&amp;A MVP</span> · eval dashboard</div>
+        </div>
+
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w12-16</span>
+            <span class="commit-msg">Specialization + capstone build</span>
+            <span class="commit-week">weeks 12–16</span>
+          </div>
+          <div class="commit-topics">Choose a track: deeper GenAI agents, cloud/DevOps, or advanced full-stack. Full capstone sprint.</div>
+          <div class="diffstat"><span class="add">+capstone v1 live</span> · PRD + wireframes shipped</div>
+        </div>
+
+        <div class="commit">
+          <div class="commit-head">
+            <span class="commit-hash">#w17-24</span>
+            <span class="commit-msg">Interview season</span>
+            <span class="commit-week">weeks 17–24</span>
+          </div>
+          <div class="commit-topics">150-problem DSA sheet, system design basics, weekly mocks, resume storyline, applications.</div>
+          <div class="diffstat"><span class="add">+placement pipeline active</span> · referrals unlocked</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// portfolio recruiters actually check</div>
+        <h2>What you'll have shipped</h2>
+        <p>GitHub repos, live demos, and case-study write-ups — the three things that move you past the first resume screen.</p>
+      </div>
+      <div class="grid2">
+        <div class="proj">
+          <div class="proj-num">01</div>
+          <h3>Next.js e-commerce store</h3>
+          <p>Full-stack shop with sandbox payments, product catalog, cart, orders, and an admin dashboard.</p>
+          <div class="chips"><span class="chip">Next.js 15</span><span class="chip">Prisma</span><span class="chip">Postgres</span><span class="chip">Webhooks</span></div>
+        </div>
+        <div class="proj">
+          <div class="proj-num">02</div>
+          <h3>AI doc Q&amp;A (RAG)</h3>
+          <p>Upload PDFs, chunk and embed them, then retrieve grounded, cited answers with an eval dashboard.</p>
+          <div class="chips"><span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">RAGAS</span><span class="chip">S3</span></div>
+        </div>
+        <div class="proj">
+          <div class="proj-num">03</div>
+          <h3>URL shortener + analytics</h3>
+          <p>Rate-limited API with Redis caching, click analytics, and QR generation.</p>
+          <div class="chips"><span class="chip">NestJS</span><span class="chip">Redis</span><span class="chip">Postgres</span></div>
+        </div>
+        <div class="proj">
+          <div class="proj-num">04</div>
+          <h3>DevOps pipeline</h3>
+          <p>Dockerized microservice deployed through GitHub Actions to AWS.</p>
+          <div class="chips"><span class="chip">Docker</span><span class="chip">CI/CD</span><span class="chip">AWS</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="placement">
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// build → test → deploy, applied to your career</div>
+        <h2>The placement pipeline</h2>
+        <p>How you actually get hired, one stage at a time.</p>
+      </div>
+      <div class="pipeline">
+        <div class="stage">
+          <div class="stage-status"><span class="dot"></span> stage 1</div>
+          <h3>Milestones</h3>
+          <p>Finish core weeks, ship one capstone, clear 60/150 DSA problems, resume v2 done.</p>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage">
+          <div class="stage-status"><span class="dot"></span> stage 2</div>
+          <h3>Mock interviews</h3>
+          <p>Weekly DSA, project, and HR mocks. Score 7/10+ to unlock referrals.</p>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage">
+          <div class="stage-status"><span class="dot"></span> stage 3</div>
+          <h3>Referrals &amp; drives</h3>
+          <p>Targeted referrals when you're ready, plus a curated off-campus drive list.</p>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage">
+          <div class="stage-status"><span class="dot"></span> stage 4</div>
+          <h3>Apply &amp; track</h3>
+          <p>Ten applications a week with an ATS-ready resume, outcomes tracked together.</p>
+        </div>
+      </div>
+      <p class="note">No one can promise a job — this pipeline maximizes your odds if you consistently hit the milestones. Strong performers get referral opportunities shared directly.</p>
+    </div>
+  </section>
+
+  <section id="portal">
+    <div class="wrap reveal">
+      <div class="section-head">
+        <div class="kicker">// beyond the waitlist</div>
+        <h2>A portal for candidates and employers</h2>
+        <p>Once you're in the program, track your own progress and apply to real roles. Employers get a direct line to a vetted candidate pool.</p>
+      </div>
+      <div class="grid2">
+        <div class="proj">
+          <div class="proj-num">→</div>
+          <h3>Student portal</h3>
+          <p>Log your weekly progress, DSA count, and mock scores. Browse and apply to jobs posted directly by employers.</p>
+          <a class="btn btn-primary" href="login.html">Student login →</a>
+        </div>
+        <div class="proj">
+          <div class="proj-num">→</div>
+          <h3>Employer portal</h3>
+          <p>Post openings and browse candidate profiles — track, level, weeks completed, mock scores, and resumes, all in one place.</p>
+          <a class="btn btn-ghost" href="login.html?role=hr">Employer login →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap reveal" style="max-width:760px;">
+      <div class="section-head">
+        <div class="kicker">// faq</div>
+        <h2>Before you apply</h2>
+      </div>
+      <details open>
+        <summary>Is this beginner-friendly?</summary>
+        <p>Yes. We start from fundamentals and accelerate into projects fast. Prior basics help but aren't required.</p>
+      </details>
+      <details>
+        <summary>What do I need to get started?</summary>
+        <p>A laptop with 8GB+ RAM, stable internet, VS Code, and a GitHub account.</p>
+      </details>
+      <details>
+        <summary>Do I get recordings of live sessions?</summary>
+        <p>Yes — every live session is recorded, plus you get notes and assignments to work through async.</p>
+      </details>
+      <details>
+        <summary>How do referrals actually work?</summary>
+        <p>Once you hit milestone scores across projects and mocks, relevant referrals and drive links get shared directly with you.</p>
+      </details>
+      <details>
+        <summary>Is there a certificate?</summary>
+        <p>Yes, on completing the program and presenting your capstone demo.</p>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="cta-block">
+        <h2>Ready to start shipping?</h2>
+        <p>Join the waitlist, or message directly on WhatsApp — either way you'll hear back fast.</p>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="#apply">Join the waitlist →</a>
+          <a class="btn btn-ghost" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20Program.%20My%20name%20is%20" target="_blank" rel="noopener">Message on WhatsApp</a>
+        </div>
+        <div class="cta-fine">avg. reply ~15 min · no spam · flexible timings for working learners</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div class="foot-copy">© 2026 Pritam Kamble · Mentor &amp; AI/ML Engineer</div>
+    <div class="foot-links">
+      <a href="login.html">Student Login</a>
+      <a href="login.html?role=hr">Employer Login</a>
+      <a href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/pritamkamble" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://wa.me/917276279026" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  els.forEach(el=>io.observe(el));
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  const SUPABASE_URL = 'https://qhcstjlyooxjekzggaqp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoY3N0amx5b294amVremdnYXFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NTc1NzgsImV4cCI6MjA3NTIzMzU3OH0.vEq3uhm-o_Pfq7fLM1ArI70_zI08gi4lfBSTqP4-e7c';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const params = new URLSearchParams(window.location.search);
+  const referredBy = params.get('ref');
+
+  function genCode(name){
+    const base = (name || 'friend').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,8) || 'friend';
+    const rand = Math.random().toString(36).slice(2,6);
+    return base + rand;
   }
-  </script>
 
-  <header class="container">
-    <nav class="nav" aria-label="Main Navigation">
-      <div class="logo">Pritam Kamble • Mentor</div>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open main menu">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <div class="nav-links" id="nav-links">
-        <a href="#roadmap">Roadmap</a>
-        <a href="#projects">Projects</a>
-        <a href="#placement">Placement</a>
-        <a href="#faq">FAQ</a>
-        <a href="#links">Links</a>
-        <a href="#lead" class="btn btn-ghost"><i class="fa-solid fa-bolt"></i> Apply</a>
-      </div>
-    </nav>
+  function genVerifyCode(){
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
 
-    <section class="hero">
-      <div class="hero-grid">
-        <div>
-          <h1>Job-Ready IT Fresher Roadmap (2025) 🚀</h1>
-          <p class="subtitle"><strong>Full-Stack • GenAI • Cloud/DevOps • Interview Prep</strong><br/>I'm <strong>Pritam</strong> (AI/ML Engineer @ PayPal). Mentor-led, placement-first training for learners who want real projects, polished profiles, and weekly interview practice.</p>
-          <div class="hero-badges">
-            <span class="hero-badge">Placement-first curriculum</span>
-            <span class="hero-badge">Flexible evening/weekend batches</span>
-            <span class="hero-badge">Hiring support</span>
-          </div>
-          <div class="hero-ctas">
-            <a id="apply" class="btn btn-primary" href="#lead" aria-label="Apply to the program"><i class="fa-solid fa-paper-plane"></i> Apply now</a>
-            <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"> <i class="fa-regular fa-calendar"></i> Free career call</a>
-          </div>
-          <div class="hero-links">
-            <a class="hero-text-link" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20please%20send%20me%20the%20latest%20Syllabus%20PDF." target="_blank" rel="noopener">Get syllabus PDF</a>
-            <a class="hero-text-link" href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">Connect on LinkedIn</a>
-            <a class="hero-text-link" href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener">Watch YouTube samples</a>
-          </div>
-          <div class="hero-quote">“I help freshers build live-project portfolios, master interview-ready skills, and connect with hiring opportunities.”</div>
-          <p class="subtitle" style="margin-top:8px">Free 15-minute career call • Flexible timings for working learners • Placement-ready portfolio in high-demand areas.</p>
-        </div>
-        <div style="text-align:center">
-          <img src="img.jpeg" alt="Portrait of Pritam Kamble, AI/ML Engineer and mentor" class="instructor-photo" width="240" height="240" fetchpriority="high" decoding="async" />
-          <div class="photo-caption">Mentor & Instructor</div>
-        </div>
-      </div>
-    </section>
-  </header>
+  async function loadCount(){
+    try{
+      const { data, error } = await sb.rpc('get_waitlist_count');
+      if(!error && typeof data === 'number'){
+        document.getElementById('waitlistCount').textContent = data;
+      }
+    }catch(e){}
+  }
+  loadCount();
 
-  <main class="container">
-      <section class="surface" id="local-trust">
-      <h2 class="section-title">📍 Built for ambitious learners</h2>
-      <p class="sub">Students choose this program for targeted placement support, flexible schedules, and job-ready projects aligned to hiring demand.</p>
-      <div class="grid" style="margin-top: 12px;">
-        <div class="card">
-          <h3><i class="fa-solid fa-city"></i> Career-focused support</h3>
-          <ul>
-            <li>Interview prep aligned to tech hiring trends</li>
-            <li>Resume + LinkedIn feedback for recruiters</li>
-            <li>Referral help for top companies</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3><i class="fa-solid fa-clock"></i> Flexible timings</h3>
-          <ul>
-            <li>Evening and weekend-friendly batches</li>
-            <li>Designed for learners and students</li>
-            <li>Private WhatsApp support for quick guidance</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3><i class="fa-solid fa-briefcase"></i> Placement-ready outcomes</h3>
-          <ul>
-            <li>Portfolio projects recruiters care about</li>
-            <li>Mock interviews with detailed feedback</li>
-            <li>Live demo + case study ready by course end</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+  const form = document.getElementById('applyForm');
+  const errorEl = document.getElementById('formError');
 
-    <!-- About / Outcomes -->
-    <section class="surface" id="outcomes">
-      <h2 class="section-title">🎯 What you will be able to do</h2>
-      <p class="sub">Graduate with 2 major projects + 3 micro‑projects, a polished GitHub, and proven interview performance for today's high-demand hiring roles.</p>
-      <div class="grid" style="margin-top: 12px;">
-        <div class="card">
-          <h3><i class="fa-solid fa-laptop-code"></i> Full‑Stack Engineering</h3>
-          <ul>
-            <li>Design, build, test, secure, and deploy React/Next.js + Node/NestJS apps</li>
-            <li>TypeScript end‑to‑end with clean repo patterns</li>
-            <li>2 portfolio‑ready full‑stack projects, live on the internet</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3><i class="fa-solid fa-brain"></i> GenAI Integration</h3>
-          <ul>
-            <li>Prompting, embeddings, RAG, evaluation & safety</li>
-            <li>OpenAI/AWS Bedrock with LangChain/LangGraph</li>
-            <li>AI features users actually want (chat, summarization, Q&A)</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3><i class="fa-solid fa-user-tie"></i> Interview Readiness</h3>
-          <ul>
-            <li>DSA practice (150 curated problems) + CS fundamentals</li>
-            <li>Weekly mocks + feedback rubric</li>
-            <li>Resume/LinkedIn/GitHub reviews and storyline</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    const btn = document.getElementById('applySubmit');
+    btn.disabled = true; btn.textContent = 'Submitting...';
 
-    <!-- Roadmap -->
-    <section class="surface" id="roadmap">
-      <h2 class="section-title">🗺️ 12‑Week Core Roadmap</h2>
-      <p class="sub">16‑20 hrs/week. Friday quiz • Weekend interview drills. Finish with a job-ready capstone and placement preparation.</p>
+    const name = document.getElementById('fName').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+    const college = document.getElementById('fCollege').value.trim();
+    const track = document.getElementById('fTrack').value;
+    const level = document.getElementById('fLevel').value;
+    const referral_code = genCode(name);
+    const verify_code = genVerifyCode();
 
-      <!-- Core Weeks Table -->
-      <div class="table-wrap track" id="track-core">
-        <table aria-label="Core curriculum weeks 0 to 12">
-          <thead>
-            <tr><th>Week</th><th>Theme</th><th>Key Topics</th><th>Deliverables</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="week">W0</td><td>Orientation & Tooling</td><td>Linux/CLI, Git PRs, HTTP/JSON, VS Code, Nx basics</td><td class="deliver">Repo setup, first PR, coding standards</td></tr>
-            <tr><td class="week">W1</td><td>Programming Foundations</td><td>JS→TS, async, modules, error handling</td><td class="deliver">TS kata set, utility lib + tests</td></tr>
-            <tr><td class="week">W2</td><td>DSA I + CS Basics</td><td>Arrays/strings/hashmaps, Big‑O, OS/DBMS/Networks overview</td><td class="deliver">15 problems, CS flashcards</td></tr>
-            <tr><td class="week">W3</td><td>Frontend I</td><td>HTML/CSS, responsive, Tailwind, a11y</td><td class="deliver">1 landing page from Figma</td></tr>
-            <tr><td class="week">W4</td><td>Frontend II</td><td>React hooks, state, Next.js App Router, forms, SEO</td><td class="deliver">Next.js blog with auth + comments</td></tr>
-            <tr><td class="week">W5</td><td>Backend I</td><td>Node/NestJS, REST, validation (zod/class‑validator), auth (JWT)</td><td class="deliver">User service API + tests</td></tr>
-            <tr><td class="week">W6</td><td>Database I</td><td>PostgreSQL, Prisma/Drizzle, transactions, indexes</td><td class="deliver">DB schema + migrations</td></tr>
-            <tr><td class="week">W7</td><td>Testing</td><td>Unit/Component/E2E (Jest/Vitest, RTL, Playwright)</td><td class="deliver">Green test suite CI pass</td></tr>
-            <tr><td class="week">W8</td><td>Cloud Basics</td><td>Docker, GitHub Actions, AWS S3/CloudFront</td><td class="deliver">Site deployed with CI/CD</td></tr>
-            <tr><td class="week">W9</td><td>GenAI I</td><td>Prompting, embeddings, vector stores</td><td class="deliver">Embed pipeline demo</td></tr>
-            <tr><td class="week">W10</td><td>GenAI II</td><td>RAG with LangChain/LangGraph, eval (RAGAS)</td><td class="deliver">Doc‑Q&A MVP</td></tr>
-            <tr><td class="week">W11</td><td>Project Sprint I</td><td>Full‑stack capstone planning</td><td class="deliver">PRD + wireframes</td></tr>
-            <tr><td class="week">W12</td><td>Project Sprint II</td><td>Build features, tests, deploy</td><td class="deliver">Capstone v1 live</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="hero-ctas" style="margin-top:16px">
-        <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20reviewed%20the%20Roadmap%20and%20want%20to%20apply.%20My%20track%20is%20%3CFull-Stack%2FGenAI%2FDevOps%2FQA%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply via WhatsApp</a>
-        <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener"><i class="fa-regular fa-calendar"></i> Book a 15‑min Call</a>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section class="surface" id="projects">
-      <h2 class="section-title">🧱 Portfolio Projects Recruiters Want</h2>
-      <div class="grid">
-        <div class="project">
-          <h3>1) Next.js E‑Commerce (Payments + Auth + Admin)</h3>
-          <p>Full‑stack store with Stripe/Razorpay sandbox, product catalog, carts, orders, admin dashboard.</p>
-          <p class="meta">Skills: Next.js 15, TS, Prisma, PostgreSQL, Auth, Webhooks, CI/CD</p>
-        </div>
-        <div class="project">
-          <h3>2) AI Doc Q&A (RAG) with Bedrock/OpenAI</h3>
-          <p>Upload PDFs, chunk/embeddings, retrieval, context‑aware answers, citations, evaluation dashboard.</p>
-          <p class="meta">Skills: LangChain/LangGraph, bge‑m3/Titan‑Embed‑Text‑v2, RAGAS, S3</p>
-        </div>
-        <div class="project">
-          <h3>3) URL Shortener + Analytics</h3>
-          <p>Service with rate‑limit, Redis cache, click analytics, QR code, REST API.</p>
-          <p class="meta">Skills: Node/NestJS, Redis, Postgres, Observability</p>
-        </div>
-        <div class="project">
-          <h3>4) DevOps Pipeline</h3>
-          <p>Dockerized microservice deployed via GitHub Actions to AWS (S3/CloudFront + Lambda/API GW).</p>
-          <p class="meta">Skills: Docker, CI/CD, IaC lite, Cloud basics</p>
-        </div>
-        <div class="project">
-          <h3>5) QA Automation Suite</h3>
-          <p>Playwright E2E for the e‑commerce app with reports, screenshots, and retries.</p>
-          <p class="meta">Skills: Playwright/Cypress, Test strategy, CI integration</p>
-        </div>
-      </div>
-      <p class="sub" style="margin-top: 10px;">You will publish: <strong>GitHub repos</strong> + <strong>live demos</strong> + <strong>case‑study blog posts</strong>. These three together massively improve your shortlist rate.</p>
-    </section>
-
-    <!-- Placement -->
-    <section class="surface" id="placement">
-      <h2 class="section-title">🏁 Placement Pipeline (How you get hired)</h2>
-      <div class="steps">
-        <div class="step">
-          <h4>1) Milestones</h4>
-          <p>Finish core weeks, publish 1 capstone, 60/150 DSA problems, resume v2.</p>
-        </div>
-        <div class="step">
-          <h4>2) Mock Interviews</h4>
-          <p>Weekly mocks (DSA + project + HR). Score ≥ 7/10 to unlock referrals.</p>
-        </div>
-        <div class="step">
-          <h4>3) Referrals & Drives</h4>
-          <p>Targeted referrals (when eligible) + curated off‑campus drive list.</p>
-        </div>
-        <div class="step">
-          <h4>4) Applications & Tracking</h4>
-          <p>Apply to 10 roles/week with ATS‑ready resume; track outcomes.</p>
-        </div>
-      </div>
-      <p class="sub" style="margin-top:10px"><strong>Note:</strong> No one can promise a job, but this pipeline maximizes your chances—if you consistently hit the milestones. I also share referral opportunities and placement resources for strong performers.</p>
-    </section>
-
-    <!-- Lead / Apply form -->
-    <section class="surface" id="lead">
-      <h2 class="section-title">📮 Apply now</h2>
-      <p class="sub">No forms—just message me directly on WhatsApp to apply or ask questions. Quickest response guaranteed!</p>
-      <div class="hero-ctas" style="margin-top:18px">
-        <a class="btn btn-primary" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program.%20My%20name%20is%20%3Cyour%20name%3E." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Apply on WhatsApp</a>
-      </div>
-      <div style="font-size:0.98em; color:#555; margin-top:10px;">Tap the button, edit your name and track, and send your message. I’ll reply with next steps! <span style="color:#16a34a; font-weight:600">Avg reply ~15 min • No spam</span></div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="surface" id="faq">
-      <h2 class="section-title">❓ FAQ</h2>
-      <details><summary><strong>Is this beginner‑friendly?</strong></summary><p>Yes. We begin from fundamentals and accelerate with projects. Prior basics help but aren’t mandatory.</p></details>
-      <details><summary><strong>What tools do I need?</strong></summary><p>Laptop (8GB+ RAM), stable internet, VS Code, GitHub account.</p></details>
-      <details><summary><strong>Do I get recordings?</strong></summary><p>Yes. Live sessions are recorded. You’ll also get notes and assignments.</p></details>
-      <details><summary><strong>How are referrals handled?</strong></summary><p>When you hit milestone scores (projects + mocks), I’ll share relevant referrals and drive links.</p></details>
-      <details><summary><strong>Certificate?</strong></summary><p>Yes, on completing the program and capstone demo.</p></details>
-    </section>
-
-    <!-- Links -->
-    <section class="surface" id="links">
-      <h2 class="section-title">🔗 Useful Links</h2>
-      <div class="grid">
-        <a class="btn btn-ghost" href="https://www.typescriptlang.org/" target="_blank" rel="noopener">TypeScript</a>
-        <a class="btn btn-ghost" href="https://nextjs.org/" target="_blank" rel="noopener">Next.js</a>
-        <a class="btn btn-ghost" href="https://react.dev/" target="_blank" rel="noopener">React 18</a>
-        <a class="btn btn-ghost" href="https://tailwindcss.com/" target="_blank" rel="noopener">TailwindCSS</a>
-        <a class="btn btn-ghost" href="https://nestjs.com/" target="_blank" rel="noopener">NestJS</a>
-        <a class="btn btn-ghost" href="https://www.prisma.io/" target="_blank" rel="noopener">Prisma</a>
-        <a class="btn btn-ghost" href="https://www.postgresql.org/" target="_blank" rel="noopener">PostgreSQL</a>
-        <a class="btn btn-ghost" href="https://docs.docker.com/" target="_blank" rel="noopener">Docker</a>
-        <a class="btn btn-ghost" href="https://aws.amazon.com/bedrock/" target="_blank" rel="noopener">AWS Bedrock</a>
-        <a class="btn btn-ghost" href="https://www.langchain.com/" target="_blank" rel="noopener">LangChain</a>
-        <a class="btn btn-ghost" href="https://github.com/features/actions" target="_blank" rel="noopener">GitHub Actions</a>
-        <a class="btn btn-ghost" href="https://leetcode.com" target="_blank" rel="noopener">LeetCode</a>
-      </div>
-    </section>
-
-    <!-- Footer CTA -->
-    <section class="cta" aria-label="Call to action">
-      <h2>Let’s code your future together!</h2>
-      <p>
-        <a href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
-          <i class="fa-brands fa-linkedin"></i> Connect on LinkedIn
-        </a>
-        &nbsp;|&nbsp;
-        <a href="https://github.com/pritamkamble" target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
-          <i class="fa-brands fa-github"></i> GitHub
-        </a>
-        &nbsp;|&nbsp;
-        <a href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
-          <i class="fa-brands fa-youtube"></i> YouTube
-        </a>
-        &nbsp;|&nbsp;
-        <a href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program." target="_blank" rel="noopener" style="color:#fff; text-decoration:underline; font-weight:600;">
-          <i class="fa-brands fa-whatsapp"></i> WhatsApp
-        </a>
-      </p>
-    </section>
-  </main>
-
-  <!-- WhatsApp Sticky Button -->
-  <a class="whatsapp-sticky" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20IT%20Fresher%20Program." target="_blank" rel="noopener" aria-label="Chat with Pritam on WhatsApp">
-    <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-  </a>
-
-  <!-- Scripts -->
-  <script>
-    // Mobile navigation toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const navLinks = document.getElementById('nav-links');
-    navToggle?.addEventListener('click', () => {
-      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-      navToggle.setAttribute('aria-expanded', String(!expanded));
-      navLinks.classList.toggle('open');
-    });
-    navLinks?.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (navLinks.classList.contains('open')) {
-          navLinks.classList.remove('open');
-          navToggle?.setAttribute('aria-expanded', 'false');
-        }
+    try{
+      const { error } = await sb.from('applicants').insert({
+        name: name,
+        phone: phone,
+        college_or_company: college || null,
+        track: track,
+        level: level,
+        referral_code: referral_code,
+        referred_by: referredBy || null,
+        verify_code: verify_code
       });
-    });
+      if(error) throw error;
 
-    // Countdown to next batch (Oct 1, 2025 19:00 IST)
-    const countdownEl = document.getElementById('countdown');
-    function updateCountdown() {
-      const target = new Date('2025-10-01T19:00:00+05:30').getTime();
-      const now = new Date().getTime();
-      const diff = target - now;
-      if (diff <= 0) { countdownEl.textContent = 'Starting today!'; return; }
-      const d = Math.floor(diff / (1000*60*60*24));
-      const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-      const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-      countdownEl.textContent = `${d}d ${h}h ${m}m`;
+      const { data: countData } = await sb.rpc('get_waitlist_count');
+      const pos = typeof countData === 'number' ? countData : '—';
+
+      const link = window.location.origin + window.location.pathname + '?ref=' + referral_code;
+      document.getElementById('posNum').textContent = '#' + pos;
+      document.getElementById('refLink').value = link;
+      document.getElementById('verifyCodeDisplay').textContent = verify_code;
+      const verifyText = encodeURIComponent("Hi Pritam, my verification code is " + verify_code + " — name: " + name);
+      document.getElementById('verifyWa').href = 'https://wa.me/917276279026?text=' + verifyText;
+      const waText = encodeURIComponent("Hey! I just applied to Pritam's Job-Ready mentorship program (Full-Stack + GenAI, 1-on-1). If you're into coding you should check it out too — apply here: " + link);
+      document.getElementById('shareWa').href = 'https://wa.me/?text=' + waText;
+
+      form.style.display = 'none';
+      document.getElementById('successPanel').classList.add('show');
+    }catch(err){
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
     }
-    // No form: WhatsApp CTA only
-  </script>
+  });
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn?.addEventListener('click', function(){
+    const inp = document.getElementById('refLink');
+    inp.select(); inp.setSelectionRange(0, 99999);
+    if(navigator.clipboard){ navigator.clipboard.writeText(inp.value); }
+    copyBtn.textContent = 'Copied';
+    setTimeout(()=>{ copyBtn.textContent = 'Copy'; }, 1500);
+  });
+})();
+</script>
+
 </body>
 </html>

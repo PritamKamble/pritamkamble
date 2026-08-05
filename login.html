@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log in · Pritam Mentor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1210; --surface:#151B18; --surface-2:#1B2320; --line:#2A332E;
+    --ink:#EDEFEA; --muted:#8B9690; --muted-2:#5E6A64;
+    --amber:#E8A33D; --green:#5FBF77; --rust:#D1614A;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.5;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .card{width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:32px;}
+  .logo{font-family:var(--mono); font-weight:700; font-size:15px; margin-bottom:22px;}
+  .logo span{color:var(--green);}
+  h1{font-family:var(--mono); font-size:19px; margin-bottom:6px;}
+  .sub{color:var(--muted); font-size:13.5px; margin-bottom:22px;}
+
+  .tabs{display:flex; gap:8px; margin-bottom:20px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:4px;}
+  .tab{flex:1; text-align:center; padding:8px; border-radius:6px; font-family:var(--mono); font-size:12.5px; font-weight:600; cursor:pointer; color:var(--muted);}
+  .tab.active{background:var(--green); color:#0B140E;}
+
+  .role-tabs{display:flex; gap:8px; margin-bottom:16px;}
+  .role-tab{flex:1; text-align:center; padding:9px; border-radius:6px; border:1px solid var(--line); font-family:var(--mono); font-size:12.5px; cursor:pointer; color:var(--muted);}
+  .role-tab.active{border-color:var(--amber); color:var(--amber);}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:6px;}
+  .field input{
+    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:6px;
+    padding:11px 12px; color:var(--ink); font-family:var(--sans); font-size:14px;
+  }
+  .field input:focus{outline:none; border-color:var(--green);}
+
+  .btn{
+    width:100%; background:var(--green); color:#0B140E; border:none; border-radius:6px;
+    padding:12px; font-family:var(--mono); font-weight:600; font-size:13.5px; cursor:pointer; margin-top:6px;
+  }
+  .btn:disabled{opacity:0.6;}
+  .msg{font-family:var(--mono); font-size:12.5px; margin-top:12px; display:none; padding:10px; border-radius:6px;}
+  .msg.error{display:block; color:var(--rust); background:rgba(209,97,74,0.1);}
+  .msg.ok{display:block; color:var(--green); background:rgba(95,191,119,0.1);}
+  .signup-only{display:none;}
+  .back{display:block; text-align:center; margin-top:18px; font-family:var(--mono); font-size:12.5px; color:var(--muted-2); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">~/<span>pritam</span>.mentor</div>
+  <h1 id="heading">Welcome back</h1>
+  <div class="sub" id="subhead">Log in to your account</div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabLogin">Log in</div>
+    <div class="tab" id="tabSignup">Sign up</div>
+  </div>
+
+  <div class="role-tabs">
+    <div class="role-tab active" data-role="candidate" id="roleCandidate">Candidate</div>
+    <div class="role-tab" data-role="hr" id="roleHr">HR / Recruiter</div>
+  </div>
+
+  <form id="authForm">
+    <div class="field signup-only">
+      <label for="fullName">Full name</label>
+      <input id="fullName" type="text" autocomplete="name" />
+    </div>
+    <div class="field signup-only" id="companyField" style="display:none;">
+      <label for="companyName">Company name</label>
+      <input id="companyName" type="text" autocomplete="organization" />
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" required autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" required autocomplete="current-password" minlength="6" />
+    </div>
+    <button class="btn" type="submit" id="submitBtn">Log in →</button>
+    <div class="msg" id="msg"></div>
+  </form>
+
+  <a class="back" href="index.html">← back to site</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  const SUPABASE_URL = 'https://qhcstjlyooxjekzggaqp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoY3N0amx5b294amVremdnYXFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NTc1NzgsImV4cCI6MjA3NTIzMzU3OH0.vEq3uhm-o_Pfq7fLM1ArI70_zI08gi4lfBSTqP4-e7c';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let mode = 'login'; // or 'signup'
+  let role = 'candidate';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if(urlParams.get('role') === 'hr'){ role = 'hr'; }
+  if(urlParams.get('mode') === 'signup'){ mode = 'signup'; }
+
+  const tabLogin = document.getElementById('tabLogin');
+  const tabSignup = document.getElementById('tabSignup');
+  const roleCandidate = document.getElementById('roleCandidate');
+  const roleHr = document.getElementById('roleHr');
+  const signupFields = document.querySelectorAll('.signup-only');
+  const companyField = document.getElementById('companyField');
+  const heading = document.getElementById('heading');
+  const subhead = document.getElementById('subhead');
+  const submitBtn = document.getElementById('submitBtn');
+  const msg = document.getElementById('msg');
+
+  function render(){
+    tabLogin.classList.toggle('active', mode === 'login');
+    tabSignup.classList.toggle('active', mode === 'signup');
+    roleCandidate.classList.toggle('active', role === 'candidate');
+    roleHr.classList.toggle('active', role === 'hr');
+    signupFields.forEach(f => f.style.display = mode === 'signup' ? 'block' : 'none');
+    companyField.style.display = (mode === 'signup' && role === 'hr') ? 'block' : 'none';
+    if(mode === 'login'){
+      heading.textContent = 'Welcome back';
+      subhead.textContent = 'Log in to your account';
+      submitBtn.textContent = 'Log in →';
+    } else {
+      heading.textContent = role === 'hr' ? 'Recruiter sign up' : 'Candidate sign up';
+      subhead.textContent = role === 'hr' ? 'Post jobs and browse candidates' : 'Track progress and apply to jobs';
+      submitBtn.textContent = 'Create account →';
+    }
+  }
+
+  tabLogin.addEventListener('click', () => { mode = 'login'; render(); });
+  tabSignup.addEventListener('click', () => { mode = 'signup'; render(); });
+  roleCandidate.addEventListener('click', () => { role = 'candidate'; render(); });
+  roleHr.addEventListener('click', () => { role = 'hr'; render(); });
+
+  render();
+
+  document.getElementById('authForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    msg.className = 'msg';
+    submitBtn.disabled = true;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try{
+      if(mode === 'signup'){
+        const fullName = document.getElementById('fullName').value.trim();
+        const companyName = document.getElementById('companyName').value.trim();
+        if(!fullName){ throw new Error('Please enter your full name.'); }
+        if(role === 'hr' && !companyName){ throw new Error('Please enter your company name.'); }
+
+        const { error } = await sb.auth.signUp({
+          email, password,
+          options: { data: { role: role, full_name: fullName, company_name: role === 'hr' ? companyName : null } }
+        });
+        if(error) throw error;
+        msg.className = 'msg ok';
+        msg.textContent = 'Account created! Redirecting...';
+        setTimeout(() => { window.location.href = 'portal.html'; }, 1000);
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if(error) throw error;
+        window.location.href = 'portal.html';
+      }
+    }catch(err){
+      msg.className = 'msg error';
+      msg.textContent = err.message || 'Something went wrong.';
+      submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
