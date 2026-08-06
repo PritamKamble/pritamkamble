@@ -105,6 +105,7 @@
         <a class="btn btn-primary" href="/login?role=hr&mode=signup">Create free employer account →</a>
         <a class="btn btn-ghost" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I'm%20hiring%20and%20want%20to%20know%20more%20about%20your%20candidate%20pool." target="_blank" rel="noopener">Talk to Pritam on WhatsApp</a>
       </div>
+      <p class="muted" style="font-size:13px; max-width:52ch;">After you sign up you can post a role or browse candidates right away — message on WhatsApp any time and Pritam will personally help you find a fit.</p>
 
       <div class="stats-row" id="statsRow">
         <div class="stat"><div class="n">—</div><div class="l">Candidates in pipeline</div></div>
@@ -148,7 +149,7 @@
         <h2>Signal you don't get from a resume</h2>
       </div>
       <div class="feature-list">
-        <div class="feature"><div class="icon">+</div><div><h4>Mentor-verified progress</h4><p>Weekly mock interview scores and DSA counts, not self-reported claims.</p></div></div>
+        <div class="feature"><div class="icon">+</div><div><h4>Mentor-tracked interviews</h4><p>Weekly mock interview scores are logged and scored by the mentor directly — not a resume claim. DSA and progress counts are self-reported by the candidate, shown alongside their live project links so you can verify the work yourself.</p></div></div>
         <div class="feature"><div class="icon">+</div><div><h4>Live, working projects</h4><p>Every candidate ships real deployed apps — GitHub repos and demos included.</p></div></div>
         <div class="feature"><div class="icon">+</div><div><h4>Full-Stack + GenAI ready</h4><p>Modern stack: React/Next.js, Node/NestJS, plus practical LLM/RAG experience.</p></div></div>
         <div class="feature"><div class="icon">+</div><div><h4>Free, always</h4><p>No placement fees, no subscription — this is a free channel, not a recruiting agency.</p></div></div>
@@ -217,7 +218,11 @@
   async function loadStats(){
     try{
       const { data, error } = await sb.rpc('get_candidate_stats');
-      if(error || !data || !data.length) return;
+      const statsRow = document.getElementById('statsRow');
+      if(error || !data || !data.length || !data[0].total_candidates){
+        if(statsRow) statsRow.style.display = 'none';
+        return;
+      }
       const s = data[0];
       const els = document.querySelectorAll('#statsRow .n');
       els[0].textContent = s.total_candidates ?? 0;
