@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pritam Kamble — Job-Ready Engineer Mentorship</title>
-<meta name="description" content="Mentor-led training in Full-Stack, GenAI and Cloud/DevOps for engineering students and freshers. Real projects, weekly mocks, placement pipeline." />
+<title>Pritam Kamble — 1-on-1 Full-Stack &amp; GenAI Mentorship for Freshers</title>
+<meta name="description" content="1-on-1 mentorship in Full-Stack & GenAI from a working AI/ML Engineer. Real shipped projects, weekly mock interviews, and a placement pipeline — not a recorded course. For engineering students and freshers." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Pritam Kamble — 1-on-1 Full-Stack & GenAI Mentorship for Freshers" />
+<meta property="og:description" content="1-on-1 mentorship from a working AI/ML Engineer. Real shipped projects, weekly mock interviews, placement pipeline — not a recorded course." />
+<meta property="og:url" content="https://pritamkamble.com" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Pritam Kamble — 1-on-1 Full-Stack & GenAI Mentorship for Freshers" />
+<meta name="twitter:description" content="1-on-1 mentorship from a working AI/ML Engineer. Real shipped projects, weekly mock interviews, placement pipeline." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -134,6 +141,17 @@
   .card:hover{border-color:var(--muted-2); transform:translateY(-2px);}
   .card h3{font-family:var(--mono); font-size:16px; margin-bottom:14px; display:flex; align-items:center; gap:9px;}
   .card h3 .tag{font-size:11px; padding:2px 7px; border-radius:4px; background:var(--surface-2); color:var(--green); font-weight:600;}
+
+  .compare-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:10px;}
+  .compare{min-width:620px;}
+  .compare-row{display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; border-bottom:1px solid var(--line);}
+  .compare-row:last-child{border-bottom:none;}
+  .compare-row.head{background:var(--surface);}
+  .compare-row.head div{font-family:var(--mono); font-size:12px; text-transform:uppercase; color:var(--muted); font-weight:600;}
+  .compare-row.head div:first-child{color:var(--muted-2);}
+  .compare-row.this div:nth-child(4){color:var(--green); font-weight:600;}
+  .compare-row div{padding:13px 16px; font-size:13.5px; color:var(--muted); border-left:1px solid var(--line);}
+  .compare-row div:first-child{border-left:none; color:var(--ink); font-weight:500;}
   .card ul{list-style:none; display:flex; flex-direction:column; gap:9px;}
   .card li{font-size:14px; color:var(--muted); padding-left:18px; position:relative;}
   .card li::before{content:'+'; position:absolute; left:0; color:var(--green); font-weight:700;}
@@ -311,7 +329,7 @@
         </div>
         <div class="term-body">
           <div class="term-line"><span class="prompt">$</span> whoami</div>
-          <div class="term-line" style="margin-top:-8px;"><span class="out">Pritam Kamble — AI/ML Engineer, deployed at PayPal</span></div>
+          <div class="term-line" style="margin-top:-8px;"><span class="out">Pritam Kamble — AI/ML Engineer</span></div>
 
           <div class="term-line"><span class="prompt">$</span> cat mission.txt</div>
           <div class="term-line" style="margin-top:-8px;"><span class="out">Build engineers who ship, not just students who finish courses.</span></div>
@@ -450,6 +468,50 @@
             <li>Weekly mocks with a scored feedback rubric</li>
             <li>A capstone demo ready by the end</li>
           </ul>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;">
+        <h3 style="font-family:var(--mono); font-size:14px; margin-bottom:14px; color:var(--muted);">How this compares</h3>
+        <div class="compare-scroll">
+          <div class="compare">
+            <div class="compare-row head">
+              <div></div>
+              <div>Self-study</div>
+              <div>Recorded course</div>
+              <div>This program</div>
+            </div>
+            <div class="compare-row this">
+              <div>Feedback on your code</div>
+              <div>None</div>
+              <div>Auto-graded, if any</div>
+              <div>Reviewed by the mentor</div>
+            </div>
+            <div class="compare-row this">
+              <div>Mock interviews</div>
+              <div>Self-practice</div>
+              <div>Rarely included</div>
+              <div>Weekly, scored</div>
+            </div>
+            <div class="compare-row this">
+              <div>Pace</div>
+              <div>No structure</div>
+              <div>Fixed cohort schedule</div>
+              <div>1-on-1, around your hours</div>
+            </div>
+            <div class="compare-row this">
+              <div>Who's teaching</div>
+              <div>—</div>
+              <div>Pre-recorded video</div>
+              <div>A working engineer, live</div>
+            </div>
+            <div class="compare-row this">
+              <div>What you ship</div>
+              <div>Tutorials followed</div>
+              <div>Course exercises</div>
+              <div>Deployed, portfolio-ready apps</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
