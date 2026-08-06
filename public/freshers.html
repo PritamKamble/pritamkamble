@@ -183,7 +183,7 @@
             </div>
           </div>
           <div class="field">
-            <label for="fCollege">College</label>
+            <label for="fCollege">College <span class="muted" style="font-weight:400;">— optional, helps tailor the track</span></label>
             <input id="fCollege" type="text" placeholder="e.g. VJTI Mumbai" />
           </div>
           <div class="field-row">
@@ -213,6 +213,7 @@
         <div class="success-panel" id="successPanel">
           <p style="color:var(--muted); font-size:14px;">You're applicant <b id="posNum" style="color:var(--ink);"></b> in line. Share your link — every friend who applies moves you up.</p>
           <div class="ref-box"><input id="refLink" readonly /><button class="btn btn-ghost" id="copyBtn" type="button" style="padding:8px 12px;">Copy</button></div>
+          <div id="refCount" style="font-size:13px; color:var(--muted); margin-bottom:14px;"></div>
           <a class="btn btn-primary" id="shareWa" href="#" target="_blank" rel="noopener" style="width:100%; justify-content:center;">Share on WhatsApp →</a>
         </div>
       </div>
@@ -224,7 +225,6 @@
   <div class="wrap">
     <div class="foot-links">
       <a href="index.html">Full site</a>
-      <a href="/login">Student login</a>
       <a href="https://wa.me/917276279026" target="_blank" rel="noopener">WhatsApp</a>
     </div>
     <div class="foot-copy">© 2026 Pritam Kamble · Mentor &amp; AI/ML Engineer</div>
@@ -303,6 +303,15 @@
       document.getElementById('refLink').value = link;
       const waText = encodeURIComponent("Hey! I just applied to Pritam's Job-Ready mentorship program. If you're into coding you should check it out too — apply here: " + link);
       document.getElementById('shareWa').href = 'https://wa.me/?text=' + waText;
+
+      sb.rpc('get_referral_count', { code: referral_code }).then(({ data: refData }) => {
+        const n = typeof refData === 'number' ? refData : 0;
+        const el = document.getElementById('refCount');
+        if (el) el.textContent =
+          n === 0 ? '0 of 2 referrals so far — share your link to move up.' :
+          n === 1 ? '1 of 2 referrals — one more to skip to the front!' :
+          n + ' referrals — you\'ve unlocked the front of the queue.';
+      }).catch(()=>{});
 
       form.style.display = 'none';
       document.getElementById('successPanel').classList.add('show');

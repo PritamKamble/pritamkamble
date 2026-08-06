@@ -53,14 +53,27 @@
     background:rgba(14,18,16,0.82);
     border-bottom:1px solid var(--line);
   }
-  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; position:relative;}
   .logo{font-family:var(--mono); font-weight:700; font-size:15px; letter-spacing:-0.02em;}
   .logo span{color:var(--green);}
   .navlinks{display:flex; gap:28px; font-size:14px; color:var(--muted); font-weight:500;}
   .navlinks a{text-decoration:none; transition:color .15s;}
   .navlinks a:hover{color:var(--ink);}
-  .navcta{display:flex; gap:10px;}
-  @media (max-width:820px){ .navlinks{display:none;} }
+  .navcta{display:flex; gap:10px; align-items:center;}
+  .navburger{display:none; background:none; border:1px solid var(--line); border-radius:6px; width:34px; height:34px; color:var(--ink); font-size:16px; cursor:pointer;}
+  @media (max-width:820px){
+    .navlinks{display:none;}
+    .navburger{display:block;}
+    .navlinks.open{
+      display:flex; flex-direction:column; gap:0;
+      position:absolute; top:100%; left:0; right:0;
+      background:var(--bg); border-bottom:1px solid var(--line);
+      padding:6px 24px 14px;
+      backdrop-filter:none;
+    }
+    .navlinks.open a{padding:10px 0; border-bottom:1px solid var(--line);}
+    .navlinks.open a:last-child{border-bottom:none;}
+  }
   @media (max-width:400px){
     nav{padding:12px 14px;}
     .logo{font-size:12.5px;}
@@ -280,11 +293,11 @@
       <a href="#placement">placement</a>
       <a href="#portal">portal</a>
       <a href="#faq">faq</a>
-      <a href="/login">student login</a>
       <a href="/login?role=hr">for employers</a>
     </div>
     <div class="navcta">
       <a class="btn btn-primary" href="#apply">Join the waitlist</a>
+      <button class="navburger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
     </div>
   </nav>
 </header>
@@ -300,6 +313,7 @@
           <a class="btn btn-primary" href="#apply">Join the waitlist →</a>
           <a class="btn btn-ghost" href="https://calendly.com/7276279026-pk/new-meeting" target="_blank" rel="noopener">Book a free 15-min call</a>
         </div>
+        <div class="muted" style="font-size:12.5px; margin-top:10px;">Ready to apply? Join the waitlist. Still deciding? Book the free call first.</div>
         <ul class="hero-meta">
           <li>Evening &amp; weekend batches</li>
           <li>Live sessions, recorded too</li>
@@ -363,7 +377,7 @@
                 </div>
               </div>
               <div class="field">
-                <label for="fCollege">College / Company</label>
+                <label for="fCollege">College / Company <span class="muted" style="font-weight:400;">— optional, helps tailor the track</span></label>
                 <input id="fCollege" name="college" type="text" placeholder="e.g. VJTI Mumbai, or TCS" />
               </div>
               <div class="field-row">
@@ -403,11 +417,12 @@
               </div>
               <a class="btn btn-primary" id="verifyWa" href="#" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-bottom:18px;">Confirm via WhatsApp →</a>
 
-              <p style="color:var(--muted); font-size:14.5px;">Share your link below — every friend who applies through it moves you up the queue.</p>
+              <p style="color:var(--muted); font-size:14.5px;">Share your link below — every friend who applies through it moves you up the queue. Refer 2 to skip to the front.</p>
               <div class="ref-box">
                 <input id="refLink" readonly />
                 <button class="btn btn-ghost" id="copyBtn" type="button" style="padding:8px 12px;">Copy</button>
               </div>
+              <div id="refCount" style="font-size:13px; color:var(--muted); margin-bottom:14px;"></div>
               <a class="btn btn-primary" id="shareWa" href="#" target="_blank" rel="noopener" style="width:100%; justify-content:center;">Share on WhatsApp →</a>
             </div>
           </div>
@@ -608,7 +623,7 @@
           <div class="proj-num">→</div>
           <h3>Student portal</h3>
           <p>Log your weekly progress, DSA count, and mock scores. Browse and apply to jobs posted directly by employers.</p>
-          <a class="btn btn-primary" href="/login">Student login →</a>
+          <p class="muted" style="font-size:13px;">Portal access is set up once you're accepted into the program — join the waitlist above to get started.</p>
         </div>
         <div class="proj">
           <div class="proj-num">→</div>
@@ -653,7 +668,7 @@
     <div class="wrap reveal">
       <div class="cta-block">
         <h2>Ready to start shipping?</h2>
-        <p>Join the waitlist, or message directly on WhatsApp — either way you'll hear back fast.</p>
+        <p>Fill the form to formally join the queue, or message on WhatsApp first if you have questions — either way you'll hear back fast.</p>
         <div class="cta-actions">
           <a class="btn btn-primary" href="#apply">Join the waitlist →</a>
           <a class="btn btn-ghost" href="https://wa.me/917276279026?text=Hi%20Pritam%2C%20I%20want%20to%20apply%20for%20the%20Job-Ready%20Program.%20My%20name%20is%20" target="_blank" rel="noopener">Message on WhatsApp</a>
@@ -668,7 +683,6 @@
   <div class="wrap foot-grid">
     <div class="foot-copy">© 2026 Pritam Kamble · Mentor &amp; AI/ML Engineer</div>
     <div class="foot-links">
-      <a href="/login">Student Login</a>
       <a href="/login?role=hr">Employer Login</a>
       <a href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/pritamkamble" target="_blank" rel="noopener">GitHub</a>
@@ -710,12 +724,32 @@
   async function loadCount(){
     try{
       const { data, error } = await sb.rpc('get_waitlist_count');
-      if(!error && typeof data === 'number'){
+      const statEl = document.querySelector('.apply-stat');
+      if(!error && typeof data === 'number' && data >= 10){
         document.getElementById('waitlistCount').textContent = data;
+      } else if(statEl){
+        statEl.style.display = 'none';
       }
     }catch(e){}
   }
   loadCount();
+
+  const navBurger = document.getElementById('navBurger');
+  const navLinksEl = document.querySelector('.navlinks');
+  if(navBurger && navLinksEl){
+    navBurger.addEventListener('click', function(){
+      const open = navLinksEl.classList.toggle('open');
+      navBurger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navBurger.textContent = open ? '✕' : '☰';
+    });
+    navLinksEl.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        navLinksEl.classList.remove('open');
+        navBurger.setAttribute('aria-expanded', 'false');
+        navBurger.textContent = '☰';
+      });
+    });
+  }
 
   const form = document.getElementById('applyForm');
   const errorEl = document.getElementById('formError');
@@ -776,6 +810,14 @@
       document.getElementById('verifyWa').href = 'https://wa.me/917276279026?text=' + verifyText;
       const waText = encodeURIComponent("Hey! I just applied to Pritam's Job-Ready mentorship program (Full-Stack + GenAI, 1-on-1). If you're into coding you should check it out too — apply here: " + link);
       document.getElementById('shareWa').href = 'https://wa.me/?text=' + waText;
+
+      sb.rpc('get_referral_count', { code: referral_code }).then(({ data: refData }) => {
+        const n = typeof refData === 'number' ? refData : 0;
+        document.getElementById('refCount').textContent =
+          n === 0 ? '0 of 2 referrals so far — share your link to move up.' :
+          n === 1 ? '1 of 2 referrals — one more to skip to the front!' :
+          n + ' referrals — you\'ve unlocked the front of the queue.';
+      }).catch(()=>{});
 
       form.style.display = 'none';
       document.getElementById('successPanel').classList.add('show');
