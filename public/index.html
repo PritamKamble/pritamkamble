@@ -722,6 +722,20 @@
     const college = document.getElementById('fCollege').value.trim();
     const track = document.getElementById('fTrack').value;
     const level = document.getElementById('fLevel').value;
+
+    if(name.length < 2){
+      errorEl.innerHTML = 'Please enter your full name.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+    if(phone.replace(/[^0-9]/g,'').length < 10){
+      errorEl.innerHTML = 'Please enter a valid WhatsApp number.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+
     const referral_code = genCode(name);
     const verify_code = genVerifyCode();
 
@@ -753,6 +767,9 @@
       form.style.display = 'none';
       document.getElementById('successPanel').classList.add('show');
     }catch(err){
+      errorEl.innerHTML = (err && err.code === '23505')
+        ? 'This number is already on the waitlist. We’ll reach out on WhatsApp soon!'
+        : 'Something went wrong — try again, or <a href="https://wa.me/917276279026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
     }
