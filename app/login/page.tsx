@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Turnstile } from "@/components/Turnstile";
 
 type Mode = "login" | "signup";
 type Role = "candidate" | "hr";
@@ -22,6 +23,7 @@ function LoginForm() {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [msg, setMsg] = useState<{ type: "error" | "ok"; text: string } | null>(
     searchParams.get("pending")
@@ -44,6 +46,8 @@ function LoginForm() {
           throw new Error("Please enter your company name.");
         }
 
+        if (!captchaToken) throw new Error("Please complete the verification check.");
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -53,6 +57,7 @@ function LoginForm() {
               full_name: fullName.trim(),
               company_name: role === "hr" ? companyName.trim() : null,
             },
+            captchaToken,
           },
         });
         if (error) throw error;
@@ -61,9 +66,12 @@ function LoginForm() {
           router.push(searchParams.get("redirect") || "/portal");
         }, 1000);
       } else {
+        if (!captchaToken) throw new Error("Please complete the verification check.");
+
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
+          options: { captchaToken },
         });
         if (error) throw error;
         router.push(searchParams.get("redirect") || "/portal");
@@ -74,6 +82,8 @@ function LoginForm() {
         text: err instanceof Error ? err.message : "Something went wrong.",
       });
       setSubmitting(false);
+      setCaptchaToken("");
+      window.turnstile?.reset();
     }
   }
 
@@ -218,10 +228,11 @@ function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <Turnstile onVerify={setCaptchaToken} />
           <button
             className="btn"
             type="submit"
-            disabled={submitting}
+            disabled={submitting || !captchaToken}
             style={{ width: "100%", marginTop: 6 }}
           >
             {mode === "login" ? "Log in →" : "Create account →"}
