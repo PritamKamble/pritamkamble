@@ -33,7 +33,12 @@ function LoginForm() {
           type: "error",
           text: "Almost there - your account is still being set up, try signing in again in a moment.",
         }
-      : null,
+      : searchParams.get("unconfirmed")
+        ? {
+            type: "ok",
+            text: "Account created! Check your email for a confirmation link, then log in.",
+          }
+        : null,
   );
 
   async function handleSubmit(e: React.FormEvent) {

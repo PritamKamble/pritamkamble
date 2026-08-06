@@ -14,7 +14,7 @@ export default function PortalRedirect() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        router.replace("/login");
+        router.replace("/login?unconfirmed=1");
         return;
       }
       const { data: profile } = await supabase
