@@ -262,12 +262,30 @@
     const college = document.getElementById('fCollege').value.trim();
     const track = document.getElementById('fTrack').value;
     const level = document.getElementById('fLevel').value;
+
+    if(name.length < 2){
+      errorEl.innerHTML = 'Please enter your full name.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+    let digits = phone.replace(/[^0-9]/g,'');
+    if(digits.startsWith('0')) digits = digits.slice(1);
+    if(digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+    if(digits.length !== 10 || !/^[6-9]/.test(digits)){
+      errorEl.innerHTML = 'Please enter a valid 10-digit Indian mobile number.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+    const normalizedPhone = '+91' + digits;
+
     const referral_code = genCode(name);
     const verify_code = genVerifyCode();
 
     try{
       const { error } = await sb.from('applicants').insert({
-        name, phone, college_or_company: college || null, track, level,
+        name, phone: normalizedPhone, college_or_company: college || null, track, level,
         referral_code, referred_by: referredBy || null, verify_code
       });
       if(error) throw error;
@@ -283,6 +301,9 @@
       form.style.display = 'none';
       document.getElementById('successPanel').classList.add('show');
     }catch(err){
+      errorEl.innerHTML = (err && err.code === '23505')
+        ? 'This number is already on the waitlist. We’ll reach out on WhatsApp soon!'
+        : 'Something went wrong. Please try again.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
     }

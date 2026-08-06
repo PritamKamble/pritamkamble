@@ -729,12 +729,16 @@
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
       return;
     }
-    if(phone.replace(/[^0-9]/g,'').length < 10){
-      errorEl.innerHTML = 'Please enter a valid WhatsApp number.';
+    let digits = phone.replace(/[^0-9]/g,'');
+    if(digits.startsWith('0')) digits = digits.slice(1);
+    if(digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+    if(digits.length !== 10 || !/^[6-9]/.test(digits)){
+      errorEl.innerHTML = 'Please enter a valid 10-digit Indian mobile number.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
       return;
     }
+    const normalizedPhone = '+91' + digits;
 
     const referral_code = genCode(name);
     const verify_code = genVerifyCode();
@@ -742,7 +746,7 @@
     try{
       const { error } = await sb.from('applicants').insert({
         name: name,
-        phone: phone,
+        phone: normalizedPhone,
         college_or_company: college || null,
         track: track,
         level: level,
