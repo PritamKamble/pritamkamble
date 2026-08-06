@@ -16,6 +16,7 @@ type CandidateProfile = {
   capstone_status: string | null;
   bio: string | null;
   resume_url: string | null;
+  updated_at?: string | null;
 };
 type Job = {
   id: string;
@@ -37,7 +38,7 @@ type DailyLog = {
   content: string;
 };
 
-const TABS = ["progress", "jobs", "applications", "dailylog"] as const;
+const TABS = ["progress", "jobs", "applications", "dailylog", "account"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function CandidatePage() {
@@ -60,6 +61,7 @@ export default function CandidatePage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
+  const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [jobsToast, setJobsToast] = useState("");
   const [upcomingInterview, setUpcomingInterview] = useState<{
     scheduled_at: string;
@@ -69,8 +71,15 @@ export default function CandidatePage() {
   const [logDraft, setLogDraft] = useState("");
   const [logToast, setLogToast] = useState("");
   const [editingToday, setEditingToday] = useState(false);
+  const [historyLimit, setHistoryLimit] = useState(14);
 
   const [completedScores, setCompletedScores] = useState<number[]>([]);
+
+  const [newFullName, setNewFullName] = useState("");
+  const [nameToast, setNameToast] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordToast, setPasswordToast] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -84,6 +93,7 @@ export default function CandidatePage() {
         .eq("id", user.id)
         .single();
       setProfile(p);
+      if (p) setNewFullName(p.full_name);
 
       const { data: existing } = await supabase
         .from("candidate_profiles")
@@ -198,6 +208,52 @@ export default function CandidatePage() {
     setTimeout(() => setJobsToast(""), 2500);
   }
 
+  async function handleWithdraw(applicationId: string) {
+    if (!profile) return;
+    setWithdrawingId(applicationId);
+    const { error } = await supabase
+      .from("job_applications")
+      .delete()
+      .eq("id", applicationId);
+    setWithdrawingId(null);
+    setJobsToast(error ? `Error: ${error.message}` : "Application withdrawn");
+    if (!error) loadMyApplications(profile.id);
+    setTimeout(() => setJobsToast(""), 2500);
+  }
+
+  async function handleUpdateName(e: React.FormEvent) {
+    e.preventDefault();
+    if (!profile || !newFullName.trim()) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: newFullName.trim() })
+      .eq("id", profile.id);
+    setNameToast(error ? `Error: ${error.message}` : "Saved ✓");
+    if (!error) setProfile({ ...profile, full_name: newFullName.trim() });
+    setTimeout(() => setNameToast(""), 2500);
+  }
+
+  async function handleUpdatePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (newPassword.length < 6) {
+      setPasswordToast("Password must be at least 6 characters.");
+      setTimeout(() => setPasswordToast(""), 2500);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordToast("Passwords don't match.");
+      setTimeout(() => setPasswordToast(""), 2500);
+      return;
+    }
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setPasswordToast(error ? `Error: ${error.message}` : "Password updated ✓");
+    if (!error) {
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setTimeout(() => setPasswordToast(""), 2500);
+  }
+
   function employmentTypeLabel(type: string) {
     return type
       .split("_")
@@ -271,6 +327,12 @@ export default function CandidatePage() {
         >
           Daily Log
         </div>
+        <div
+          className={`tabbtn ${tab === "account" ? "active" : ""}`}
+          onClick={() => setTab("account")}
+        >
+          Account
+        </div>
       </div>
 
       {tab === "progress" && (
@@ -320,6 +382,14 @@ export default function CandidatePage() {
           )}
           <div className="card">
           <h2>Update your progress</h2>
+          <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
+            These numbers are self-reported and shown to employers as-is — they
+            don&apos;t affect your Job Readiness Score above, which is calculated
+            automatically from your daily logs and mock interview scores.
+            {cp.updated_at && (
+              <> Last updated {formatDateTime(cp.updated_at)}.</>
+            )}
+          </div>
           <form onSubmit={handleProgressSubmit}>
             <div className="row2">
               <div className="field">
@@ -391,12 +461,15 @@ export default function CandidatePage() {
               </div>
               <div className="field">
                 <label>Capstone status</label>
-                <input
-                  type="text"
-                  placeholder="e.g. In progress, Live"
-                  value={cp.capstone_status || ""}
+                <select
+                  value={cp.capstone_status || "not_started"}
                   onChange={(e) => setCp({ ...cp, capstone_status: e.target.value })}
-                />
+                >
+                  <option value="not_started">Not started</option>
+                  <option value="in_progress">In progress</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="live">Live</option>
+                </select>
               </div>
             </div>
             <div className="field">
@@ -479,6 +552,7 @@ export default function CandidatePage() {
       {tab === "applications" && (
         <div className="card">
           <h2>My applications</h2>
+          {jobsToast && <div className="msg">{jobsToast}</div>}
           {applications.length === 0 ? (
             <div className="empty">No applications yet.</div>
           ) : (
@@ -488,6 +562,7 @@ export default function CandidatePage() {
                   <th>Job</th>
                   <th>Company</th>
                   <th>Status</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -495,7 +570,47 @@ export default function CandidatePage() {
                   <tr key={a.id}>
                     <td>{a.jobs?.title || "—"}</td>
                     <td>{a.jobs?.company || "—"}</td>
-                    <td>{a.status}</td>
+                    <td>
+                      <span
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 11.5,
+                          textTransform: "uppercase",
+                          padding: "3px 8px",
+                          borderRadius: 4,
+                          border: `1px solid ${
+                            a.status === "hired"
+                              ? "var(--green)"
+                              : a.status === "shortlisted"
+                                ? "var(--amber)"
+                                : a.status === "rejected"
+                                  ? "var(--rust)"
+                                  : "var(--line)"
+                          }`,
+                          color:
+                            a.status === "hired"
+                              ? "var(--green)"
+                              : a.status === "shortlisted"
+                                ? "var(--amber)"
+                                : a.status === "rejected"
+                                  ? "var(--rust)"
+                                  : "var(--muted)",
+                        }}
+                      >
+                        {a.status}
+                      </span>
+                    </td>
+                    <td>
+                      {a.status === "applied" && (
+                        <button
+                          className="btn-ghost btn-sm"
+                          disabled={withdrawingId === a.id}
+                          onClick={() => handleWithdraw(a.id)}
+                        >
+                          {withdrawingId === a.id ? "Withdrawing..." : "Withdraw"}
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -562,6 +677,7 @@ export default function CandidatePage() {
               <h2 style={{ fontSize: 14, marginTop: 8 }}>History</h2>
               {historyDays
                 .filter((d) => !d.isToday)
+                .slice(0, historyLimit)
                 .map((d) => (
                   <div
                     key={d.date}
@@ -585,9 +701,77 @@ export default function CandidatePage() {
                     {d.log && <div style={{ fontSize: 13.5 }}>{d.log.content}</div>}
                   </div>
                 ))}
+              {historyDays.filter((d) => !d.isToday).length > historyLimit && (
+                <button
+                  className="btn-ghost btn-sm"
+                  style={{ marginTop: 12 }}
+                  onClick={() => setHistoryLimit((n) => n + 14)}
+                >
+                  Show more
+                </button>
+              )}
             </>
           )}
         </div>
+      )}
+
+      {tab === "account" && (
+        <>
+          <div className="card">
+            <h2>Profile</h2>
+            <form onSubmit={handleUpdateName}>
+              <div className="field">
+                <label>Full name</label>
+                <input
+                  type="text"
+                  value={newFullName}
+                  onChange={(e) => setNewFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <button className="btn" type="submit">
+                Save
+              </button>
+              {nameToast && (
+                <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
+                  {nameToast}
+                </span>
+              )}
+            </form>
+          </div>
+
+          <div className="card">
+            <h2>Change password</h2>
+            <form onSubmit={handleUpdatePassword}>
+              <div className="field">
+                <label>New password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="field">
+                <label>Confirm new password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <button className="btn" type="submit">
+                Update password
+              </button>
+              {passwordToast && (
+                <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
+                  {passwordToast}
+                </span>
+              )}
+            </form>
+          </div>
+        </>
       )}
     </div>
   );
