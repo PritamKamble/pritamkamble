@@ -57,6 +57,8 @@ export default function CandidatePage() {
     resume_url: "",
   });
   const [progressToast, setProgressToast] = useState("");
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [resumeError, setResumeError] = useState("");
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -191,6 +193,57 @@ export default function CandidatePage() {
     });
     setProgressToast(error ? `Error: ${error.message}` : "Saved ✓");
     setTimeout(() => setProgressToast(""), 2500);
+  }
+
+  async function handleResumeUpload(file: File) {
+    if (!profile) return;
+    setResumeError("");
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setResumeError("Only PDF or Word documents are allowed.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setResumeError("File must be under 5MB.");
+      return;
+    }
+
+    setResumeUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${profile.id}/resume.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("resumes")
+      .upload(path, file, { upsert: true });
+
+    if (uploadError) {
+      setResumeUploading(false);
+      setResumeError(uploadError.message);
+      return;
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("resumes").getPublicUrl(path);
+    // Cache-bust so a replaced file doesn't keep showing the old cached version.
+    const bustUrl = `${publicUrl}?v=${Date.now()}`;
+
+    const { error: dbError } = await supabase.from("candidate_profiles").upsert({
+      user_id: profile.id,
+      ...cp,
+      resume_url: bustUrl,
+      updated_at: new Date().toISOString(),
+    });
+    setResumeUploading(false);
+    if (dbError) {
+      setResumeError(dbError.message);
+      return;
+    }
+    setCp((prev) => ({ ...prev, resume_url: bustUrl }));
   }
 
   async function handleApply(jobId: string) {
@@ -457,13 +510,34 @@ export default function CandidatePage() {
               />
             </div>
             <div className="field">
-              <label>Resume URL</label>
+              <label>Resume</label>
+              {cp.resume_url && (
+                <div style={{ marginBottom: 8, fontSize: 13.5 }}>
+                  <a href={cp.resume_url} target="_blank" rel="noopener noreferrer">
+                    View current resume →
+                  </a>
+                </div>
+              )}
               <input
-                type="url"
-                placeholder="https://..."
-                value={cp.resume_url || ""}
-                onChange={(e) => setCp({ ...cp, resume_url: e.target.value })}
+                type="file"
+                accept=".pdf,.doc,.docx"
+                disabled={resumeUploading}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleResumeUpload(file);
+                  e.target.value = "";
+                }}
               />
+              <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+                {resumeUploading
+                  ? "Uploading..."
+                  : "PDF or Word, up to 5MB. Uploading replaces your current resume."}
+              </div>
+              {resumeError && (
+                <div className="muted" style={{ fontSize: 12, marginTop: 4, color: "var(--rust)" }}>
+                  {resumeError}
+                </div>
+              )}
             </div>
             <button className="btn" type="submit">
               Save progress
