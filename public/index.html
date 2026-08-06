@@ -400,7 +400,7 @@
                 </div>
               </div>
               <button class="btn btn-primary" type="submit" id="applySubmit" style="width:100%; justify-content:center; padding:13px;">Join the waitlist →</button>
-              <div class="form-error" id="formError">Something went wrong — try again, or <a href="https://wa.me/917276279026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.</div>
+              <div class="form-error" id="formError">Something went wrong — try again, or <a href="https://wa.me/917823079026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.</div>
               <div class="form-note">No spam. Used only to reach you about your application.</div>
             </form>
 
@@ -742,7 +742,7 @@
       <a href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/pritamkamble" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.youtube.com/@pritamkamble353" target="_blank" rel="noopener">YouTube</a>
-      <a href="https://wa.me/917276279026" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://wa.me/917823079026" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </div>
 </footer>
@@ -862,7 +862,7 @@
       document.getElementById('refLink').value = link;
       document.getElementById('verifyCodeDisplay').textContent = verify_code;
       const verifyText = encodeURIComponent("Hi Pritam, my verification code is " + verify_code + " — name: " + name);
-      document.getElementById('verifyWa').href = 'https://wa.me/917276279026?text=' + verifyText;
+      document.getElementById('verifyWa').href = 'https://wa.me/917823079026?text=' + verifyText;
       const waText = encodeURIComponent("Hey! I just applied to Pritam's Job-Ready mentorship program (Full-Stack + GenAI, 1-on-1). If you're into coding you should check it out too — apply here: " + link);
       document.getElementById('shareWa').href = 'https://wa.me/?text=' + waText;
 
@@ -879,7 +879,7 @@
     }catch(err){
       errorEl.innerHTML = (err && err.code === '23505')
         ? 'This number is already on the waitlist. We’ll reach out on WhatsApp soon!'
-        : 'Something went wrong — try again, or <a href="https://wa.me/917276279026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.';
+        : 'Something went wrong — try again, or <a href="https://wa.me/917823079026" target="_blank" rel="noopener" style="color:var(--amber);">message on WhatsApp</a> instead.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
     }
