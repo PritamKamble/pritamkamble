@@ -1,6 +1,0 @@
-{
-  "routes": [
-    { "src": "/", "has": [{ "type": "host", "value": "admin.pritamkamble.com" }], "dest": "/admin.html" },
-    { "handle": "filesystem" }
-  ]
-}
