@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Turnstile } from "@/components/Turnstile";
 
@@ -11,6 +11,7 @@ type Role = "candidate" | "hr";
 const TURNSTILE_ENABLED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
@@ -29,6 +30,8 @@ function LoginForm() {
   const [captchaToken, setCaptchaToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
   const [msg, setMsg] = useState<{ type: "error" | "ok"; text: string } | null>(
     searchParams.get("pending")
       ? {
@@ -105,6 +108,23 @@ function LoginForm() {
     }
   }
 
+  async function handleVerifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg(null);
+    setVerifying(true);
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: otpCode.trim(),
+      type: "email",
+    });
+    setVerifying(false);
+    if (error) {
+      setMsg({ type: "error", text: error.message });
+      return;
+    }
+    router.replace(searchParams.get("redirect") || "/portal");
+  }
+
   return (
     <div
       style={{
@@ -129,9 +149,36 @@ function LoginForm() {
               Check your email
             </h1>
             <div className="muted" style={{ marginBottom: 22 }}>
-              We sent a sign-in link to <b>{email}</b>. Click it to continue - no
-              password needed.
+              We sent a link and a 6-digit code to <b>{email}</b>. Click the link,
+              or type the code below if the link doesn&apos;t work (e.g. opened on a
+              different device or app).
             </div>
+            <form onSubmit={handleVerifyCode}>
+              <div className="field">
+                <label htmlFor="otpCode">6-digit code</label>
+                <input
+                  id="otpCode"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  placeholder="000000"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                  style={{ fontFamily: "var(--mono)", letterSpacing: 4, textAlign: "center" }}
+                />
+              </div>
+              <button
+                className="btn"
+                type="submit"
+                disabled={verifying || otpCode.trim().length < 6}
+                style={{ width: "100%" }}
+              >
+                {verifying ? "Verifying..." : "Verify code →"}
+              </button>
+              {msg && <div className={`msg ${msg.type}`}>{msg.text}</div>}
+            </form>
           </>
         ) : (
           <>
