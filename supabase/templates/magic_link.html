@@ -1,0 +1,24 @@
+<div style="background:#f4f4f2; padding:32px 16px; font-family:-apple-system,Segoe UI,Roboto,sans-serif;">
+  <div style="max-width:420px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e5e0;">
+    <div style="background:#0E1210; padding:20px 28px;">
+      <span style="font-family:'Courier New',monospace; color:#8B9690; font-size:14px;">~/</span><span style="font-family:'Courier New',monospace; color:#5FBF77; font-size:14px; font-weight:700;">pritam</span><span style="font-family:'Courier New',monospace; color:#EDEFEA; font-size:14px; font-weight:700;">.mentor</span>
+    </div>
+    <div style="padding:32px 28px;">
+      <h1 style="margin:0 0 12px; font-size:20px; color:#111;">Sign in to your account</h1>
+      <p style="margin:0 0 24px; font-size:14.5px; line-height:1.6; color:#555;">Click below to sign in — no password needed.</p>
+      <div style="text-align:center; margin-bottom:28px;">
+        <a href="https://qhcstjlyooxjekzggaqp.supabase.co/auth/v1/verify?token={{ .TokenHash }}&type=magiclink&redirect_to={{ .RedirectTo }}"
+           style="display:inline-block; background:#5FBF77; color:#0B140E; text-decoration:none; font-weight:700; font-size:14px; padding:13px 28px; border-radius:6px;">
+          Sign in →
+        </a>
+      </div>
+      <div style="border-top:1px solid #eee; padding-top:22px; text-align:center;">
+        <p style="margin:0 0 10px; font-size:12.5px; color:#888;">Link not working? Enter this code instead:</p>
+        <div style="font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:6px; color:#111; background:#f4f4f2; border-radius:8px; padding:14px 0;">
+          {{ .Token }}
+        </div>
+      </div>
+      <p style="margin:24px 0 0; font-size:12px; color:#999; text-align:center;">This code expires shortly and can only be used once. If you didn't request this, you can ignore this email.</p>
+    </div>
+  </div>
+</div>

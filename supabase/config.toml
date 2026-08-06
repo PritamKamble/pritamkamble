@@ -1,0 +1,17 @@
+# Supabase CLI project config. Currently only defines the auth email
+# templates - see supabase/templates/README.md for why these can't be
+# synced to the live project automatically from here, and what pushing
+# this file for real would require.
+project_id = "qhcstjlyooxjekzggaqp"
+
+[auth.email.template.magic_link]
+subject = "Your sign-in code for Pritam Mentor"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.recovery]
+subject = "Your sign-in code for Pritam Mentor"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.invite]
+subject = "You're invited to Pritam Mentor"
+content_path = "./supabase/templates/invite.html"
