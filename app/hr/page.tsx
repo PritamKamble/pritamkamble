@@ -12,6 +12,7 @@ type Job = {
   location: string | null;
   employment_type: string;
   description: string;
+  status: string;
   job_applications?: { id: string }[];
 };
 type JobApplication = {
@@ -126,6 +127,13 @@ export default function HrPage() {
       .from("job_applications")
       .update({ status })
       .eq("id", applicationId);
+  }
+
+  async function handleToggleJobStatus(jobId: string, currentStatus: string) {
+    if (!profile) return;
+    const nextStatus = currentStatus === "open" ? "closed" : "open";
+    await supabase.from("jobs").update({ status: nextStatus }).eq("id", jobId);
+    loadHrJobs(profile.id);
   }
 
   if (!profile) {
@@ -243,9 +251,32 @@ export default function HrPage() {
                   marginBottom: 10,
                 }}
               >
-                <h3 style={{ fontFamily: "var(--mono)", fontSize: 14.5, marginBottom: 4 }}>
-                  {j.title} — {j.company}
-                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: 12,
+                  }}
+                >
+                  <h3 style={{ fontFamily: "var(--mono)", fontSize: 14.5, marginBottom: 4 }}>
+                    {j.title} — {j.company}
+                    {j.status === "closed" && (
+                      <span
+                        className="muted"
+                        style={{ fontSize: 11, marginLeft: 8, fontWeight: 400 }}
+                      >
+                        CLOSED
+                      </span>
+                    )}
+                  </h3>
+                  <button
+                    className="btn-ghost btn-sm"
+                    onClick={() => handleToggleJobStatus(j.id, j.status)}
+                  >
+                    {j.status === "open" ? "Close job" : "Reopen job"}
+                  </button>
+                </div>
                 <div className="muted" style={{ marginBottom: 8 }}>
                   {j.location || ""} · {j.job_applications?.length || 0}{" "}
                   {j.job_applications?.length === 1 ? "applicant" : "applicants"}
