@@ -323,24 +323,54 @@ export default function AdminPage() {
                     <th>Referral code</th>
                     <th>Referred by</th>
                     <th>Applied</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {applicants.map((r) => (
-                    <tr key={r.id}>
-                      <td>{r.name || "—"}</td>
-                      <td>{r.phone || "—"}</td>
-                      <td>{r.college_or_company || "—"}</td>
-                      <td>{r.track || "—"}</td>
-                      <td>{r.level || "—"}</td>
-                      <td>{r.status}</td>
-                      <td className="muted">{r.referral_code || "—"}</td>
-                      <td className="muted">{r.referred_by || "—"}</td>
-                      <td className="muted">
-                        {formatDateTime(r.created_at)}
-                      </td>
-                    </tr>
-                  ))}
+                  {[...applicants]
+                    .sort(
+                      (a, b) =>
+                        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+                    )
+                    .map((r, i) => ({ ...r, position: i + 1 }))
+                    .sort(
+                      (a, b) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+                    )
+                    .map((r) => {
+                      const firstName = (r.name || "there").trim().split(/\s+/)[0];
+                      const waText = encodeURIComponent(
+                        `Hey ${firstName}! Got your application — you're #${r.position} in line for the Full-Stack + GenAI batch.\n\nQuick q before we hop on a call: what's pulling you toward this — first dev role, or switching from something else?`,
+                      );
+                      const phoneDigits = (r.phone || "").replace(/\D/g, "");
+                      return (
+                        <tr key={r.id}>
+                          <td>{r.name || "—"}</td>
+                          <td>{r.phone || "—"}</td>
+                          <td>{r.college_or_company || "—"}</td>
+                          <td>{r.track || "—"}</td>
+                          <td>{r.level || "—"}</td>
+                          <td>{r.status}</td>
+                          <td className="muted">{r.referral_code || "—"}</td>
+                          <td className="muted">{r.referred_by || "—"}</td>
+                          <td className="muted">
+                            {formatDateTime(r.created_at)}
+                          </td>
+                          <td>
+                            {phoneDigits && (
+                              <a
+                                className="btn-ghost btn-sm"
+                                href={`https://wa.me/${phoneDigits}?text=${waText}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Message
+                              </a>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             )}
