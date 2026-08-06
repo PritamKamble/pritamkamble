@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
-import { formatDateTime } from "@/lib/formatDate";
+import { formatDate, formatDateTime } from "@/lib/formatDate";
 
 type Profile = { id: string; full_name: string; role: string };
 type Applicant = {
@@ -38,7 +38,14 @@ type Interview = {
   profiles: { full_name: string; email: string } | null;
 };
 
-const TABS = ["applicants", "candidates", "interviews"] as const;
+type DailyLog = {
+  id: string;
+  log_date: string;
+  content: string;
+  profiles: { full_name: string; email: string } | null;
+};
+
+const TABS = ["applicants", "candidates", "interviews", "dailylogs"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function AdminPage() {
@@ -63,6 +70,8 @@ export default function AdminPage() {
   const [completeScore, setCompleteScore] = useState("");
   const [completeNotes, setCompleteNotes] = useState("");
 
+  const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
+
   useEffect(() => {
     (async () => {
       const {
@@ -78,6 +87,7 @@ export default function AdminPage() {
       loadApplicants();
       loadCandidates();
       loadInterviews();
+      loadDailyLogs();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -109,6 +119,14 @@ export default function AdminPage() {
       .select("*, profiles!interviews_candidate_id_fkey(full_name, email)")
       .order("scheduled_at", { ascending: true });
     setInterviews((data as unknown as Interview[]) || []);
+  }
+
+  async function loadDailyLogs() {
+    const { data } = await supabase
+      .from("daily_logs")
+      .select("*, profiles!daily_logs_candidate_id_fkey(full_name, email)")
+      .order("log_date", { ascending: false });
+    setDailyLogs((data as unknown as DailyLog[]) || []);
   }
 
   async function handleSchedule(candidateId: string) {
@@ -179,6 +197,12 @@ export default function AdminPage() {
           onClick={() => setTab("interviews")}
         >
           Interviews
+        </div>
+        <div
+          className={`tabbtn ${tab === "dailylogs" ? "active" : ""}`}
+          onClick={() => setTab("dailylogs")}
+        >
+          Daily Logs
         </div>
       </div>
 
@@ -484,6 +508,37 @@ export default function AdminPage() {
             )}
           </div>
         </>
+      )}
+
+      {tab === "dailylogs" && (
+        <div className="card" style={{ overflowX: "auto" }}>
+          {dailyLogs.length === 0 ? (
+            <div className="empty">No daily logs yet.</div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Candidate</th>
+                  <th>Date</th>
+                  <th>What they worked on</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dailyLogs.map((l) => (
+                  <tr key={l.id}>
+                    <td>
+                      {l.profiles?.full_name || "—"}
+                      <br />
+                      <span className="muted">{l.profiles?.email || ""}</span>
+                    </td>
+                    <td className="muted">{formatDate(l.log_date)}</td>
+                    <td>{l.content}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       )}
     </div>
   );

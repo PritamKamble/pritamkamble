@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
-import { formatDateTime } from "@/lib/formatDate";
+import { formatDate, formatDateTime, todayUtcDateString } from "@/lib/formatDate";
 
 type Profile = { id: string; full_name: string; role: string };
 type CandidateProfile = {
@@ -29,8 +29,13 @@ type Application = {
   status: string;
   jobs: { title: string; company: string; status: string } | null;
 };
+type DailyLog = {
+  id: string;
+  log_date: string;
+  content: string;
+};
 
-const TABS = ["progress", "jobs", "applications"] as const;
+const TABS = ["progress", "jobs", "applications", "dailylog"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function CandidatePage() {
@@ -56,6 +61,11 @@ export default function CandidatePage() {
     scheduled_at: string;
   } | null>(null);
 
+  const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
+  const [logDraft, setLogDraft] = useState("");
+  const [logToast, setLogToast] = useState("");
+  const [editingToday, setEditingToday] = useState(false);
+
   useEffect(() => {
     (async () => {
       const {
@@ -79,6 +89,7 @@ export default function CandidatePage() {
       loadOpenJobs();
       loadMyApplications(user.id);
       loadUpcomingInterview(user.id);
+      loadDailyLogs(user.id);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,6 +125,38 @@ export default function CandidatePage() {
     setUpcomingInterview(data);
   }
 
+  async function loadDailyLogs(userId: string) {
+    const { data } = await supabase
+      .from("daily_logs")
+      .select("id, log_date, content")
+      .eq("candidate_id", userId)
+      .order("log_date", { ascending: true });
+    setDailyLogs((data as DailyLog[]) || []);
+  }
+
+  async function handleSubmitLog(e: React.FormEvent) {
+    e.preventDefault();
+    if (!profile || !logDraft.trim()) return;
+    const today = todayUtcDateString();
+    const existingToday = dailyLogs.find((l) => l.log_date === today);
+
+    const { error } = existingToday
+      ? await supabase
+          .from("daily_logs")
+          .update({ content: logDraft.trim() })
+          .eq("id", existingToday.id)
+      : await supabase
+          .from("daily_logs")
+          .insert({ candidate_id: profile.id, content: logDraft.trim() });
+
+    setLogToast(error ? `Error: ${error.message}` : "Saved ✓");
+    if (!error) {
+      setEditingToday(false);
+      loadDailyLogs(profile.id);
+    }
+    setTimeout(() => setLogToast(""), 2500);
+  }
+
   async function handleProgressSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!profile) return;
@@ -132,6 +175,27 @@ export default function CandidatePage() {
       .from("job_applications")
       .insert({ job_id: jobId, candidate_id: profile.id });
     loadMyApplications(profile.id);
+  }
+
+  const today = todayUtcDateString();
+  const todayLog = dailyLogs.find((l) => l.log_date === today) || null;
+  const historyDays: { date: string; log: DailyLog | null; isToday: boolean }[] = [];
+  if (dailyLogs.length > 0) {
+    const start = new Date(dailyLogs[0].log_date + "T00:00:00Z");
+    const end = new Date(today + "T00:00:00Z");
+    for (
+      let d = new Date(start);
+      d <= end;
+      d.setUTCDate(d.getUTCDate() + 1)
+    ) {
+      const dateStr = d.toISOString().slice(0, 10);
+      historyDays.push({
+        date: dateStr,
+        log: dailyLogs.find((l) => l.log_date === dateStr) || null,
+        isToday: dateStr === today,
+      });
+    }
+    historyDays.reverse();
   }
 
   if (!profile) {
@@ -166,6 +230,12 @@ export default function CandidatePage() {
           onClick={() => setTab("applications")}
         >
           My Applications
+        </div>
+        <div
+          className={`tabbtn ${tab === "dailylog" ? "active" : ""}`}
+          onClick={() => setTab("dailylog")}
+        >
+          Daily Log
         </div>
       </div>
 
@@ -353,6 +423,92 @@ export default function CandidatePage() {
                 ))}
               </tbody>
             </table>
+          )}
+        </div>
+      )}
+      {tab === "dailylog" && (
+        <div className="card">
+          <h2>Daily log</h2>
+          <div className="muted" style={{ marginBottom: 16 }}>
+            Log what you worked on today. Missed days can&apos;t be filled in later.
+          </div>
+
+          {todayLog && !editingToday ? (
+            <div
+              style={{
+                border: "1px solid var(--green)",
+                borderRadius: 8,
+                padding: 14,
+                marginBottom: 16,
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: 12.5, color: "var(--green)" }}>
+                  Today · {formatDate(today)}
+                </span>
+                <button
+                  className="btn-ghost btn-sm"
+                  onClick={() => {
+                    setLogDraft(todayLog.content);
+                    setEditingToday(true);
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
+              <div style={{ fontSize: 14 }}>{todayLog.content}</div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitLog} style={{ marginBottom: 16 }}>
+              <div className="field">
+                <label>What did you work on today?</label>
+                <textarea
+                  value={logDraft}
+                  onChange={(e) => setLogDraft(e.target.value)}
+                  placeholder="e.g. Built the auth flow, solved 3 DSA problems, watched RAG lecture..."
+                  required
+                />
+              </div>
+              <button className="btn" type="submit">
+                {todayLog ? "Save" : "Submit today's log"}
+              </button>
+              {logToast && (
+                <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
+                  {logToast}
+                </span>
+              )}
+            </form>
+          )}
+
+          {historyDays.length > 1 && (
+            <>
+              <h2 style={{ fontSize: 14, marginTop: 8 }}>History</h2>
+              {historyDays
+                .filter((d) => !d.isToday)
+                .map((d) => (
+                  <div
+                    key={d.date}
+                    style={{
+                      border: `1px solid ${d.log ? "var(--line)" : "var(--rust)"}`,
+                      borderRadius: 8,
+                      padding: 12,
+                      marginTop: 10,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--mono)",
+                        fontSize: 12,
+                        color: d.log ? "var(--muted)" : "var(--rust)",
+                        marginBottom: d.log ? 6 : 0,
+                      }}
+                    >
+                      {formatDate(d.date)} {!d.log && "· Missed"}
+                    </div>
+                    {d.log && <div style={{ fontSize: 13.5 }}>{d.log.content}</div>}
+                  </div>
+                ))}
+            </>
           )}
         </div>
       )}

@@ -1,3 +1,16 @@
+export function formatDate(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+export function todayUtcDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 export function formatDateTime(value: string | Date): string {
   const d = typeof value === "string" ? new Date(value) : value;
   const datePart = d.toLocaleDateString("en-GB", {
