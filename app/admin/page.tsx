@@ -481,11 +481,12 @@ export default function AdminPage() {
                           {i.status === "scheduled" && (
                             <button
                               className="btn-ghost btn-sm"
-                              onClick={() =>
-                                setCompletingId(
-                                  completingId === i.id ? null : i.id,
-                                )
-                              }
+                              onClick={() => {
+                                const opening = completingId !== i.id;
+                                setCompletingId(opening ? i.id : null);
+                                setCompleteNotes(opening ? i.notes || "" : "");
+                                setCompleteScore("");
+                              }}
                             >
                               {completingId === i.id ? "Cancel" : "Mark complete"}
                             </button>
