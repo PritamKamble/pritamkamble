@@ -27,6 +27,7 @@ type Job = {
 };
 type Application = {
   id: string;
+  job_id: string;
   status: string;
   jobs: { title: string; company: string; status: string } | null;
 };
@@ -58,6 +59,8 @@ export default function CandidatePage() {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
+  const [jobsToast, setJobsToast] = useState("");
   const [upcomingInterview, setUpcomingInterview] = useState<{
     scheduled_at: string;
   } | null>(null);
@@ -185,10 +188,21 @@ export default function CandidatePage() {
 
   async function handleApply(jobId: string) {
     if (!profile) return;
-    await supabase
+    setApplyingJobId(jobId);
+    const { error } = await supabase
       .from("job_applications")
       .insert({ job_id: jobId, candidate_id: profile.id });
-    loadMyApplications(profile.id);
+    setApplyingJobId(null);
+    setJobsToast(error ? `Error: ${error.message}` : "Applied ✓");
+    if (!error) loadMyApplications(profile.id);
+    setTimeout(() => setJobsToast(""), 2500);
+  }
+
+  function employmentTypeLabel(type: string) {
+    return type
+      .split("_")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join("-");
   }
 
   const today = todayUtcDateString();
@@ -418,36 +432,46 @@ export default function CandidatePage() {
       {tab === "jobs" && (
         <div className="card">
           <h2>Open positions</h2>
+          {jobsToast && <div className="msg">{jobsToast}</div>}
           {jobs.length === 0 ? (
             <div className="empty">No open jobs right now.</div>
           ) : (
-            jobs.map((j) => (
-              <div
-                key={j.id}
-                style={{
-                  border: "1px solid var(--line)",
-                  borderRadius: 8,
-                  padding: 16,
-                  marginBottom: 10,
-                }}
-              >
-                <h3 style={{ fontFamily: "var(--mono)", fontSize: 14.5, marginBottom: 4 }}>
-                  {j.title} — {j.company}
-                </h3>
-                <div className="muted" style={{ marginBottom: 8 }}>
-                  {j.location || "Location flexible"} · {j.employment_type}
-                </div>
-                <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 10 }}>
-                  {j.description}
-                </p>
-                <button
-                  className="btn btn-sm"
-                  onClick={() => handleApply(j.id)}
+            jobs.map((j) => {
+              const alreadyApplied = applications.some((a) => a.job_id === j.id);
+              return (
+                <div
+                  key={j.id}
+                  style={{
+                    border: "1px solid var(--line)",
+                    borderRadius: 8,
+                    padding: 16,
+                    marginBottom: 10,
+                  }}
                 >
-                  Apply
-                </button>
-              </div>
-            ))
+                  <h3 style={{ fontFamily: "var(--mono)", fontSize: 14.5, marginBottom: 4 }}>
+                    {j.title} — {j.company}
+                  </h3>
+                  <div className="muted" style={{ marginBottom: 8 }}>
+                    {j.location || "Location flexible"} ·{" "}
+                    {employmentTypeLabel(j.employment_type)}
+                  </div>
+                  <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 10 }}>
+                    {j.description}
+                  </p>
+                  <button
+                    className="btn btn-sm"
+                    disabled={alreadyApplied || applyingJobId === j.id}
+                    onClick={() => handleApply(j.id)}
+                  >
+                    {alreadyApplied
+                      ? "Applied ✓"
+                      : applyingJobId === j.id
+                        ? "Applying..."
+                        : "Apply"}
+                  </button>
+                </div>
+              );
+            })
           )}
         </div>
       )}

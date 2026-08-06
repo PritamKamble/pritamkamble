@@ -247,7 +247,8 @@ export default function HrPage() {
                   {j.title} — {j.company}
                 </h3>
                 <div className="muted" style={{ marginBottom: 8 }}>
-                  {j.location || ""} · {j.job_applications?.length || 0} applicants
+                  {j.location || ""} · {j.job_applications?.length || 0}{" "}
+                  {j.job_applications?.length === 1 ? "applicant" : "applicants"}
                 </div>
                 {(jobApplications[j.id] || []).length === 0 ? (
                   <div className="muted">No applicants yet.</div>
