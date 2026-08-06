@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
 import { formatDate, formatDateTime, todayUtcDateString } from "@/lib/formatDate";
+import { computeReadinessScore } from "@/lib/readiness";
 
 type Profile = { id: string; full_name: string; role: string };
 type CandidateProfile = {
@@ -66,6 +67,8 @@ export default function CandidatePage() {
   const [logToast, setLogToast] = useState("");
   const [editingToday, setEditingToday] = useState(false);
 
+  const [completedScores, setCompletedScores] = useState<number[]>([]);
+
   useEffect(() => {
     (async () => {
       const {
@@ -90,6 +93,7 @@ export default function CandidatePage() {
       loadMyApplications(user.id);
       loadUpcomingInterview(user.id);
       loadDailyLogs(user.id);
+      loadCompletedScores(user.id);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -157,6 +161,16 @@ export default function CandidatePage() {
     setTimeout(() => setLogToast(""), 2500);
   }
 
+  async function loadCompletedScores(userId: string) {
+    const { data } = await supabase
+      .from("interviews")
+      .select("score")
+      .eq("candidate_id", userId)
+      .eq("status", "completed")
+      .not("score", "is", null);
+    setCompletedScores((data || []).map((r) => r.score as number));
+  }
+
   async function handleProgressSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!profile) return;
@@ -197,6 +211,12 @@ export default function CandidatePage() {
     }
     historyDays.reverse();
   }
+
+  const readiness = computeReadinessScore(
+    dailyLogs.length,
+    dailyLogs[0]?.log_date || null,
+    completedScores,
+  );
 
   if (!profile) {
     return (
@@ -241,6 +261,39 @@ export default function CandidatePage() {
 
       {tab === "progress" && (
         <>
+          <div className="card">
+            <div className="muted" style={{ marginBottom: 4 }}>
+              Job readiness score
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--mono)",
+                fontSize: 32,
+                fontWeight: 700,
+                color:
+                  readiness.score >= 70
+                    ? "var(--green)"
+                    : readiness.score >= 40
+                      ? "var(--amber)"
+                      : "var(--rust)",
+              }}
+            >
+              {readiness.score}
+              <span style={{ fontSize: 16, color: "var(--muted)" }}>/100</span>
+            </div>
+            <div className="muted" style={{ fontSize: 12.5, marginTop: 4 }}>
+              Consistency{" "}
+              {readiness.consistencyPct != null
+                ? `${Math.round(readiness.consistencyPct)}%`
+                : "— log daily to start"}
+              {" · "}
+              Mock avg{" "}
+              {readiness.mockAvg != null
+                ? `${readiness.mockAvg.toFixed(1)}/10`
+                : "— attend a mock interview"}
+            </div>
+          </div>
+
           {upcomingInterview && (
             <div className="card" style={{ borderColor: "var(--green)" }}>
               <div className="muted" style={{ marginBottom: 4 }}>

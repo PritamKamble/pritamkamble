@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
 import { formatDate, formatDateTime } from "@/lib/formatDate";
+import { computeReadinessScore } from "@/lib/readiness";
 
 type Profile = { id: string; full_name: string; role: string };
 type Applicant = {
@@ -40,6 +41,7 @@ type Interview = {
 
 type DailyLog = {
   id: string;
+  candidate_id: string;
   log_date: string;
   content: string;
   profiles: { full_name: string; email: string } | null;
@@ -124,7 +126,7 @@ export default function AdminPage() {
   async function loadDailyLogs() {
     const { data } = await supabase
       .from("daily_logs")
-      .select("*, profiles!daily_logs_candidate_id_fkey(full_name, email)")
+      .select("id, candidate_id, log_date, content, profiles!daily_logs_candidate_id_fkey(full_name, email)")
       .order("log_date", { ascending: false });
     setDailyLogs((data as unknown as DailyLog[]) || []);
   }
@@ -169,6 +171,20 @@ export default function AdminPage() {
     if (interviewFilter === "completed") return i.status === "completed";
     return i.status === "scheduled";
   });
+
+  function readinessFor(candidateUserId: string) {
+    const logsForCandidate = dailyLogs
+      .filter((l) => l.candidate_id === candidateUserId)
+      .sort((a, b) => a.log_date.localeCompare(b.log_date));
+    const completedScores = interviews
+      .filter((i) => i.candidate_id === candidateUserId && i.status === "completed" && i.score != null)
+      .map((i) => i.score as number);
+    return computeReadinessScore(
+      logsForCandidate.length,
+      logsForCandidate[0]?.log_date || null,
+      completedScores,
+    );
+  }
 
   const counts = (applicants || []).reduce<Record<string, number>>((acc, r) => {
     acc[r.status] = (acc[r.status] || 0) + 1;
@@ -284,6 +300,7 @@ export default function AdminPage() {
                   <th>Track / Level</th>
                   <th>Progress</th>
                   <th>Mock</th>
+                  <th>Readiness</th>
                   <th>Resume</th>
                   <th></th>
                 </tr>
@@ -306,6 +323,26 @@ export default function AdminPage() {
                         {c.weeks_completed || 0}/24 wks · {c.dsa_solved || 0} DSA
                       </td>
                       <td>{c.mock_score != null ? `${c.mock_score}/10` : "—"}</td>
+                      <td>
+                        {(() => {
+                          const r = readinessFor(c.user_id);
+                          return (
+                            <span
+                              style={{
+                                fontFamily: "var(--mono)",
+                                color:
+                                  r.score >= 70
+                                    ? "var(--green)"
+                                    : r.score >= 40
+                                      ? "var(--amber)"
+                                      : "var(--rust)",
+                              }}
+                            >
+                              {r.score}/100
+                            </span>
+                          );
+                        })()}
+                      </td>
                       <td>
                         {c.resume_url ? (
                           <a
@@ -335,7 +372,7 @@ export default function AdminPage() {
                     </tr>
                     {scheduleFor === c.user_id && (
                       <tr>
-                        <td colSpan={6}>
+                        <td colSpan={7}>
                           <div
                             style={{
                               display: "flex",
