@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
 
-type Profile = { full_name: string; role: string };
+type Profile = { id: string; full_name: string; role: string };
 type Applicant = {
   id: string;
   name: string;
@@ -17,12 +17,50 @@ type Applicant = {
   referred_by: string | null;
   created_at: string;
 };
+type Candidate = {
+  user_id: string;
+  track: string | null;
+  level: string | null;
+  weeks_completed: number | null;
+  dsa_solved: number | null;
+  mock_score: number | null;
+  resume_url: string | null;
+  profiles: { full_name: string; email: string } | null;
+};
+type Interview = {
+  id: string;
+  candidate_id: string;
+  scheduled_at: string;
+  status: string;
+  score: number | null;
+  notes: string | null;
+  profiles: { full_name: string; email: string } | null;
+};
+
+const TABS = ["applicants", "candidates", "interviews"] as const;
+type Tab = (typeof TABS)[number];
 
 export default function AdminPage() {
   const supabase = createClient();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [tab, setTab] = useState<Tab>("applicants");
+
   const [applicants, setApplicants] = useState<Applicant[] | null>(null);
-  const [error, setError] = useState("");
+  const [applicantsError, setApplicantsError] = useState("");
+
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [scheduleFor, setScheduleFor] = useState<string | null>(null);
+  const [scheduleAt, setScheduleAt] = useState("");
+  const [scheduleNotes, setScheduleNotes] = useState("");
+  const [scheduleToast, setScheduleToast] = useState("");
+
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [interviewFilter, setInterviewFilter] = useState<
+    "upcoming" | "completed" | "all"
+  >("upcoming");
+  const [completingId, setCompletingId] = useState<string | null>(null);
+  const [completeScore, setCompleteScore] = useState("");
+  const [completeNotes, setCompleteNotes] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -32,27 +70,86 @@ export default function AdminPage() {
       if (!user) return;
       const { data: p } = await supabase
         .from("profiles")
-        .select("full_name, role")
+        .select("id, full_name, role")
         .eq("id", user.id)
         .single();
       setProfile(p);
-      load();
+      loadApplicants();
+      loadCandidates();
+      loadInterviews();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function load() {
-    setError("");
+  async function loadApplicants() {
+    setApplicantsError("");
     const { data, error } = await supabase
       .from("applicants")
       .select("*")
       .order("created_at", { ascending: false });
     if (error) {
-      setError(`Couldn't load applicants: ${error.message}`);
+      setApplicantsError(`Couldn't load applicants: ${error.message}`);
       return;
     }
     setApplicants(data || []);
   }
+
+  async function loadCandidates() {
+    const { data } = await supabase
+      .from("candidate_profiles")
+      .select("*, profiles(full_name, email)")
+      .order("updated_at", { ascending: false });
+    setCandidates((data as unknown as Candidate[]) || []);
+  }
+
+  async function loadInterviews() {
+    const { data } = await supabase
+      .from("interviews")
+      .select("*, profiles!interviews_candidate_id_fkey(full_name, email)")
+      .order("scheduled_at", { ascending: true });
+    setInterviews((data as unknown as Interview[]) || []);
+  }
+
+  async function handleSchedule(candidateId: string) {
+    if (!profile || !scheduleAt) return;
+    const { error } = await supabase.from("interviews").insert({
+      candidate_id: candidateId,
+      interviewer_id: profile.id,
+      scheduled_at: new Date(scheduleAt).toISOString(),
+      notes: scheduleNotes.trim() || null,
+    });
+    setScheduleToast(error ? `Error: ${error.message}` : "Interview scheduled ✓");
+    if (!error) {
+      setScheduleFor(null);
+      setScheduleAt("");
+      setScheduleNotes("");
+      loadInterviews();
+    }
+    setTimeout(() => setScheduleToast(""), 2500);
+  }
+
+  async function handleComplete(interviewId: string) {
+    const { error } = await supabase
+      .from("interviews")
+      .update({
+        status: "completed",
+        score: completeScore ? parseFloat(completeScore) : null,
+        notes: completeNotes.trim() || null,
+      })
+      .eq("id", interviewId);
+    if (!error) {
+      setCompletingId(null);
+      setCompleteScore("");
+      setCompleteNotes("");
+      loadInterviews();
+    }
+  }
+
+  const filteredInterviews = interviews.filter((i) => {
+    if (interviewFilter === "all") return true;
+    if (interviewFilter === "completed") return i.status === "completed";
+    return i.status === "scheduled";
+  });
 
   const counts = (applicants || []).reduce<Record<string, number>>((acc, r) => {
     acc[r.status] = (acc[r.status] || 0) + 1;
@@ -63,77 +160,330 @@ export default function AdminPage() {
     <div className="wrap">
       {profile && <PortalHeader name={profile.full_name} role={profile.role} />}
 
-      <div className="tabs" style={{ justifyContent: "space-between" }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--mono)", fontSize: 20 }}>Applicants</h1>
-          <div className="muted">Waitlist submissions, newest first</div>
+      <div className="tabs">
+        <div
+          className={`tabbtn ${tab === "applicants" ? "active" : ""}`}
+          onClick={() => setTab("applicants")}
+        >
+          Applicants
         </div>
-        <button className="btn" onClick={load}>
-          Refresh
-        </button>
-      </div>
-
-      <div className="stats">
-        <div className="stat">
-          <div className="n">{applicants?.length ?? "—"}</div>
-          <div className="l">Total</div>
+        <div
+          className={`tabbtn ${tab === "candidates" ? "active" : ""}`}
+          onClick={() => setTab("candidates")}
+        >
+          Candidates
         </div>
-        <div className="stat">
-          <div className="n">{counts.waiting || 0}</div>
-          <div className="l">Waiting</div>
-        </div>
-        <div className="stat">
-          <div className="n">{counts.contacted || 0}</div>
-          <div className="l">Contacted</div>
-        </div>
-        <div className="stat">
-          <div className="n">{counts.enrolled || 0}</div>
-          <div className="l">Enrolled</div>
+        <div
+          className={`tabbtn ${tab === "interviews" ? "active" : ""}`}
+          onClick={() => setTab("interviews")}
+        >
+          Interviews
         </div>
       </div>
 
-      <div className="card" style={{ overflowX: "auto" }}>
-        {error ? (
-          <div className="empty">{error}</div>
-        ) : applicants === null ? (
-          <div className="empty">Loading…</div>
-        ) : applicants.length === 0 ? (
-          <div className="empty">No applicants yet.</div>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>College / Company</th>
-                <th>Track</th>
-                <th>Level</th>
-                <th>Status</th>
-                <th>Referral code</th>
-                <th>Referred by</th>
-                <th>Applied</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applicants.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.name || "—"}</td>
-                  <td>{r.phone || "—"}</td>
-                  <td>{r.college_or_company || "—"}</td>
-                  <td>{r.track || "—"}</td>
-                  <td>{r.level || "—"}</td>
-                  <td>{r.status}</td>
-                  <td className="muted">{r.referral_code || "—"}</td>
-                  <td className="muted">{r.referred_by || "—"}</td>
-                  <td className="muted">
-                    {new Date(r.created_at).toLocaleString()}
-                  </td>
+      {tab === "applicants" && (
+        <>
+          <div className="stats">
+            <div className="stat">
+              <div className="n">{applicants?.length ?? "—"}</div>
+              <div className="l">Total</div>
+            </div>
+            <div className="stat">
+              <div className="n">{counts.waiting || 0}</div>
+              <div className="l">Waiting</div>
+            </div>
+            <div className="stat">
+              <div className="n">{counts.contacted || 0}</div>
+              <div className="l">Contacted</div>
+            </div>
+            <div className="stat">
+              <div className="n">{counts.enrolled || 0}</div>
+              <div className="l">Enrolled</div>
+            </div>
+          </div>
+
+          <div className="card" style={{ overflowX: "auto" }}>
+            {applicantsError ? (
+              <div className="empty">{applicantsError}</div>
+            ) : applicants === null ? (
+              <div className="empty">Loading…</div>
+            ) : applicants.length === 0 ? (
+              <div className="empty">No applicants yet.</div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>College / Company</th>
+                    <th>Track</th>
+                    <th>Level</th>
+                    <th>Status</th>
+                    <th>Referral code</th>
+                    <th>Referred by</th>
+                    <th>Applied</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {applicants.map((r) => (
+                    <tr key={r.id}>
+                      <td>{r.name || "—"}</td>
+                      <td>{r.phone || "—"}</td>
+                      <td>{r.college_or_company || "—"}</td>
+                      <td>{r.track || "—"}</td>
+                      <td>{r.level || "—"}</td>
+                      <td>{r.status}</td>
+                      <td className="muted">{r.referral_code || "—"}</td>
+                      <td className="muted">{r.referred_by || "—"}</td>
+                      <td className="muted">
+                        {new Date(r.created_at).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
+      )}
+
+      {tab === "candidates" && (
+        <div className="card" style={{ overflowX: "auto" }}>
+          {candidates.length === 0 ? (
+            <div className="empty">No candidate profiles yet.</div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Track / Level</th>
+                  <th>Progress</th>
+                  <th>Mock</th>
+                  <th>Resume</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {candidates.map((c) => (
+                  <>
+                    <tr key={c.user_id}>
+                      <td>
+                        {c.profiles?.full_name || "—"}
+                        <br />
+                        <span className="muted">{c.profiles?.email || ""}</span>
+                      </td>
+                      <td>
+                        {c.track || "—"}
+                        <br />
+                        <span className="muted">{c.level || ""}</span>
+                      </td>
+                      <td>
+                        {c.weeks_completed || 0}/24 wks · {c.dsa_solved || 0} DSA
+                      </td>
+                      <td>{c.mock_score != null ? `${c.mock_score}/10` : "—"}</td>
+                      <td>
+                        {c.resume_url ? (
+                          <a
+                            href={c.resume_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "var(--amber)" }}
+                          >
+                            View →
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          className="btn-ghost btn-sm"
+                          onClick={() =>
+                            setScheduleFor(
+                              scheduleFor === c.user_id ? null : c.user_id,
+                            )
+                          }
+                        >
+                          {scheduleFor === c.user_id ? "Cancel" : "Schedule interview"}
+                        </button>
+                      </td>
+                    </tr>
+                    {scheduleFor === c.user_id && (
+                      <tr>
+                        <td colSpan={6}>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: 10,
+                              alignItems: "flex-end",
+                              flexWrap: "wrap",
+                              padding: "10px 0",
+                            }}
+                          >
+                            <div className="field" style={{ marginBottom: 0 }}>
+                              <label>When</label>
+                              <input
+                                type="datetime-local"
+                                value={scheduleAt}
+                                onChange={(e) => setScheduleAt(e.target.value)}
+                              />
+                            </div>
+                            <div
+                              className="field"
+                              style={{ marginBottom: 0, flex: 1, minWidth: 200 }}
+                            >
+                              <label>Notes (optional)</label>
+                              <input
+                                type="text"
+                                value={scheduleNotes}
+                                onChange={(e) => setScheduleNotes(e.target.value)}
+                                placeholder="What to cover, panel, etc."
+                              />
+                            </div>
+                            <button
+                              className="btn btn-sm"
+                              disabled={!scheduleAt}
+                              onClick={() => handleSchedule(c.user_id)}
+                            >
+                              Confirm
+                            </button>
+                          </div>
+                          {scheduleToast && (
+                            <div className="muted" style={{ color: "var(--green)" }}>
+                              {scheduleToast}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {tab === "interviews" && (
+        <>
+          <div className="tabs">
+            <div
+              className={`tabbtn ${interviewFilter === "upcoming" ? "active" : ""}`}
+              onClick={() => setInterviewFilter("upcoming")}
+            >
+              Upcoming
+            </div>
+            <div
+              className={`tabbtn ${interviewFilter === "completed" ? "active" : ""}`}
+              onClick={() => setInterviewFilter("completed")}
+            >
+              Completed
+            </div>
+            <div
+              className={`tabbtn ${interviewFilter === "all" ? "active" : ""}`}
+              onClick={() => setInterviewFilter("all")}
+            >
+              All
+            </div>
+          </div>
+
+          <div className="card" style={{ overflowX: "auto" }}>
+            {filteredInterviews.length === 0 ? (
+              <div className="empty">No interviews here.</div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Scheduled</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Notes</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInterviews.map((i) => (
+                    <>
+                      <tr key={i.id}>
+                        <td>
+                          {i.profiles?.full_name || "—"}
+                          <br />
+                          <span className="muted">{i.profiles?.email || ""}</span>
+                        </td>
+                        <td>{new Date(i.scheduled_at).toLocaleString()}</td>
+                        <td>{i.status}</td>
+                        <td>{i.score != null ? i.score : "—"}</td>
+                        <td className="muted">{i.notes || "—"}</td>
+                        <td>
+                          {i.status === "scheduled" && (
+                            <button
+                              className="btn-ghost btn-sm"
+                              onClick={() =>
+                                setCompletingId(
+                                  completingId === i.id ? null : i.id,
+                                )
+                              }
+                            >
+                              {completingId === i.id ? "Cancel" : "Mark complete"}
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                      {completingId === i.id && (
+                        <tr>
+                          <td colSpan={6}>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: 10,
+                                alignItems: "flex-end",
+                                flexWrap: "wrap",
+                                padding: "10px 0",
+                              }}
+                            >
+                              <div className="field" style={{ marginBottom: 0 }}>
+                                <label>Score (/10)</label>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  max={10}
+                                  step={0.5}
+                                  value={completeScore}
+                                  onChange={(e) => setCompleteScore(e.target.value)}
+                                  style={{ width: 90 }}
+                                />
+                              </div>
+                              <div
+                                className="field"
+                                style={{ marginBottom: 0, flex: 1, minWidth: 200 }}
+                              >
+                                <label>Notes</label>
+                                <input
+                                  type="text"
+                                  value={completeNotes}
+                                  onChange={(e) => setCompleteNotes(e.target.value)}
+                                  placeholder="Evaluation notes"
+                                />
+                              </div>
+                              <button
+                                className="btn btn-sm"
+                                onClick={() => handleComplete(i.id)}
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

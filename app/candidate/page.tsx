@@ -51,6 +51,9 @@ export default function CandidatePage() {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [upcomingInterview, setUpcomingInterview] = useState<{
+    scheduled_at: string;
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -74,6 +77,7 @@ export default function CandidatePage() {
 
       loadOpenJobs();
       loadMyApplications(user.id);
+      loadUpcomingInterview(user.id);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -94,6 +98,19 @@ export default function CandidatePage() {
       .eq("candidate_id", userId)
       .order("applied_at", { ascending: false });
     setApplications((data as unknown as Application[]) || []);
+  }
+
+  async function loadUpcomingInterview(userId: string) {
+    const { data } = await supabase
+      .from("interviews")
+      .select("scheduled_at")
+      .eq("candidate_id", userId)
+      .eq("status", "scheduled")
+      .gte("scheduled_at", new Date().toISOString())
+      .order("scheduled_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    setUpcomingInterview(data);
   }
 
   async function handleProgressSubmit(e: React.FormEvent) {
@@ -152,7 +169,18 @@ export default function CandidatePage() {
       </div>
 
       {tab === "progress" && (
-        <div className="card">
+        <>
+          {upcomingInterview && (
+            <div className="card" style={{ borderColor: "var(--green)" }}>
+              <div className="muted" style={{ marginBottom: 4 }}>
+                Upcoming interview
+              </div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
+                {new Date(upcomingInterview.scheduled_at).toLocaleString()}
+              </div>
+            </div>
+          )}
+          <div className="card">
           <h2>Update your progress</h2>
           <form onSubmit={handleProgressSubmit}>
             <div className="row2">
@@ -259,7 +287,8 @@ export default function CandidatePage() {
               </div>
             )}
           </form>
-        </div>
+          </div>
+        </>
       )}
 
       {tab === "jobs" && (
