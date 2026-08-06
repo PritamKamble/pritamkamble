@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
+import { formatDateTime } from "@/lib/formatDate";
 
 type Profile = { id: string; full_name: string; role: string };
 type Applicant = {
@@ -236,7 +237,7 @@ export default function AdminPage() {
                       <td className="muted">{r.referral_code || "—"}</td>
                       <td className="muted">{r.referred_by || "—"}</td>
                       <td className="muted">
-                        {new Date(r.created_at).toLocaleString()}
+                        {formatDateTime(r.created_at)}
                       </td>
                     </tr>
                   ))}
@@ -411,7 +412,7 @@ export default function AdminPage() {
                           <br />
                           <span className="muted">{i.profiles?.email || ""}</span>
                         </td>
-                        <td>{new Date(i.scheduled_at).toLocaleString()}</td>
+                        <td>{formatDateTime(i.scheduled_at)}</td>
                         <td>{i.status}</td>
                         <td>{i.score != null ? i.score : "—"}</td>
                         <td className="muted">{i.notes || "—"}</td>

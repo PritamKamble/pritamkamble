@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
+import { formatDateTime } from "@/lib/formatDate";
 
 type Profile = { id: string; full_name: string; role: string };
 type CandidateProfile = {
@@ -176,7 +177,7 @@ export default function CandidatePage() {
                 Upcoming interview
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
-                {new Date(upcomingInterview.scheduled_at).toLocaleString()}
+                {formatDateTime(upcomingInterview.scheduled_at)}
               </div>
             </div>
           )}
