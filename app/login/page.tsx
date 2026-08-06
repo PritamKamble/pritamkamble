@@ -8,6 +8,8 @@ import { Turnstile } from "@/components/Turnstile";
 type Mode = "login" | "signup";
 type Role = "candidate" | "hr";
 
+const TURNSTILE_ENABLED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -46,7 +48,9 @@ function LoginForm() {
           throw new Error("Please enter your company name.");
         }
 
-        if (!captchaToken) throw new Error("Please complete the verification check.");
+        if (TURNSTILE_ENABLED && !captchaToken) {
+          throw new Error("Please complete the verification check.");
+        }
 
         const { error } = await supabase.auth.signUp({
           email,
@@ -57,7 +61,7 @@ function LoginForm() {
               full_name: fullName.trim(),
               company_name: role === "hr" ? companyName.trim() : null,
             },
-            captchaToken,
+            captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined,
           },
         });
         if (error) throw error;
@@ -66,12 +70,14 @@ function LoginForm() {
           router.push(searchParams.get("redirect") || "/portal");
         }, 1000);
       } else {
-        if (!captchaToken) throw new Error("Please complete the verification check.");
+        if (TURNSTILE_ENABLED && !captchaToken) {
+          throw new Error("Please complete the verification check.");
+        }
 
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
-          options: { captchaToken },
+          options: { captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined },
         });
         if (error) throw error;
         router.push(searchParams.get("redirect") || "/portal");
@@ -228,11 +234,11 @@ function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Turnstile onVerify={setCaptchaToken} />
+          {TURNSTILE_ENABLED && <Turnstile onVerify={setCaptchaToken} />}
           <button
             className="btn"
             type="submit"
-            disabled={submitting || !captchaToken}
+            disabled={submitting || (TURNSTILE_ENABLED && !captchaToken)}
             style={{ width: "100%", marginTop: 6 }}
           >
             {mode === "login" ? "Log in →" : "Create account →"}
