@@ -74,6 +74,34 @@ export default function AdminPage() {
 
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
 
+  const [inviteName, setInviteName] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviting, setInviting] = useState(false);
+  const [inviteMsg, setInviteMsg] = useState<{ type: "error" | "ok"; text: string } | null>(
+    null,
+  );
+
+  async function handleInvite(e: React.FormEvent) {
+    e.preventDefault();
+    setInviting(true);
+    setInviteMsg(null);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { data, error } = await supabase.functions.invoke("invite-candidate", {
+      body: { email: inviteEmail.trim(), full_name: inviteName.trim() },
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
+    setInviting(false);
+    if (error || data?.error) {
+      setInviteMsg({ type: "error", text: data?.error || error?.message || "Invite failed." });
+      return;
+    }
+    setInviteMsg({ type: "ok", text: `Invite sent to ${inviteEmail}.` });
+    setInviteName("");
+    setInviteEmail("");
+  }
+
   useEffect(() => {
     (async () => {
       const {
@@ -224,6 +252,38 @@ export default function AdminPage() {
 
       {tab === "applicants" && (
         <>
+          <div className="card" style={{ marginBottom: 20 }}>
+            <h2>Invite a candidate</h2>
+            <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
+              Candidate accounts are invite-only. Sends a sign-in link to their
+              email - no password to set.
+            </div>
+            <form onSubmit={handleInvite} style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+              <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 180 }}>
+                <label>Full name</label>
+                <input
+                  type="text"
+                  required
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                />
+              </div>
+              <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 200 }}>
+                <label>Email</label>
+                <input
+                  type="email"
+                  required
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
+              </div>
+              <button className="btn btn-sm" type="submit" disabled={inviting}>
+                {inviting ? "Sending..." : "Send invite"}
+              </button>
+            </form>
+            {inviteMsg && <div className={`msg ${inviteMsg.type}`}>{inviteMsg.text}</div>}
+          </div>
+
           <div className="stats">
             <div className="stat">
               <div className="n">{applicants?.length ?? "—"}</div>

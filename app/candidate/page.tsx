@@ -77,9 +77,6 @@ export default function CandidatePage() {
 
   const [newFullName, setNewFullName] = useState("");
   const [nameToast, setNameToast] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordToast, setPasswordToast] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -231,27 +228,6 @@ export default function CandidatePage() {
     setNameToast(error ? `Error: ${error.message}` : "Saved ✓");
     if (!error) setProfile({ ...profile, full_name: newFullName.trim() });
     setTimeout(() => setNameToast(""), 2500);
-  }
-
-  async function handleUpdatePassword(e: React.FormEvent) {
-    e.preventDefault();
-    if (newPassword.length < 6) {
-      setPasswordToast("Password must be at least 6 characters.");
-      setTimeout(() => setPasswordToast(""), 2500);
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPasswordToast("Passwords don't match.");
-      setTimeout(() => setPasswordToast(""), 2500);
-      return;
-    }
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    setPasswordToast(error ? `Error: ${error.message}` : "Password updated ✓");
-    if (!error) {
-      setNewPassword("");
-      setConfirmPassword("");
-    }
-    setTimeout(() => setPasswordToast(""), 2500);
   }
 
   function employmentTypeLabel(type: string) {
@@ -735,38 +711,6 @@ export default function CandidatePage() {
               {nameToast && (
                 <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
                   {nameToast}
-                </span>
-              )}
-            </form>
-          </div>
-
-          <div className="card">
-            <h2>Change password</h2>
-            <form onSubmit={handleUpdatePassword}>
-              <div className="field">
-                <label>New password</label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label>Confirm new password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button className="btn" type="submit">
-                Update password
-              </button>
-              {passwordToast && (
-                <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
-                  {passwordToast}
                 </span>
               )}
             </form>

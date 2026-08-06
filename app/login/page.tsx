@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Turnstile } from "@/components/Turnstile";
 
@@ -11,35 +11,37 @@ type Role = "candidate" | "hr";
 const TURNSTILE_ENABLED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  const [mode, setMode] = useState<Mode>(
-    searchParams.get("mode") === "signup" ? "signup" : "login",
-  );
   const [role, setRole] = useState<Role>(
     searchParams.get("role") === "hr" ? "hr" : "candidate",
+  );
+  // Candidates are invite-only (see /admin) - self-serve signup only applies to HR.
+  const [mode, setMode] = useState<Mode>(
+    searchParams.get("mode") === "signup" && searchParams.get("role") === "hr"
+      ? "signup"
+      : "login",
   );
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
   const [msg, setMsg] = useState<{ type: "error" | "ok"; text: string } | null>(
     searchParams.get("pending")
       ? {
           type: "error",
-          text: "Almost there - your account is still being set up, try signing in again in a moment.",
+          text: "Almost there - your account is still being set up, try again in a moment.",
         }
-      : searchParams.get("unconfirmed")
-        ? {
-            type: "ok",
-            text: "Account created! Check your email for a confirmation link, then log in.",
-          }
-        : null,
+      : null,
   );
+
+  function handleRoleChange(next: Role) {
+    setRole(next);
+    if (next === "candidate") setMode("login");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,72 +51,58 @@ function LoginForm() {
     try {
       if (mode === "signup") {
         if (!fullName.trim()) throw new Error("Please enter your full name.");
-        if (role === "hr" && !companyName.trim()) {
-          throw new Error("Please enter your company name.");
-        }
-
+        if (!companyName.trim()) throw new Error("Please enter your company name.");
         if (TURNSTILE_ENABLED && !captchaToken) {
           throw new Error("Please complete the verification check.");
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signInWithOtp({
           email,
-          password,
           options: {
+            shouldCreateUser: true,
             data: {
-              role,
+              role: "hr",
               full_name: fullName.trim(),
-              company_name: role === "hr" ? companyName.trim() : null,
+              company_name: companyName.trim(),
             },
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+              searchParams.get("redirect") || "/portal",
+            )}`,
             captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined,
           },
         });
         if (error) throw error;
-        setMsg({ type: "ok", text: "Account created! Redirecting..." });
-        setTimeout(() => {
-          router.push(searchParams.get("redirect") || "/portal");
-        }, 1000);
       } else {
+        // Login (both roles): never auto-create an account here. Candidates
+        // are invited by an admin; an unrecognized email should fail, not
+        // silently register - that's the whole point of invite-only.
         if (TURNSTILE_ENABLED && !captchaToken) {
           throw new Error("Please complete the verification check.");
         }
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithOtp({
           email,
-          password,
-          options: { captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined },
+          options: {
+            shouldCreateUser: false,
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+              searchParams.get("redirect") || "/portal",
+            )}`,
+            captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined,
+          },
         });
         if (error) throw error;
-        router.push(searchParams.get("redirect") || "/portal");
       }
+      setSent(true);
     } catch (err) {
       setMsg({
         type: "error",
         text: err instanceof Error ? err.message : "Something went wrong.",
       });
-      setSubmitting(false);
       setCaptchaToken("");
       window.turnstile?.reset();
+    } finally {
+      setSubmitting(false);
     }
-  }
-
-  async function handleForgotPassword() {
-    setMsg(null);
-    if (!email.trim()) {
-      setMsg({ type: "error", text: "Enter your email above first." });
-      return;
-    }
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo:
-        typeof window !== "undefined"
-          ? `${window.location.origin}/reset-password`
-          : undefined,
-    });
-    if (error) {
-      setMsg({ type: "error", text: error.message });
-      return;
-    }
-    setMsg({ type: "ok", text: "Check your email for a reset link." });
   }
 
   return (
@@ -134,132 +122,140 @@ function LoginForm() {
         <div className="logo" style={{ marginBottom: 22 }}>
           ~/<span>pritam</span>.mentor
         </div>
-        <h1 style={{ fontFamily: "var(--mono)", fontSize: 19, marginBottom: 6 }}>
-          {mode === "login"
-            ? "Welcome back"
-            : role === "hr"
-              ? "Recruiter sign up"
-              : "Candidate sign up"}
-        </h1>
-        <div className="muted" style={{ marginBottom: 22 }}>
-          {mode === "login"
-            ? "Log in to your account"
-            : role === "hr"
-              ? "Post jobs and browse candidates"
-              : "Track progress and apply to jobs"}
-        </div>
 
-        <div
-          className="tabs"
-          style={{
-            background: "var(--bg)",
-            border: "1px solid var(--line)",
-            borderRadius: 8,
-            padding: 4,
-          }}
-        >
-          <div
-            className={`tabbtn ${mode === "login" ? "active" : ""}`}
-            style={{ flex: 1, textAlign: "center" }}
-            onClick={() => setMode("login")}
-          >
-            Log in
-          </div>
-          <div
-            className={`tabbtn ${mode === "signup" ? "active" : ""}`}
-            style={{ flex: 1, textAlign: "center" }}
-            onClick={() => setMode("signup")}
-          >
-            Sign up
-          </div>
-        </div>
-
-        <div className="tabs">
-          <div
-            className={`tabbtn ${role === "candidate" ? "active" : ""}`}
-            style={{ flex: 1, textAlign: "center" }}
-            onClick={() => setRole("candidate")}
-          >
-            Candidate
-          </div>
-          <div
-            className={`tabbtn ${role === "hr" ? "active" : ""}`}
-            style={{ flex: 1, textAlign: "center" }}
-            onClick={() => setRole("hr")}
-          >
-            HR / Recruiter
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          {mode === "signup" && (
-            <div className="field">
-              <label htmlFor="fullName">Full name</label>
-              <input
-                id="fullName"
-                type="text"
-                autoComplete="name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+        {sent ? (
+          <>
+            <h1 style={{ fontFamily: "var(--mono)", fontSize: 19, marginBottom: 6 }}>
+              Check your email
+            </h1>
+            <div className="muted" style={{ marginBottom: 22 }}>
+              We sent a sign-in link to <b>{email}</b>. Click it to continue - no
+              password needed.
             </div>
-          )}
-          {mode === "signup" && role === "hr" && (
-            <div className="field">
-              <label htmlFor="companyName">Company name</label>
-              <input
-                id="companyName"
-                type="text"
-                autoComplete="organization"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-              />
+          </>
+        ) : (
+          <>
+            <h1 style={{ fontFamily: "var(--mono)", fontSize: 19, marginBottom: 6 }}>
+              {mode === "login" ? "Welcome back" : "Recruiter sign up"}
+            </h1>
+            <div className="muted" style={{ marginBottom: 22 }}>
+              {mode === "login"
+                ? "We'll email you a link to sign in - no password needed."
+                : "Post jobs and browse candidates"}
             </div>
-          )}
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              minLength={6}
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {TURNSTILE_ENABLED && <Turnstile onVerify={setCaptchaToken} />}
-          <button
-            className="btn"
-            type="submit"
-            disabled={submitting || (TURNSTILE_ENABLED && !captchaToken)}
-            style={{ width: "100%", marginTop: 6 }}
-          >
-            {mode === "login" ? "Log in →" : "Create account →"}
-          </button>
-          {msg && <div className={`msg ${msg.type}`}>{msg.text}</div>}
-        </form>
 
-        {mode === "login" && (
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            className="logout"
-            style={{ display: "block", width: "100%", textAlign: "center", marginTop: 14 }}
-          >
-            Forgot password?
-          </button>
+            <div
+              className="tabs"
+              style={{
+                background: "var(--bg)",
+                border: "1px solid var(--line)",
+                borderRadius: 8,
+                padding: 4,
+              }}
+            >
+              <div
+                className={`tabbtn ${role === "candidate" ? "active" : ""}`}
+                style={{ flex: 1, textAlign: "center" }}
+                onClick={() => handleRoleChange("candidate")}
+              >
+                Candidate
+              </div>
+              <div
+                className={`tabbtn ${role === "hr" ? "active" : ""}`}
+                style={{ flex: 1, textAlign: "center" }}
+                onClick={() => handleRoleChange("hr")}
+              >
+                HR / Recruiter
+              </div>
+            </div>
+
+            {role === "hr" && (
+              <div
+                className="tabs"
+                style={{
+                  background: "var(--bg)",
+                  border: "1px solid var(--line)",
+                  borderRadius: 8,
+                  padding: 4,
+                }}
+              >
+                <div
+                  className={`tabbtn ${mode === "login" ? "active" : ""}`}
+                  style={{ flex: 1, textAlign: "center" }}
+                  onClick={() => setMode("login")}
+                >
+                  Log in
+                </div>
+                <div
+                  className={`tabbtn ${mode === "signup" ? "active" : ""}`}
+                  style={{ flex: 1, textAlign: "center" }}
+                  onClick={() => setMode("signup")}
+                >
+                  Sign up
+                </div>
+              </div>
+            )}
+
+            {role === "candidate" && (
+              <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
+                Candidate accounts are set up by invitation after applying -{" "}
+                <a href="/index.html#apply" style={{ color: "var(--amber)" }}>
+                  join the waitlist
+                </a>{" "}
+                if you don&apos;t have one yet.
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              {mode === "signup" && (
+                <>
+                  <div className="field">
+                    <label htmlFor="fullName">Full name</label>
+                    <input
+                      id="fullName"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="companyName">Company name</label>
+                    <input
+                      id="companyName"
+                      type="text"
+                      autoComplete="organization"
+                      required
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                    />
+                  </div>
+                </>
+              )}
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              {TURNSTILE_ENABLED && <Turnstile onVerify={setCaptchaToken} />}
+              <button
+                className="btn"
+                type="submit"
+                disabled={submitting || (TURNSTILE_ENABLED && !captchaToken)}
+                style={{ width: "100%", marginTop: 6 }}
+              >
+                {mode === "login" ? "Send sign-in link →" : "Create account →"}
+              </button>
+              {msg && <div className={`msg ${msg.type}`}>{msg.text}</div>}
+            </form>
+          </>
         )}
 
         <a
