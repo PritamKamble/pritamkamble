@@ -79,6 +79,9 @@ export default function CandidatePage() {
   const [historyLimit, setHistoryLimit] = useState(14);
 
   const [completedScores, setCompletedScores] = useState<number[]>([]);
+  const [completedInterviews, setCompletedInterviews] = useState<
+    { id: string; scheduled_at: string; score: number | null; notes: string | null }[]
+  >([]);
 
   const [newFullName, setNewFullName] = useState("");
   const [nameToast, setNameToast] = useState("");
@@ -179,11 +182,15 @@ export default function CandidatePage() {
   async function loadCompletedScores(userId: string) {
     const { data } = await supabase
       .from("interviews")
-      .select("score")
+      .select("id, scheduled_at, score, notes")
       .eq("candidate_id", userId)
       .eq("status", "completed")
-      .not("score", "is", null);
-    setCompletedScores((data || []).map((r) => r.score as number));
+      .order("scheduled_at", { ascending: false });
+    const rows = data || [];
+    setCompletedScores(
+      rows.filter((r) => r.score != null).map((r) => r.score as number),
+    );
+    setCompletedInterviews(rows);
   }
 
   async function handleProgressSubmit(e: React.FormEvent) {
@@ -415,6 +422,53 @@ export default function CandidatePage() {
               <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
                 {formatDateTime(upcomingInterview.scheduled_at)}
               </div>
+            </div>
+          )}
+
+          {completedInterviews.length > 0 && (
+            <div className="card">
+              <h2>Interview feedback</h2>
+              {completedInterviews.map((iv) => (
+                <div
+                  key={iv.id}
+                  style={{
+                    border: "1px solid var(--line)",
+                    borderRadius: 8,
+                    padding: 14,
+                    marginBottom: 10,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: iv.notes ? 8 : 0,
+                    }}
+                  >
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--muted)" }}>
+                      {formatDateTime(iv.scheduled_at)}
+                    </span>
+                    {iv.score != null && (
+                      <span
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontWeight: 700,
+                          color:
+                            iv.score >= 7
+                              ? "var(--green)"
+                              : iv.score >= 4
+                                ? "var(--amber)"
+                                : "var(--rust)",
+                        }}
+                      >
+                        {iv.score}/10
+                      </span>
+                    )}
+                  </div>
+                  {iv.notes && <div style={{ fontSize: 13.5 }}>{iv.notes}</div>}
+                </div>
+              ))}
             </div>
           )}
           <div className="card">
