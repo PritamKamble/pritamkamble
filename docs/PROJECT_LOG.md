@@ -26,11 +26,15 @@ Stack: Next.js (App Router) + Supabase (Postgres, Auth, Storage, Edge Functions)
 - **OTP code as a fallback, not a replacement, for the magic link** (2026-08-07) — the recurring "PKCE code verifier not found" failure is structural to link-based auth (opening the email in a different browser/app context than the one that requested it). A typed code has no code_verifier dependency, so it sidesteps the failure class entirely rather than just improving the error message.
 - **Self-reported progress fields explicitly labeled** (2026-08-06) — `weeks_completed`/`dsa_solved` are candidate self-entry with no verification step, but were being shown to employers without that caveat (and the marketing copy on the employer page briefly overclaimed "not self-reported" — since corrected).
 - **No monetization model decided yet for the employer side** — currently "free, always." Deliberately undecided, not an oversight — flagged as open in an earlier review.
+- **Candidate project links added** (2026-08-07) — the employer page promised candidates' work is verifiable via "live project links," but no such field existed anywhere; only a resume upload. Added `candidate_profiles.project_links` (jsonb array) so the marketing claim matches what the product actually does.
+- **Interview feedback surfaced to candidates** (2026-08-07) — admin-entered evaluation notes on completed interviews were previously admin-only; the candidate only ever saw a bare score. Added an "Interview feedback" card on the candidate's My Progress tab showing the full notes, not just the number — the notes were the part that made the review valuable.
 
 ## Open items (not done, worth knowing about)
 
 - No status dropdown on the Applicants tab (Waiting → Contacted → Enrolled) — those counters exist but nothing in the UI can change them yet.
 - No lightweight CRM for employer-side relationship tracking (last touch, follow-up due) — flagged in the BDE review, not built.
+- No filter/sort on HR's Browse Candidates view (track/level) — fine at current volume, won't scale.
+- No admin digest (e.g. "who missed logging yesterday") — dashboard is check-it-yourself, not proactive.
 - `app/candidate/page.tsx` and `app/admin/page.tsx` are large single-file components (700-900 lines) — fine for now, will need splitting if they keep growing at this pace.
 - No automated tests, no CI — every verification this session was manual (browser automation + direct DB checks). Reasonable for current team size (one person), worth revisiting if that changes.
 - Email templates require a manual dashboard paste whenever `supabase/templates/*.html` changes — no push tool available to automate this from here.
