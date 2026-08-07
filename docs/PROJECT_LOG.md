@@ -31,10 +31,9 @@ Stack: Next.js (App Router) + Supabase (Postgres, Auth, Storage, Edge Functions)
 
 ## Open items (not done, worth knowing about)
 
-- No status dropdown on the Applicants tab (Waiting → Contacted → Enrolled) — those counters exist but nothing in the UI can change them yet.
 - No lightweight CRM for employer-side relationship tracking (last touch, follow-up due) — flagged in the BDE review, not built.
-- No filter/sort on HR's Browse Candidates view (track/level) — fine at current volume, won't scale.
-- No admin digest (e.g. "who missed logging yesterday") — dashboard is check-it-yourself, not proactive.
+
+**Closed 2026-08-07**: Applicants status dropdown (Waiting/Contacted/Enrolled now actually changeable, needed a new admin UPDATE RLS policy on `applicants`), HR track/level filters on Browse Candidates, and a daily 8am IST admin digest email (`admin-digest` function + cron — missed-logging candidates, applicants waiting 5+ days, interviews in next 24h, skips sending if nothing to report).
 - `app/candidate/page.tsx` and `app/admin/page.tsx` are large single-file components (700-900 lines) — fine for now, will need splitting if they keep growing at this pace.
 - No automated tests, no CI — every verification this session was manual (browser automation + direct DB checks). Reasonable for current team size (one person), worth revisiting if that changes.
 - Email templates require a manual dashboard paste whenever `supabase/templates/*.html` changes — no push tool available to automate this from here.
