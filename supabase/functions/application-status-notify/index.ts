@@ -11,6 +11,15 @@ const STATUS_COPY: Record<string, string> = {
   hired: "Great news — you got the role!",
 };
 
+const BODY_COPY: Record<string, (title: string, company: string) => string> = {
+  shortlisted: (title, company) =>
+    `Good news — you've been shortlisted for <b>${title}</b> at <b>${company}</b>. The team will be in touch about next steps.`,
+  rejected: (title, company) =>
+    `Thanks for applying to <b>${title}</b> at <b>${company}</b>. The team has decided to move forward with other candidates this time. Keep going — new roles are posted regularly.`,
+  hired: (title, company) =>
+    `You got the role! <b>${company}</b> has selected you for <b>${title}</b>. Congratulations — reach out to your mentor to plan next steps.`,
+};
+
 Deno.serve(async (req: Request) => {
   if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -56,7 +65,7 @@ Deno.serve(async (req: Request) => {
       to: candidate.email,
       subject: `${STATUS_COPY[status]}: ${job?.title || "your application"}`,
       html: `<p>Hi ${candidate.full_name || "there"},</p>` +
-        `<p>Your application for <b>${job?.title || "a role"}</b> at <b>${job?.company || ""}</b> was updated to: <b>${status}</b>.</p>` +
+        `<p>${BODY_COPY[status](job?.title || "the role", job?.company || "the company")}</p>` +
         `<p><a href="${SITE_URL}/candidate">View your applications →</a></p>` +
         `<p style="color:#888;font-size:12px">This is an automated notification from Pritam Mentor.</p>`,
     }),
