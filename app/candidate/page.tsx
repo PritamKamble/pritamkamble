@@ -7,6 +7,7 @@ import { formatDate, formatDateTime, todayUtcDateString } from "@/lib/formatDate
 import { computeReadinessScore } from "@/lib/readiness";
 
 type Profile = { id: string; full_name: string; role: string };
+type ProjectLink = { label: string; url: string };
 type CandidateProfile = {
   track: string | null;
   level: string | null;
@@ -16,6 +17,7 @@ type CandidateProfile = {
   capstone_status: string | null;
   bio: string | null;
   resume_url: string | null;
+  project_links: ProjectLink[];
   updated_at?: string | null;
 };
 type Job = {
@@ -55,6 +57,7 @@ export default function CandidatePage() {
     capstone_status: "",
     bio: "",
     resume_url: "",
+    project_links: [],
   });
   const [progressToast, setProgressToast] = useState("");
   const [resumeUploading, setResumeUploading] = useState(false);
@@ -186,11 +189,16 @@ export default function CandidatePage() {
   async function handleProgressSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!profile) return;
+    const cleanLinks = cp.project_links.filter(
+      (link) => link.label.trim() && link.url.trim(),
+    );
     const { error } = await supabase.from("candidate_profiles").upsert({
       user_id: profile.id,
       ...cp,
+      project_links: cleanLinks,
       updated_at: new Date().toISOString(),
     });
+    if (!error) setCp((prev) => ({ ...prev, project_links: cleanLinks }));
     setProgressToast(error ? `Error: ${error.message}` : "Saved ✓");
     setTimeout(() => setProgressToast(""), 2500);
   }
@@ -537,6 +545,62 @@ export default function CandidatePage() {
                 <div className="muted" style={{ fontSize: 12, marginTop: 4, color: "var(--rust)" }}>
                   {resumeError}
                 </div>
+              )}
+            </div>
+            <div className="field">
+              <label>Project links</label>
+              <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>
+                GitHub repos or live demos — this is what employers actually check before a first
+                screen.
+              </div>
+              {cp.project_links.map((link, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                  <input
+                    type="text"
+                    placeholder="Label (e.g. E-commerce store)"
+                    value={link.label}
+                    style={{ flex: "0 0 40%" }}
+                    onChange={(e) => {
+                      const next = [...cp.project_links];
+                      next[i] = { ...next[i], label: e.target.value };
+                      setCp({ ...cp, project_links: next });
+                    }}
+                  />
+                  <input
+                    type="url"
+                    placeholder="https://github.com/... or live demo URL"
+                    value={link.url}
+                    style={{ flex: 1 }}
+                    onChange={(e) => {
+                      const next = [...cp.project_links];
+                      next[i] = { ...next[i], url: e.target.value };
+                      setCp({ ...cp, project_links: next });
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn-ghost btn-sm"
+                    onClick={() => {
+                      setCp({
+                        ...cp,
+                        project_links: cp.project_links.filter((_, idx) => idx !== i),
+                      });
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              {cp.project_links.length < 5 && (
+                <button
+                  type="button"
+                  className="btn-ghost btn-sm"
+                  onClick={() =>
+                    setCp({ ...cp, project_links: [...cp.project_links, { label: "", url: "" }] })
+                  }
+                >
+                  + Add project link
+                </button>
               )}
             </div>
             <button className="btn" type="submit">

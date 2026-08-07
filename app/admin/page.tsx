@@ -19,6 +19,7 @@ type Applicant = {
   referred_by: string | null;
   created_at: string;
 };
+type ProjectLink = { label: string; url: string };
 type Candidate = {
   user_id: string;
   track: string | null;
@@ -27,6 +28,7 @@ type Candidate = {
   dsa_solved: number | null;
   mock_score: number | null;
   resume_url: string | null;
+  project_links: ProjectLink[] | null;
   profiles: { full_name: string; email: string } | null;
 };
 type Interview = {
@@ -391,6 +393,7 @@ export default function AdminPage() {
                   <th>Progress</th>
                   <th>Mock</th>
                   <th>Readiness</th>
+                  <th>Projects</th>
                   <th>Resume</th>
                   <th></th>
                 </tr>
@@ -432,6 +435,25 @@ export default function AdminPage() {
                             </span>
                           );
                         })()}
+                      </td>
+                      <td>
+                        {c.project_links && c.project_links.length > 0 ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                            {c.project_links.map((link, i) => (
+                              <a
+                                key={i}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: "var(--amber)" }}
+                              >
+                                {link.label || "Link"} →
+                              </a>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="muted">—</span>
+                        )}
                       </td>
                       <td>
                         {c.resume_url ? (

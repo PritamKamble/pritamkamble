@@ -20,6 +20,7 @@ type JobApplication = {
   status: string;
   profiles: { full_name: string; email: string } | null;
 };
+type ProjectLink = { label: string; url: string };
 type Candidate = {
   user_id: string;
   track: string | null;
@@ -28,6 +29,7 @@ type Candidate = {
   dsa_solved: number | null;
   mock_score: number | null;
   resume_url: string | null;
+  project_links: ProjectLink[] | null;
   profiles: { full_name: string; email: string } | null;
 };
 
@@ -336,6 +338,7 @@ export default function HrPage() {
                   <th>Track / Level</th>
                   <th>Progress</th>
                   <th>Mock</th>
+                  <th>Projects</th>
                   <th>Resume</th>
                 </tr>
               </thead>
@@ -356,6 +359,25 @@ export default function HrPage() {
                       {c.weeks_completed || 0}/24 wks · {c.dsa_solved || 0} DSA
                     </td>
                     <td>{c.mock_score != null ? `${c.mock_score}/10` : "—"}</td>
+                    <td>
+                      {c.project_links && c.project_links.length > 0 ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          {c.project_links.map((link, i) => (
+                            <a
+                              key={i}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: "var(--amber)" }}
+                            >
+                              {link.label || "Link"} →
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="muted">—</span>
+                      )}
+                    </td>
                     <td>
                       {c.resume_url ? (
                         <a
