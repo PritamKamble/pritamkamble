@@ -305,6 +305,7 @@ export default function HrPage() {
                           </td>
                           <td>
                             <select
+                              className="select-sm"
                               value={a.status}
                               onChange={(e) =>
                                 handleStatusChange(a.id, e.target.value)

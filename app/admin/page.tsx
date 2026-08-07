@@ -324,7 +324,7 @@ export default function AdminPage() {
             ) : applicants.length === 0 ? (
               <div className="empty">No applicants yet.</div>
             ) : (
-              <table>
+              <table className="responsive-table">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -358,16 +358,16 @@ export default function AdminPage() {
                       const phoneDigits = (r.phone || "").replace(/\D/g, "");
                       return (
                         <tr key={r.id}>
-                          <td>{r.name || "—"}</td>
-                          <td>{r.phone || "—"}</td>
-                          <td>{r.college_or_company || "—"}</td>
-                          <td>{r.track || "—"}</td>
-                          <td>{r.level || "—"}</td>
-                          <td>
+                          <td data-label="Name">{r.name || "—"}</td>
+                          <td data-label="Phone">{r.phone || "—"}</td>
+                          <td data-label="College / Company">{r.college_or_company || "—"}</td>
+                          <td data-label="Track">{r.track || "—"}</td>
+                          <td data-label="Level">{r.level || "—"}</td>
+                          <td data-label="Status">
                             <select
+                              className="select-sm"
                               value={r.status}
                               onChange={(e) => handleApplicantStatusChange(r.id, e.target.value)}
-                              style={{ fontSize: 12.5, padding: "4px 6px" }}
                             >
                               <option value="waiting">Waiting</option>
                               <option value="contacted">Contacted</option>
@@ -375,12 +375,12 @@ export default function AdminPage() {
                               <option value="closed">Closed</option>
                             </select>
                           </td>
-                          <td className="muted">{r.referral_code || "—"}</td>
-                          <td className="muted">{r.referred_by || "—"}</td>
-                          <td className="muted">
+                          <td className="muted" data-label="Referral code">{r.referral_code || "—"}</td>
+                          <td className="muted" data-label="Referred by">{r.referred_by || "—"}</td>
+                          <td className="muted" data-label="Applied">
                             {formatDateTime(r.created_at)}
                           </td>
-                          <td>
+                          <td data-label="">
                             {phoneDigits && (
                               <a
                                 className="btn-ghost btn-sm"
