@@ -28,6 +28,7 @@ Stack: Next.js (App Router) + Supabase (Postgres, Auth, Storage, Edge Functions)
 - **No monetization model decided yet for the employer side** — currently "free, always." Deliberately undecided, not an oversight — flagged as open in an earlier review.
 - **Candidate project links added** (2026-08-07) — the employer page promised candidates' work is verifiable via "live project links," but no such field existed anywhere; only a resume upload. Added `candidate_profiles.project_links` (jsonb array) so the marketing claim matches what the product actually does.
 - **Interview feedback surfaced to candidates** (2026-08-07) — admin-entered evaluation notes on completed interviews were previously admin-only; the candidate only ever saw a bare score. Added an "Interview feedback" card on the candidate's My Progress tab showing the full notes, not just the number — the notes were the part that made the review valuable.
+- **Video calling as a plain meeting-link field, not built-in calling** (2026-08-07) — offered candidate a choice between a meeting-link field, embedded Jitsi rooms, or full custom video infra; chose the meeting-link field as the lowest-effort option that still solves the actual problem (admin already uses Zoom/Meet day to day). Admin pastes a link when scheduling (`interviews.meeting_link`); candidate sees a "Join call" button on the upcoming-interview card, admin sees a "Join →" link in the Interviews tab.
 
 ## Open items (not done, worth knowing about)
 
