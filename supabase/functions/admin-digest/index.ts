@@ -61,7 +61,22 @@ Deno.serve(async (req: Request) => {
     .gte("scheduled_at", today.toISOString())
     .lte("scheduled_at", in24h.toISOString());
 
-  if (missedYesterday.length === 0 && (staleApplicants || []).length === 0 && (upcomingInterviews || []).length === 0) {
+  // Employer follow-ups due today or earlier.
+  const todayStr = today.toISOString().slice(0, 10);
+  const { data: overdueFollowUps } = await supabase
+    .from("profiles")
+    .select("full_name, company_name, follow_up_due")
+    .eq("role", "hr")
+    .lte("follow_up_due", todayStr)
+    .not("follow_up_due", "is", null)
+    .order("follow_up_due", { ascending: true });
+
+  if (
+    missedYesterday.length === 0 &&
+    (staleApplicants || []).length === 0 &&
+    (upcomingInterviews || []).length === 0 &&
+    (overdueFollowUps || []).length === 0
+  ) {
     return new Response(JSON.stringify({ skipped: true, reason: "nothing to report" }), {
       headers: { "Content-Type": "application/json" },
     });
@@ -99,6 +114,16 @@ Deno.serve(async (req: Request) => {
     );
   }
 
+  if ((overdueFollowUps || []).length > 0) {
+    sections.push(
+      `<h3 style="margin:16px 0 6px;">Employer follow-ups due (${overdueFollowUps!.length})</h3><ul>` +
+        overdueFollowUps!
+          .map((f) => `<li>${f.company_name || f.full_name || "Unknown"} - due ${f.follow_up_due}</li>`)
+          .join("") +
+        `</ul>`,
+    );
+  }
+
   let sent = 0;
   const failures: string[] = [];
   for (const admin of admins || []) {
@@ -126,7 +151,14 @@ Deno.serve(async (req: Request) => {
   }
 
   return new Response(
-    JSON.stringify({ missedYesterday: missedYesterday.length, staleApplicants: (staleApplicants || []).length, upcomingInterviews: (upcomingInterviews || []).length, sent, failures }),
+    JSON.stringify({
+      missedYesterday: missedYesterday.length,
+      staleApplicants: (staleApplicants || []).length,
+      upcomingInterviews: (upcomingInterviews || []).length,
+      overdueFollowUps: (overdueFollowUps || []).length,
+      sent,
+      failures,
+    }),
     { headers: { "Content-Type": "application/json" } },
   );
 });

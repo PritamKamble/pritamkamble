@@ -50,7 +50,17 @@ type DailyLog = {
   profiles: { full_name: string; email: string } | null;
 };
 
-const TABS = ["applicants", "candidates", "interviews", "dailylogs"] as const;
+type Employer = {
+  id: string;
+  full_name: string;
+  email: string;
+  company_name: string | null;
+  admin_notes: string | null;
+  last_contacted_at: string | null;
+  follow_up_due: string | null;
+};
+
+const TABS = ["applicants", "candidates", "interviews", "dailylogs", "employers"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function AdminPage() {
@@ -77,6 +87,11 @@ export default function AdminPage() {
   const [completeNotes, setCompleteNotes] = useState("");
 
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
+
+  const [employers, setEmployers] = useState<Employer[]>([]);
+  const [editingEmployerId, setEditingEmployerId] = useState<string | null>(null);
+  const [draftNotes, setDraftNotes] = useState("");
+  const [draftFollowUp, setDraftFollowUp] = useState("");
 
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
@@ -122,6 +137,7 @@ export default function AdminPage() {
       loadCandidates();
       loadInterviews();
       loadDailyLogs();
+      loadEmployers();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,6 +184,47 @@ export default function AdminPage() {
       .select("id, candidate_id, log_date, content, profiles!daily_logs_candidate_id_fkey(full_name, email)")
       .order("log_date", { ascending: false });
     setDailyLogs((data as unknown as DailyLog[]) || []);
+  }
+
+  async function loadEmployers() {
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, company_name, admin_notes, last_contacted_at, follow_up_due")
+      .eq("role", "hr")
+      .order("full_name");
+    setEmployers((data as unknown as Employer[]) || []);
+  }
+
+  async function handleMarkContacted(id: string) {
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("profiles")
+      .update({ last_contacted_at: now })
+      .eq("id", id);
+    if (!error) {
+      setEmployers((prev) => prev.map((e) => (e.id === id ? { ...e, last_contacted_at: now } : e)));
+    }
+  }
+
+  function startEditingEmployer(e: Employer) {
+    setEditingEmployerId(e.id);
+    setDraftNotes(e.admin_notes || "");
+    setDraftFollowUp(e.follow_up_due || "");
+  }
+
+  async function handleSaveEmployer(id: string) {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ admin_notes: draftNotes.trim() || null, follow_up_due: draftFollowUp || null })
+      .eq("id", id);
+    if (!error) {
+      setEmployers((prev) =>
+        prev.map((e) =>
+          e.id === id ? { ...e, admin_notes: draftNotes.trim() || null, follow_up_due: draftFollowUp || null } : e,
+        ),
+      );
+      setEditingEmployerId(null);
+    }
   }
 
   async function handleSchedule(candidateId: string) {
@@ -260,6 +317,12 @@ export default function AdminPage() {
           onClick={() => setTab("dailylogs")}
         >
           Daily Logs
+        </div>
+        <div
+          className={`tabbtn ${tab === "employers" ? "active" : ""}`}
+          onClick={() => setTab("employers")}
+        >
+          Employers
         </div>
       </div>
 
@@ -734,6 +797,112 @@ export default function AdminPage() {
                     <td>{l.content}</td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {tab === "employers" && (
+        <div className="card" style={{ overflowX: "auto" }}>
+          {employers.length === 0 ? (
+            <div className="empty">No employer accounts yet.</div>
+          ) : (
+            <table className="responsive-table">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Contact</th>
+                  <th>Last contacted</th>
+                  <th>Follow-up due</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {employers.map((e) => {
+                  const overdue = e.follow_up_due && e.follow_up_due < new Date().toISOString().slice(0, 10);
+                  return (
+                    <tr key={e.id}>
+                      <td data-label="Company">{e.company_name || "—"}</td>
+                      <td data-label="Contact">
+                        {e.full_name || "—"}
+                        <br />
+                        <span className="muted">{e.email}</span>
+                      </td>
+                      <td data-label="Last contacted" className="muted">
+                        {e.last_contacted_at ? formatDateTime(e.last_contacted_at) : "Never"}
+                      </td>
+                      <td data-label="Follow-up due" style={overdue ? { color: "var(--rust)" } : undefined}>
+                        {e.follow_up_due ? formatDate(e.follow_up_due) : "—"}
+                      </td>
+                      <td data-label="Notes" style={{ maxWidth: 220, whiteSpace: "pre-wrap" }}>
+                        {editingEmployerId === e.id ? null : e.admin_notes || "—"}
+                      </td>
+                      <td data-label="">
+                        {editingEmployerId === e.id ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 200 }}>
+                            <textarea
+                              value={draftNotes}
+                              onChange={(ev) => setDraftNotes(ev.target.value)}
+                              placeholder="Notes..."
+                              style={{
+                                width: "100%",
+                                minHeight: 60,
+                                background: "var(--bg)",
+                                border: "1px solid var(--line)",
+                                borderRadius: 6,
+                                padding: "6px 8px",
+                                color: "var(--ink)",
+                                fontFamily: "var(--sans)",
+                                fontSize: 12.5,
+                              }}
+                            />
+                            <input
+                              type="date"
+                              className="select-sm"
+                              value={draftFollowUp}
+                              onChange={(ev) => setDraftFollowUp(ev.target.value)}
+                            />
+                            <div style={{ display: "flex", gap: 6 }}>
+                              <button
+                                className="btn btn-sm"
+                                type="button"
+                                onClick={() => handleSaveEmployer(e.id)}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="btn-ghost btn-sm"
+                                type="button"
+                                onClick={() => setEditingEmployerId(null)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            <button
+                              className="btn-ghost btn-sm"
+                              type="button"
+                              onClick={() => handleMarkContacted(e.id)}
+                            >
+                              Mark contacted
+                            </button>
+                            <button
+                              className="btn-ghost btn-sm"
+                              type="button"
+                              onClick={() => startEditingEmployer(e)}
+                            >
+                              Edit
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
