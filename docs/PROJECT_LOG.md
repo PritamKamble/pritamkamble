@@ -1,0 +1,42 @@
+# Project log
+
+Living record of decisions, architecture, and open items for the Pritam Mentor platform. Git history is the source of truth for *what* changed and *when* — this doc exists for the *why*, and for what's still open, since that context doesn't survive in commit messages alone. Update this when a session makes a real decision or ships something structural, not for every small fix.
+
+## What this product is
+
+A 1-on-1 mentorship platform (Full-Stack + GenAI) with three sides:
+- **Candidates** — invite-only, track daily work logs, apply to jobs, self-report progress
+- **HR/employers** — self-serve signup, post jobs, browse candidates
+- **Admin** (the mentor) — manages the waitlist funnel, invites candidates, schedules interviews, reviews daily logs
+
+Stack: Next.js (App Router) + Supabase (Postgres, Auth, Storage, Edge Functions), deployed on Vercel. No paid tier assumptions — kept intentionally lean for early-stage volume.
+
+## Current architecture at a glance
+
+- **Auth**: fully passwordless. Every role logs in via magic-link email, with a 6-digit OTP code as a fallback for when the link fails to click through cleanly (common on mobile, cross-app). Candidates are invite-only — no self-serve candidate signup exists anywhere; HR keeps self-serve signup since there's no queue/scarcity story to protect there.
+- **Single auth callback** (`/auth/callback`) handles session establishment for every flow (login, invite, HR signup), and handles both auth flow types Supabase can hand back (`?code=` PKCE and `#access_token=` implicit) since admin-generated links (invites) use implicit while browser-initiated ones use PKCE.
+- **RLS everywhere** — all 7 tables have row-level security, verified by direct attack-testing (not just reading policy text) at least once this session.
+- **IaC hygiene**: `supabase/migrations/`, `supabase/functions/`, and `supabase/templates/` in git are the reviewable source of truth. Migrations and edge functions actually deploy via the MCP tool; email templates are dashboard-only (no push tool available) so those still need a manual paste when changed — documented in `supabase/templates/README.md`.
+- **Daily-nudge & status-change emails**: two Edge Functions (`daily-nudge`, `application-status-notify`) triggered by `pg_cron` and a DB trigger respectively, both authenticated via a shared secret stored in Supabase Vault (not in git, not hardcoded in any migration).
+
+## Key decisions and why
+
+- **Candidates invite-only, HR self-serve** (2026-08-06) — the whole landing page sells "small batch, personal mentorship, apply to a queue," but self-serve candidate signup let anyone bypass that entirely. Closed by removing the signup path and gating creation behind an admin-only "Invite a candidate" action.
+- **Passwordless over password+reset** (2026-08-06/07) — password-reset redirect bugs kept recurring (wrong domain, missing allow-list entries, wrong template variables) across several rounds of debugging. Removing passwords entirely removed the whole flow class, not just patched the symptom.
+- **OTP code as a fallback, not a replacement, for the magic link** (2026-08-07) — the recurring "PKCE code verifier not found" failure is structural to link-based auth (opening the email in a different browser/app context than the one that requested it). A typed code has no code_verifier dependency, so it sidesteps the failure class entirely rather than just improving the error message.
+- **Self-reported progress fields explicitly labeled** (2026-08-06) — `weeks_completed`/`dsa_solved` are candidate self-entry with no verification step, but were being shown to employers without that caveat (and the marketing copy on the employer page briefly overclaimed "not self-reported" — since corrected).
+- **No monetization model decided yet for the employer side** — currently "free, always." Deliberately undecided, not an oversight — flagged as open in an earlier review.
+
+## Open items (not done, worth knowing about)
+
+- No status dropdown on the Applicants tab (Waiting → Contacted → Enrolled) — those counters exist but nothing in the UI can change them yet.
+- No lightweight CRM for employer-side relationship tracking (last touch, follow-up due) — flagged in the BDE review, not built.
+- `app/candidate/page.tsx` and `app/admin/page.tsx` are large single-file components (700-900 lines) — fine for now, will need splitting if they keep growing at this pace.
+- No automated tests, no CI — every verification this session was manual (browser automation + direct DB checks). Reasonable for current team size (one person), worth revisiting if that changes.
+- Email templates require a manual dashboard paste whenever `supabase/templates/*.html` changes — no push tool available to automate this from here.
+
+## Operational notes for future sessions
+
+- To test any auth flow without real inbox access: `supabase.auth.admin.generateLink()` via a temporary edge function returns a usable `action_link`/`email_otp` without sending real email. Always neuter or redeploy the debug function to a no-op afterward — never leave a live secret-gated admin-capability endpoint sitting around.
+- The project's Supabase ref is `qhcstjlyooxjekzggaqp`. Production domain is `pritamkamble.com`, admin subdomain `admin.pritamkamble.com`.
+- WhatsApp outreach templates live in `docs/whatsapp-templates.md`.
