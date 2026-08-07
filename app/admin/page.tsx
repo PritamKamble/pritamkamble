@@ -294,36 +294,41 @@ export default function AdminPage() {
       {profile && <PortalHeader name={profile.full_name} role={profile.role} />}
 
       <div className="tabs">
-        <div
+        <button
+          type="button"
           className={`tabbtn ${tab === "applicants" ? "active" : ""}`}
           onClick={() => setTab("applicants")}
         >
           Applicants
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "candidates" ? "active" : ""}`}
           onClick={() => setTab("candidates")}
         >
           Candidates
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "interviews" ? "active" : ""}`}
           onClick={() => setTab("interviews")}
         >
           Interviews
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "dailylogs" ? "active" : ""}`}
           onClick={() => setTab("dailylogs")}
         >
           Daily Logs
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "employers" ? "active" : ""}`}
           onClick={() => setTab("employers")}
         >
           Employers
-        </div>
+        </button>
       </div>
 
       {tab === "applicants" && (
@@ -638,24 +643,27 @@ export default function AdminPage() {
       {tab === "interviews" && (
         <>
           <div className="tabs">
-            <div
+            <button
+              type="button"
               className={`tabbtn ${interviewFilter === "upcoming" ? "active" : ""}`}
               onClick={() => setInterviewFilter("upcoming")}
             >
               Upcoming
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               className={`tabbtn ${interviewFilter === "completed" ? "active" : ""}`}
               onClick={() => setInterviewFilter("completed")}
             >
               Completed
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               className={`tabbtn ${interviewFilter === "all" ? "active" : ""}`}
               onClick={() => setInterviewFilter("all")}
             >
               All
-            </div>
+            </button>
           </div>
 
           <div className="card" style={{ overflowX: "auto" }}>

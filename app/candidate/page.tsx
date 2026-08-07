@@ -6,7 +6,7 @@ import { PortalHeader } from "@/components/PortalHeader";
 import { formatDate, formatDateTime, todayUtcDateString } from "@/lib/formatDate";
 import { computeReadinessScore } from "@/lib/readiness";
 
-type Profile = { id: string; full_name: string; role: string };
+type Profile = { id: string; full_name: string; role: string; email?: string; created_at?: string };
 type ProjectLink = { label: string; url: string };
 type CandidateProfile = {
   track: string | null;
@@ -348,36 +348,41 @@ export default function CandidatePage() {
       <PortalHeader name={profile.full_name} role={profile.role} />
 
       <div className="tabs">
-        <div
+        <button
+          type="button"
           className={`tabbtn ${tab === "progress" ? "active" : ""}`}
           onClick={() => setTab("progress")}
         >
           My Progress
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "jobs" ? "active" : ""}`}
           onClick={() => setTab("jobs")}
         >
           Job Listings
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "applications" ? "active" : ""}`}
           onClick={() => setTab("applications")}
         >
           My Applications
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "dailylog" ? "active" : ""}`}
           onClick={() => setTab("dailylog")}
         >
           Daily Log
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "account" ? "active" : ""}`}
           onClick={() => setTab("account")}
         >
           Account
-        </div>
+        </button>
       </div>
 
       {tab === "progress" && (
@@ -392,11 +397,13 @@ export default function CandidatePage() {
                 fontSize: 32,
                 fontWeight: 700,
                 color:
-                  readiness.score >= 70
-                    ? "var(--green)"
-                    : readiness.score >= 40
-                      ? "var(--amber)"
-                      : "var(--rust)",
+                  readiness.consistencyPct == null && readiness.mockAvg == null
+                    ? "var(--muted)"
+                    : readiness.score >= 70
+                      ? "var(--green)"
+                      : readiness.score >= 40
+                        ? "var(--amber)"
+                        : "var(--rust)",
               }}
             >
               {readiness.score}
@@ -696,6 +703,29 @@ export default function CandidatePage() {
       {tab === "jobs" && (
         <div className="card">
           <h2>Open positions</h2>
+          {!cp.resume_url && (
+            <div
+              className="muted"
+              style={{
+                fontSize: 12.5,
+                border: "1px solid var(--line)",
+                borderRadius: 6,
+                padding: "8px 12px",
+                marginBottom: 12,
+              }}
+            >
+              You haven&apos;t uploaded a resume yet — employers may skip applications without one.{" "}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTab("progress");
+                }}
+              >
+                Add it now →
+              </a>
+            </div>
+          )}
           {jobsToast && <div className="msg">{jobsToast}</div>}
           {jobs.length === 0 ? (
             <div className="empty">No open jobs right now.</div>
@@ -910,6 +940,16 @@ export default function CandidatePage() {
         <>
           <div className="card">
             <h2>Profile</h2>
+            <div
+              className="muted"
+              style={{ fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}
+            >
+              <div>Email: {profile.email || "—"}</div>
+              <div>
+                Track: {cp.track || "—"} · Level: {cp.level || "—"}
+              </div>
+              {profile.created_at && <div>Member since {formatDate(profile.created_at)}</div>}
+            </div>
             <form onSubmit={handleUpdateName}>
               <div className="field">
                 <label>Full name</label>

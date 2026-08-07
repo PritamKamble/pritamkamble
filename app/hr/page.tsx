@@ -155,24 +155,27 @@ export default function HrPage() {
       <PortalHeader name={profile.full_name} role={profile.role} />
 
       <div className="tabs">
-        <div
+        <button
+          type="button"
           className={`tabbtn ${tab === "post" ? "active" : ""}`}
           onClick={() => setTab("post")}
         >
           Post a Job
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "myJobs" ? "active" : ""}`}
           onClick={() => setTab("myJobs")}
         >
           My Jobs
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           className={`tabbtn ${tab === "candidates" ? "active" : ""}`}
           onClick={() => setTab("candidates")}
         >
           Browse Candidates
-        </div>
+        </button>
       </div>
 
       {tab === "post" && (

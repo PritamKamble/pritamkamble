@@ -200,20 +200,22 @@ function LoginForm() {
                 padding: 4,
               }}
             >
-              <div
+              <button
+                type="button"
                 className={`tabbtn ${role === "candidate" ? "active" : ""}`}
                 style={{ flex: 1, textAlign: "center" }}
                 onClick={() => handleRoleChange("candidate")}
               >
                 Candidate
-              </div>
-              <div
+              </button>
+              <button
+                type="button"
                 className={`tabbtn ${role === "hr" ? "active" : ""}`}
                 style={{ flex: 1, textAlign: "center" }}
                 onClick={() => handleRoleChange("hr")}
               >
                 HR / Recruiter
-              </div>
+              </button>
             </div>
 
             {role === "hr" && (
@@ -226,20 +228,22 @@ function LoginForm() {
                   padding: 4,
                 }}
               >
-                <div
+                <button
+                  type="button"
                   className={`tabbtn ${mode === "login" ? "active" : ""}`}
                   style={{ flex: 1, textAlign: "center" }}
                   onClick={() => setMode("login")}
                 >
                   Log in
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   className={`tabbtn ${mode === "signup" ? "active" : ""}`}
                   style={{ flex: 1, textAlign: "center" }}
                   onClick={() => setMode("signup")}
                 >
                   Sign up
-                </div>
+                </button>
               </div>
             )}
 
