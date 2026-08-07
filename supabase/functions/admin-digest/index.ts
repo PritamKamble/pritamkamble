@@ -5,6 +5,22 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM_EMAIL = Deno.env.get("NUDGE_FROM_EMAIL") || "noreply@pritamkamble.com";
 const SITE_URL = Deno.env.get("SITE_URL") || "https://pritamkamble.com";
 
+function emailShell(preheader: string, bodyHtml: string): string {
+  return `<div style="background:#f4f4f2; padding:32px 16px; font-family:-apple-system,Segoe UI,Roboto,sans-serif;">
+  <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</span>
+  <div style="max-width:460px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e5e0;">
+    <div style="background:#0E1210; padding:20px 28px;">
+      <span style="font-family:'Courier New',monospace; color:#8B9690; font-size:14px;">~/</span><span style="font-family:'Courier New',monospace; color:#5FBF77; font-size:14px; font-weight:700;">pritam</span><span style="font-family:'Courier New',monospace; color:#EDEFEA; font-size:14px; font-weight:700;">.mentor</span>
+    </div>
+    <div style="padding:32px 28px; color:#333;">${bodyHtml}</div>
+  </div>
+</div>`;
+}
+
+function emailButton(href: string, label: string): string {
+  return `<div style="text-align:center; margin-top:12px;"><a href="${href}" style="display:inline-block; background:#5FBF77; color:#0B140E; text-decoration:none; font-weight:700; font-size:14px; padding:13px 28px; border-radius:6px;">${label}</a></div>`;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -85,25 +101,34 @@ Deno.serve(async (req: Request) => {
   const { data: admins } = await supabase.from("profiles").select("email").eq("role", "admin");
 
   const sections: string[] = [];
+  const textSections: string[] = [];
   if (missedYesterday.length > 0) {
     sections.push(
-      `<h3 style="margin:16px 0 6px;">Missed logging yesterday (${missedYesterday.length})</h3><ul>` +
+      `<h3 style="margin:16px 0 6px; font-size:14px; color:#111;">Missed logging yesterday (${missedYesterday.length})</h3><ul style="margin:0; padding-left:20px; font-size:13.5px;">` +
         missedYesterday.map((c) => `<li>${c.full_name || "Unnamed"}</li>`).join("") +
         `</ul>`,
+    );
+    textSections.push(
+      `Missed logging yesterday (${missedYesterday.length}):\n` +
+        missedYesterday.map((c) => `- ${c.full_name || "Unnamed"}`).join("\n"),
     );
   }
   if ((staleApplicants || []).length > 0) {
     sections.push(
-      `<h3 style="margin:16px 0 6px;">Waiting 5+ days, not yet contacted (${staleApplicants!.length})</h3><ul>` +
+      `<h3 style="margin:16px 0 6px; font-size:14px; color:#111;">Waiting 5+ days, not yet contacted (${staleApplicants!.length})</h3><ul style="margin:0; padding-left:20px; font-size:13.5px;">` +
         staleApplicants!
           .map((a) => `<li>${a.name} - applied ${new Date(a.created_at).toDateString()}</li>`)
           .join("") +
         `</ul>`,
     );
+    textSections.push(
+      `Waiting 5+ days, not yet contacted (${staleApplicants!.length}):\n` +
+        staleApplicants!.map((a) => `- ${a.name} - applied ${new Date(a.created_at).toDateString()}`).join("\n"),
+    );
   }
   if ((upcomingInterviews || []).length > 0) {
     sections.push(
-      `<h3 style="margin:16px 0 6px;">Interviews in the next 24h (${upcomingInterviews!.length})</h3><ul>` +
+      `<h3 style="margin:16px 0 6px; font-size:14px; color:#111;">Interviews in the next 24h (${upcomingInterviews!.length})</h3><ul style="margin:0; padding-left:20px; font-size:13.5px;">` +
         upcomingInterviews!
           .map((i) => {
             const name = (i.profiles as unknown as { full_name: string } | null)?.full_name || "Unknown";
@@ -112,17 +137,43 @@ Deno.serve(async (req: Request) => {
           .join("") +
         `</ul>`,
     );
+    textSections.push(
+      `Interviews in the next 24h (${upcomingInterviews!.length}):\n` +
+        upcomingInterviews!
+          .map((i) => {
+            const name = (i.profiles as unknown as { full_name: string } | null)?.full_name || "Unknown";
+            return `- ${name} - ${new Date(i.scheduled_at).toLocaleString()}`;
+          })
+          .join("\n"),
+    );
   }
 
   if ((overdueFollowUps || []).length > 0) {
     sections.push(
-      `<h3 style="margin:16px 0 6px;">Employer follow-ups due (${overdueFollowUps!.length})</h3><ul>` +
+      `<h3 style="margin:16px 0 6px; font-size:14px; color:#111;">Employer follow-ups due (${overdueFollowUps!.length})</h3><ul style="margin:0; padding-left:20px; font-size:13.5px;">` +
         overdueFollowUps!
           .map((f) => `<li>${f.company_name || f.full_name || "Unknown"} - due ${f.follow_up_due}</li>`)
           .join("") +
         `</ul>`,
     );
+    textSections.push(
+      `Employer follow-ups due (${overdueFollowUps!.length}):\n` +
+        overdueFollowUps!.map((f) => `- ${f.company_name || f.full_name || "Unknown"} - due ${f.follow_up_due}`).join("\n"),
+    );
   }
+
+  const itemCount =
+    missedYesterday.length + (staleApplicants || []).length + (upcomingInterviews || []).length +
+    (overdueFollowUps || []).length;
+  const preheader = `${itemCount} item${itemCount === 1 ? "" : "s"} need your attention today.`;
+
+  const html = emailShell(
+    preheader,
+    `<h1 style="margin:0 0 16px; font-size:20px; color:#111;">Daily digest</h1>` +
+      sections.join("") +
+      emailButton(`${SITE_URL}/admin`, "Open admin panel →"),
+  );
+  const text = `Daily digest - Pritam Mentor\n\n${textSections.join("\n\n")}\n\nOpen admin panel: ${SITE_URL}/admin`;
 
   let sent = 0;
   const failures: string[] = [];
@@ -139,8 +190,8 @@ Deno.serve(async (req: Request) => {
           from: FROM_EMAIL,
           to: admin.email,
           subject: "Daily digest - Pritam Mentor",
-          html: `<div style="font-family:sans-serif;">${sections.join("")}` +
-            `<p style="margin-top:20px;"><a href="${SITE_URL}/admin">Open admin panel →</a></p></div>`,
+          html,
+          text,
         }),
       });
       if (res.ok) sent++;

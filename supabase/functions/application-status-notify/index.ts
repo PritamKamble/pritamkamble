@@ -20,6 +20,22 @@ const BODY_COPY: Record<string, (title: string, company: string) => string> = {
     `You got the role! <b>${company}</b> has selected you for <b>${title}</b>. Congratulations — reach out to your mentor to plan next steps.`,
 };
 
+function emailShell(preheader: string, bodyHtml: string): string {
+  return `<div style="background:#f4f4f2; padding:32px 16px; font-family:-apple-system,Segoe UI,Roboto,sans-serif;">
+  <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</span>
+  <div style="max-width:420px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e5e0;">
+    <div style="background:#0E1210; padding:20px 28px;">
+      <span style="font-family:'Courier New',monospace; color:#8B9690; font-size:14px;">~/</span><span style="font-family:'Courier New',monospace; color:#5FBF77; font-size:14px; font-weight:700;">pritam</span><span style="font-family:'Courier New',monospace; color:#EDEFEA; font-size:14px; font-weight:700;">.mentor</span>
+    </div>
+    <div style="padding:32px 28px;">${bodyHtml}</div>
+  </div>
+</div>`;
+}
+
+function emailButton(href: string, label: string): string {
+  return `<div style="text-align:center; margin-bottom:8px;"><a href="${href}" style="display:inline-block; background:#5FBF77; color:#0B140E; text-decoration:none; font-weight:700; font-size:14px; padding:13px 28px; border-radius:6px;">${label}</a></div>`;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -64,10 +80,15 @@ Deno.serve(async (req: Request) => {
       from: FROM_EMAIL,
       to: candidate.email,
       subject: `${STATUS_COPY[status]}: ${job?.title || "your application"}`,
-      html: `<p>Hi ${candidate.full_name || "there"},</p>` +
-        `<p>${BODY_COPY[status](job?.title || "the role", job?.company || "the company")}</p>` +
-        `<p><a href="${SITE_URL}/candidate">View your applications →</a></p>` +
-        `<p style="color:#888;font-size:12px">This is an automated notification from Pritam Mentor.</p>`,
+      html: emailShell(
+        STATUS_COPY[status],
+        `<h1 style="margin:0 0 12px; font-size:20px; color:#111;">${STATUS_COPY[status]}</h1>` +
+          `<p style="margin:0 0 8px; font-size:14.5px; line-height:1.6; color:#555;">Hi ${candidate.full_name || "there"},</p>` +
+          `<p style="margin:0 0 24px; font-size:14.5px; line-height:1.6; color:#555;">${BODY_COPY[status](job?.title || "the role", job?.company || "the company")}</p>` +
+          emailButton(`${SITE_URL}/candidate`, "View your applications →") +
+          `<p style="margin:24px 0 0; font-size:12px; color:#999; text-align:center;">This is an automated notification from Pritam Mentor.</p>`,
+      ),
+      text: `Hi ${candidate.full_name || "there"},\n\n${BODY_COPY[status](job?.title || "the role", job?.company || "the company").replace(/<\/?b>/g, "")}\n\nView your applications: ${SITE_URL}/candidate\n\n— Pritam Mentor`,
     }),
   });
 
