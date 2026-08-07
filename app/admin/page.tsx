@@ -60,6 +60,18 @@ type Employer = {
   follow_up_due: string | null;
 };
 
+type Opening = { title: string; type: string; track: string | null };
+type EmployerLead = {
+  id: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string | null;
+  company_name: string | null;
+  openings: Opening[];
+  status: string;
+  created_at: string;
+};
+
 type BlogSource = { title: string; url: string; snippet: string };
 type BlogPost = {
   id: string;
@@ -105,6 +117,8 @@ export default function AdminPage() {
   const [editingEmployerId, setEditingEmployerId] = useState<string | null>(null);
   const [draftNotes, setDraftNotes] = useState("");
   const [draftFollowUp, setDraftFollowUp] = useState("");
+
+  const [employerLeads, setEmployerLeads] = useState<EmployerLead[]>([]);
 
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [blogFilter, setBlogFilter] = useState<"pending" | "approved" | "rejected" | "all">("pending");
@@ -155,6 +169,7 @@ export default function AdminPage() {
       loadInterviews();
       loadDailyLogs();
       loadEmployers();
+      loadEmployerLeads();
       loadBlogPosts();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -242,6 +257,21 @@ export default function AdminPage() {
         ),
       );
       setEditingEmployerId(null);
+    }
+  }
+
+  async function loadEmployerLeads() {
+    const { data } = await supabase
+      .from("employer_leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    setEmployerLeads((data as unknown as EmployerLead[]) || []);
+  }
+
+  async function handleLeadStatus(id: string, status: string) {
+    const { error } = await supabase.from("employer_leads").update({ status }).eq("id", id);
+    if (!error) {
+      setEmployerLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
     }
   }
 
@@ -859,7 +889,63 @@ export default function AdminPage() {
       )}
 
       {tab === "employers" && (
-        <div className="card" style={{ overflowX: "auto" }}>
+        <>
+          <div className="card" style={{ overflowX: "auto", marginBottom: 20 }}>
+            <h2>
+              Opening leads{" "}
+              {employerLeads.filter((l) => l.status === "new").length > 0 &&
+                `(${employerLeads.filter((l) => l.status === "new").length} new)`}
+            </h2>
+            {employerLeads.length === 0 ? (
+              <div className="empty">No leads submitted yet.</div>
+            ) : (
+              employerLeads.map((lead) => (
+                <div
+                  key={lead.id}
+                  style={{
+                    border: "1px solid var(--line)",
+                    borderRadius: 8,
+                    padding: 16,
+                    marginTop: 14,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                    <div>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: 14 }}>
+                        {lead.company_name || lead.contact_name}
+                      </div>
+                      <div className="muted" style={{ fontSize: 12.5 }}>
+                        {lead.contact_name} · {lead.contact_email}
+                        {lead.contact_phone && ` · ${lead.contact_phone}`}
+                      </div>
+                    </div>
+                    <select
+                      className="select-sm"
+                      value={lead.status}
+                      onChange={(e) => handleLeadStatus(lead.id, e.target.value)}
+                    >
+                      <option value="new">New</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="converted">Converted</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                  </div>
+                  <ul style={{ marginTop: 10, paddingLeft: 18, fontSize: 13 }}>
+                    {lead.openings.map((o, i) => (
+                      <li key={i}>
+                        {o.title} — {o.type}
+                        {o.track && ` · ${o.track}`}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="muted" style={{ fontSize: 11.5, marginTop: 8 }}>
+                    Submitted {formatDate(lead.created_at)}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          <div className="card" style={{ overflowX: "auto" }}>
           {employers.length === 0 ? (
             <div className="empty">No employer accounts yet.</div>
           ) : (
@@ -961,7 +1047,8 @@ export default function AdminPage() {
               </tbody>
             </table>
           )}
-        </div>
+          </div>
+        </>
       )}
 
       {tab === "blog" && (
