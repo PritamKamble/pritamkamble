@@ -38,6 +38,7 @@ type Interview = {
   status: string;
   score: number | null;
   notes: string | null;
+  meeting_link: string | null;
   profiles: { full_name: string; email: string } | null;
 };
 
@@ -64,6 +65,7 @@ export default function AdminPage() {
   const [scheduleFor, setScheduleFor] = useState<string | null>(null);
   const [scheduleAt, setScheduleAt] = useState("");
   const [scheduleNotes, setScheduleNotes] = useState("");
+  const [scheduleMeetingLink, setScheduleMeetingLink] = useState("");
   const [scheduleToast, setScheduleToast] = useState("");
 
   const [interviews, setInterviews] = useState<Interview[]>([]);
@@ -175,12 +177,14 @@ export default function AdminPage() {
       interviewer_id: profile.id,
       scheduled_at: new Date(scheduleAt).toISOString(),
       notes: scheduleNotes.trim() || null,
+      meeting_link: scheduleMeetingLink.trim() || null,
     });
     setScheduleToast(error ? `Error: ${error.message}` : "Interview scheduled ✓");
     if (!error) {
       setScheduleFor(null);
       setScheduleAt("");
       setScheduleNotes("");
+      setScheduleMeetingLink("");
       loadInterviews();
     }
     setTimeout(() => setScheduleToast(""), 2500);
@@ -532,6 +536,18 @@ export default function AdminPage() {
                                 placeholder="What to cover, panel, etc."
                               />
                             </div>
+                            <div
+                              className="field"
+                              style={{ marginBottom: 0, flex: 1, minWidth: 200 }}
+                            >
+                              <label>Meeting link (optional)</label>
+                              <input
+                                type="url"
+                                value={scheduleMeetingLink}
+                                onChange={(e) => setScheduleMeetingLink(e.target.value)}
+                                placeholder="Zoom / Google Meet link"
+                              />
+                            </div>
                             <button
                               className="btn btn-sm"
                               disabled={!scheduleAt}
@@ -591,6 +607,7 @@ export default function AdminPage() {
                     <th>Status</th>
                     <th>Score</th>
                     <th>Notes</th>
+                    <th>Call</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -607,6 +624,20 @@ export default function AdminPage() {
                         <td>{i.status}</td>
                         <td>{i.score != null ? i.score : "—"}</td>
                         <td className="muted">{i.notes || "—"}</td>
+                        <td>
+                          {i.meeting_link ? (
+                            <a
+                              href={i.meeting_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: "var(--amber)" }}
+                            >
+                              Join →
+                            </a>
+                          ) : (
+                            <span className="muted">—</span>
+                          )}
+                        </td>
                         <td>
                           {i.status === "scheduled" && (
                             <button
@@ -625,7 +656,7 @@ export default function AdminPage() {
                       </tr>
                       {completingId === i.id && (
                         <tr>
-                          <td colSpan={6}>
+                          <td colSpan={7}>
                             <div
                               style={{
                                 display: "flex",

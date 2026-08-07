@@ -70,6 +70,7 @@ export default function CandidatePage() {
   const [jobsToast, setJobsToast] = useState("");
   const [upcomingInterview, setUpcomingInterview] = useState<{
     scheduled_at: string;
+    meeting_link: string | null;
   } | null>(null);
 
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
@@ -137,7 +138,7 @@ export default function CandidatePage() {
   async function loadUpcomingInterview(userId: string) {
     const { data } = await supabase
       .from("interviews")
-      .select("scheduled_at")
+      .select("scheduled_at, meeting_link")
       .eq("candidate_id", userId)
       .eq("status", "scheduled")
       .gte("scheduled_at", new Date().toISOString())
@@ -415,13 +416,35 @@ export default function CandidatePage() {
           </div>
 
           {upcomingInterview && (
-            <div className="card" style={{ borderColor: "var(--green)" }}>
-              <div className="muted" style={{ marginBottom: 4 }}>
-                Upcoming interview
+            <div
+              className="card"
+              style={{
+                borderColor: "var(--green)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 12,
+              }}
+            >
+              <div>
+                <div className="muted" style={{ marginBottom: 4 }}>
+                  Upcoming interview
+                </div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
+                  {formatDateTime(upcomingInterview.scheduled_at)}
+                </div>
               </div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
-                {formatDateTime(upcomingInterview.scheduled_at)}
-              </div>
+              {upcomingInterview.meeting_link && (
+                <a
+                  className="btn btn-sm"
+                  href={upcomingInterview.meeting_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Join call →
+                </a>
+              )}
             </div>
           )}
 
