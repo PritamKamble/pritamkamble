@@ -60,7 +60,20 @@ type Employer = {
   follow_up_due: string | null;
 };
 
-const TABS = ["applicants", "candidates", "interviews", "dailylogs", "employers"] as const;
+type BlogSource = { title: string; url: string; snippet: string };
+type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  blog_type: string;
+  sources: BlogSource[];
+  status: string;
+  created_at: string;
+};
+
+const TABS = ["applicants", "candidates", "interviews", "dailylogs", "employers", "blog"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function AdminPage() {
@@ -92,6 +105,10 @@ export default function AdminPage() {
   const [editingEmployerId, setEditingEmployerId] = useState<string | null>(null);
   const [draftNotes, setDraftNotes] = useState("");
   const [draftFollowUp, setDraftFollowUp] = useState("");
+
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogFilter, setBlogFilter] = useState<"pending" | "approved" | "rejected" | "all">("pending");
+  const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
 
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
@@ -138,6 +155,7 @@ export default function AdminPage() {
       loadInterviews();
       loadDailyLogs();
       loadEmployers();
+      loadBlogPosts();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -224,6 +242,27 @@ export default function AdminPage() {
         ),
       );
       setEditingEmployerId(null);
+    }
+  }
+
+  async function loadBlogPosts() {
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+    setBlogPosts((data as unknown as BlogPost[]) || []);
+  }
+
+  async function handleBlogReview(id: string, status: "approved" | "rejected") {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({ status, reviewed_by: user?.id, reviewed_at: new Date().toISOString() })
+      .eq("id", id);
+    if (!error) {
+      setBlogPosts((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)));
     }
   }
 
@@ -328,6 +367,14 @@ export default function AdminPage() {
           onClick={() => setTab("employers")}
         >
           Employers
+        </button>
+        <button
+          type="button"
+          className={`tabbtn ${tab === "blog" ? "active" : ""}`}
+          onClick={() => setTab("blog")}
+        >
+          Blog{blogPosts.filter((p) => p.status === "pending").length > 0 &&
+            ` (${blogPosts.filter((p) => p.status === "pending").length})`}
         </button>
       </div>
 
@@ -915,6 +962,126 @@ export default function AdminPage() {
             </table>
           )}
         </div>
+      )}
+
+      {tab === "blog" && (
+        <>
+          <div className="tabs">
+            {(["pending", "approved", "rejected", "all"] as const).map((f) => (
+              <button
+                key={f}
+                type="button"
+                className={`tabbtn ${blogFilter === f ? "active" : ""}`}
+                onClick={() => setBlogFilter(f)}
+              >
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </button>
+            ))}
+          </div>
+          <div className="card">
+            {(() => {
+              const filtered =
+                blogFilter === "all" ? blogPosts : blogPosts.filter((p) => p.status === blogFilter);
+              if (filtered.length === 0) {
+                return <div className="empty">No {blogFilter === "all" ? "" : blogFilter} posts.</div>;
+              }
+              return filtered.map((post) => (
+                <div
+                  key={post.id}
+                  style={{
+                    border: "1px solid var(--line)",
+                    borderRadius: 8,
+                    padding: 16,
+                    marginBottom: 12,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                    <div>
+                      <h3 style={{ fontFamily: "var(--mono)", fontSize: 14.5, marginBottom: 4 }}>
+                        {post.title}
+                      </h3>
+                      <div className="muted" style={{ fontSize: 12 }}>
+                        {post.blog_type} · {formatDate(post.created_at)} ·{" "}
+                        <span
+                          style={{
+                            color:
+                              post.status === "approved"
+                                ? "var(--green)"
+                                : post.status === "rejected"
+                                  ? "var(--rust)"
+                                  : "var(--amber)",
+                          }}
+                        >
+                          {post.status}
+                        </span>
+                      </div>
+                    </div>
+                    {post.status === "pending" && (
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <button
+                          className="btn btn-sm"
+                          type="button"
+                          onClick={() => handleBlogReview(post.id, "approved")}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="btn-ghost btn-sm"
+                          type="button"
+                          onClick={() => handleBlogReview(post.id, "rejected")}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 8 }}>{post.summary}</p>
+                  <button
+                    className="btn-ghost btn-sm"
+                    type="button"
+                    style={{ marginTop: 8 }}
+                    onClick={() => setExpandedBlogId(expandedBlogId === post.id ? null : post.id)}
+                  >
+                    {expandedBlogId === post.id ? "Hide full post" : "View full post"}
+                  </button>
+                  {expandedBlogId === post.id && (
+                    <div style={{ marginTop: 12 }}>
+                      <div
+                        style={{
+                          whiteSpace: "pre-wrap",
+                          fontSize: 13.5,
+                          lineHeight: 1.7,
+                          background: "var(--bg)",
+                          border: "1px solid var(--line)",
+                          borderRadius: 6,
+                          padding: 14,
+                        }}
+                      >
+                        {post.content}
+                      </div>
+                      {post.sources.length > 0 && (
+                        <div style={{ marginTop: 10 }}>
+                          <div className="muted" style={{ fontSize: 11.5, marginBottom: 4 }}>
+                            SOURCES
+                          </div>
+                          <ul style={{ paddingLeft: 18, fontSize: 12.5 }}>
+                            {post.sources.map((s, i) => (
+                              <li key={i}>
+                                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                  {s.title}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ));
+            })()}
+          </div>
+        </>
       )}
     </div>
   );
