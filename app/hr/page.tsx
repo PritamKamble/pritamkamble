@@ -53,6 +53,8 @@ export default function HrPage() {
     Record<string, JobApplication[]>
   >({});
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [trackFilter, setTrackFilter] = useState("all");
+  const [levelFilter, setLevelFilter] = useState("all");
 
   useEffect(() => {
     (async () => {
@@ -331,6 +333,39 @@ export default function HrPage() {
           {candidates.length === 0 ? (
             <div className="empty">No candidate profiles yet.</div>
           ) : (
+            <>
+              <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+                <div className="field" style={{ marginBottom: 0 }}>
+                  <label>Track</label>
+                  <select value={trackFilter} onChange={(e) => setTrackFilter(e.target.value)}>
+                    <option value="all">All tracks</option>
+                    <option value="fullstack">Full-Stack</option>
+                    <option value="genai">GenAI</option>
+                    <option value="fullstack_genai">Full-Stack + GenAI</option>
+                    <option value="cloud">Cloud/DevOps</option>
+                    <option value="not_sure">Not sure yet</option>
+                  </select>
+                </div>
+                <div className="field" style={{ marginBottom: 0 }}>
+                  <label>Level</label>
+                  <select value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)}>
+                    <option value="all">All levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="some_experience">Some experience</option>
+                    <option value="job_ready_prep">Job-ready prep</option>
+                  </select>
+                </div>
+              </div>
+              {(() => {
+                const filtered = candidates.filter(
+                  (c) =>
+                    (trackFilter === "all" || c.track === trackFilter) &&
+                    (levelFilter === "all" || c.level === levelFilter),
+                );
+                if (filtered.length === 0) {
+                  return <div className="empty">No candidates match these filters.</div>;
+                }
+                return (
             <table>
               <thead>
                 <tr>
@@ -343,7 +378,7 @@ export default function HrPage() {
                 </tr>
               </thead>
               <tbody>
-                {candidates.map((c) => (
+                {filtered.map((c) => (
                   <tr key={c.user_id}>
                     <td>
                       {c.profiles?.full_name || "—"}
@@ -396,6 +431,9 @@ export default function HrPage() {
                 ))}
               </tbody>
             </table>
+                );
+              })()}
+            </>
           )}
         </div>
       )}

@@ -137,6 +137,13 @@ export default function AdminPage() {
     setApplicants(data || []);
   }
 
+  async function handleApplicantStatusChange(id: string, status: string) {
+    const { error } = await supabase.from("applicants").update({ status }).eq("id", id);
+    if (!error) {
+      setApplicants((prev) => (prev ? prev.map((a) => (a.id === id ? { ...a, status } : a)) : prev));
+    }
+  }
+
   async function loadCandidates() {
     const { data } = await supabase
       .from("candidate_profiles")
@@ -352,7 +359,18 @@ export default function AdminPage() {
                           <td>{r.college_or_company || "—"}</td>
                           <td>{r.track || "—"}</td>
                           <td>{r.level || "—"}</td>
-                          <td>{r.status}</td>
+                          <td>
+                            <select
+                              value={r.status}
+                              onChange={(e) => handleApplicantStatusChange(r.id, e.target.value)}
+                              style={{ fontSize: 12.5, padding: "4px 6px" }}
+                            >
+                              <option value="waiting">Waiting</option>
+                              <option value="contacted">Contacted</option>
+                              <option value="enrolled">Enrolled</option>
+                              <option value="closed">Closed</option>
+                            </select>
+                          </td>
                           <td className="muted">{r.referral_code || "—"}</td>
                           <td className="muted">{r.referred_by || "—"}</td>
                           <td className="muted">
