@@ -19,8 +19,25 @@ function AuthCallbackInner() {
 
   useEffect(() => {
     (async () => {
-      const next = searchParams.get("next") || "/portal";
+      const explicitNext = searchParams.get("next");
       const code = searchParams.get("code");
+
+      // No explicit destination was requested - resolve the user's actual
+      // role directly instead of bouncing through /portal, which just did
+      // this same lookup one page-load later.
+      async function resolveDestination() {
+        if (explicitNext) return explicitNext;
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return "/portal";
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        return profile ? `/${profile.role}` : "/portal";
+      }
 
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -28,7 +45,7 @@ function AuthCallbackInner() {
           setError(friendlyError(error.message));
           return;
         }
-        router.replace(next);
+        router.replace(await resolveDestination());
         return;
       }
 
@@ -47,7 +64,7 @@ function AuthCallbackInner() {
           setError(friendlyError(error.message));
           return;
         }
-        router.replace(next);
+        router.replace(await resolveDestination());
         return;
       }
 

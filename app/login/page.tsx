@@ -41,6 +41,15 @@ function LoginForm() {
       : null,
   );
 
+  // Omit `next` entirely when there's no explicit redirect target, so
+  // /auth/callback resolves the user's actual role directly instead of
+  // bouncing through /portal - one fewer full page hop for every login.
+  function authCallbackUrl() {
+    const redirect = searchParams.get("redirect");
+    const next = redirect ? `?next=${encodeURIComponent(redirect)}` : "";
+    return `${window.location.origin}/auth/callback${next}`;
+  }
+
   function handleRoleChange(next: Role) {
     setRole(next);
     if (next === "candidate") setMode("login");
@@ -68,9 +77,7 @@ function LoginForm() {
               full_name: fullName.trim(),
               company_name: companyName.trim(),
             },
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-              searchParams.get("redirect") || "/portal",
-            )}`,
+            emailRedirectTo: authCallbackUrl(),
             captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined,
           },
         });
@@ -87,9 +94,7 @@ function LoginForm() {
           email,
           options: {
             shouldCreateUser: false,
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-              searchParams.get("redirect") || "/portal",
-            )}`,
+            emailRedirectTo: authCallbackUrl(),
             captchaToken: TURNSTILE_ENABLED ? captchaToken : undefined,
           },
         });
@@ -122,7 +127,18 @@ function LoginForm() {
       setMsg({ type: "error", text: error.message });
       return;
     }
-    router.replace(searchParams.get("redirect") || "/portal");
+    const redirect = searchParams.get("redirect");
+    if (redirect) {
+      router.replace(redirect);
+      return;
+    }
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { data: profile } = user
+      ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+      : { data: null };
+    router.replace(profile ? `/${profile.role}` : "/portal");
   }
 
   return (
