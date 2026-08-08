@@ -87,6 +87,15 @@ export default function CandidatePage() {
   const [newFullName, setNewFullName] = useState("");
   const [nameToast, setNameToast] = useState("");
 
+  const [suggestion, setSuggestion] = useState<{
+    focus_areas: string[];
+    reminder: string;
+    market_note: string;
+    created_at: string;
+  } | null>(null);
+  const [suggestionLoading, setSuggestionLoading] = useState(false);
+  const [suggestionMsg, setSuggestionMsg] = useState("");
+
   useEffect(() => {
     (async () => {
       const {
@@ -113,6 +122,7 @@ export default function CandidatePage() {
       loadUpcomingInterview(user.id);
       loadDailyLogs(user.id);
       loadCompletedScores(user.id);
+      loadLatestSuggestion(user.id);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -192,6 +202,49 @@ export default function CandidatePage() {
       rows.filter((r) => r.score != null).map((r) => r.score as number),
     );
     setCompletedInterviews(rows);
+  }
+
+  async function loadLatestSuggestion(userId: string) {
+    const { data } = await supabase
+      .from("candidate_suggestions")
+      .select("focus_areas, reminder, market_note, created_at")
+      .eq("candidate_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (data) setSuggestion(data);
+  }
+
+  async function handleSuggestNextSteps() {
+    setSuggestionLoading(true);
+    setSuggestionMsg("");
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/suggest-next-steps`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        setSuggestionMsg(data.error || "Something went wrong — try again.");
+      } else if (data.skipped) {
+        setSuggestionMsg(data.reason);
+      } else {
+        setSuggestion(data.suggestion);
+      }
+    } catch {
+      setSuggestionMsg("Something went wrong — try again.");
+    } finally {
+      setSuggestionLoading(false);
+    }
   }
 
   async function handleProgressSubmit(e: React.FormEvent) {
@@ -501,6 +554,50 @@ export default function CandidatePage() {
               ))}
             </div>
           )}
+
+          <div className="card">
+            <h2>What to prepare next</h2>
+            <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
+              AI-generated from your daily logs, mock interview feedback, and current market signal — not written
+              by your mentor personally.
+            </div>
+            {suggestion && (
+              <div style={{ marginBottom: 14 }}>
+                <p style={{ fontSize: 14, marginBottom: 10 }}>{suggestion.reminder}</p>
+                <ul style={{ paddingLeft: 18, marginBottom: 10 }}>
+                  {suggestion.focus_areas.map((area, i) => (
+                    <li key={i} style={{ marginBottom: 6, fontSize: 13.5 }}>
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+                <p className="muted" style={{ fontSize: 12.5, marginBottom: 6 }}>
+                  {suggestion.market_note}
+                </p>
+                <div className="muted" style={{ fontSize: 11.5 }}>
+                  Generated {formatDateTime(suggestion.created_at)}
+                </div>
+              </div>
+            )}
+            {suggestionMsg && (
+              <div className="muted" style={{ fontSize: 12.5, marginBottom: 10 }}>
+                {suggestionMsg}
+              </div>
+            )}
+            <button
+              className="btn btn-sm"
+              type="button"
+              disabled={suggestionLoading}
+              onClick={handleSuggestNextSteps}
+            >
+              {suggestionLoading
+                ? "Analyzing..."
+                : suggestion
+                  ? "Refresh suggestions"
+                  : "Suggest what to prepare next"}
+            </button>
+          </div>
+
           <div className="card">
           <h2>Update your progress</h2>
           <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
