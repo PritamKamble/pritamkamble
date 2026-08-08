@@ -293,6 +293,7 @@
       <a href="#portal">portal</a>
       <a href="#faq">faq</a>
       <a href="/login?role=hr">for employers</a>
+      <a href="/login">candidate login</a>
     </div>
     <div class="navcta">
       <a class="btn btn-primary" href="https://calendly.com/7276279026-pk/30min" target="_blank" rel="noopener">Book a call</a>
@@ -374,6 +375,10 @@
                   <span class="prefix">+91</span>
                   <input id="fPhone" name="phone" type="tel" required autocomplete="tel" placeholder="98765 43210" maxlength="10" inputmode="numeric" pattern="[0-9]*" />
                 </div>
+              </div>
+              <div class="field">
+                <label for="fEmail">Email</label>
+                <input id="fEmail" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
               </div>
               <div class="field">
                 <label for="fCollege">College / Company <span class="muted" style="font-weight:400;">— optional, helps tailor the track</span></label>
@@ -673,7 +678,8 @@
           <div class="proj-num">→</div>
           <h3>Student portal</h3>
           <p>Log your weekly progress, DSA count, and mock scores. Browse and apply to jobs posted directly by employers.</p>
-          <p class="muted" style="font-size:13px;">Portal access is set up once you're accepted into the program — join the waitlist above to get started.</p>
+          <a class="btn btn-ghost" href="/login">Candidate login →</a>
+          <p class="muted" style="font-size:13px; margin-top:10px;">Not accepted yet? Join the waitlist above to get started.</p>
         </div>
         <div class="proj">
           <div class="proj-num">→</div>
@@ -738,6 +744,7 @@
   <div class="wrap foot-grid">
     <div class="foot-copy">© 2026 Pritam Kamble · Mentor &amp; AI/ML Engineer</div>
     <div class="foot-links">
+      <a href="/login">Candidate Login</a>
       <a href="/login?role=hr">Employer Login</a>
       <a href="https://admin.pritamkamble.com">Mentor Login</a>
       <a href="https://www.linkedin.com/in/pritam-kamble" target="_blank" rel="noopener">LinkedIn</a>
@@ -818,12 +825,19 @@
 
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
     const college = document.getElementById('fCollege').value.trim();
     const track = document.getElementById('fTrack').value;
     const level = document.getElementById('fLevel').value;
 
     if(name.length < 2){
       errorEl.innerHTML = 'Please enter your full name.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      errorEl.innerHTML = 'Please enter a valid email address.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
       return;
@@ -846,6 +860,7 @@
       const { error } = await sb.from('applicants').insert({
         name: name,
         phone: normalizedPhone,
+        email: email,
         college_or_company: college || null,
         track: track,
         level: level,

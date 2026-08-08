@@ -175,6 +175,10 @@
             </div>
           </div>
           <div class="field">
+            <label for="fEmail">Email</label>
+            <input id="fEmail" type="email" required autocomplete="email" placeholder="you@example.com" />
+          </div>
+          <div class="field">
             <label for="fCollege">College <span class="muted" style="font-weight:400;">— optional, helps tailor the track</span></label>
             <input id="fCollege" type="text" placeholder="e.g. VJTI Mumbai" />
           </div>
@@ -263,12 +267,19 @@
 
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
     const college = document.getElementById('fCollege').value.trim();
     const track = document.getElementById('fTrack').value;
     const level = document.getElementById('fLevel').value;
 
     if(name.length < 2){
       errorEl.innerHTML = 'Please enter your full name.';
+      errorEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Join the waitlist →';
+      return;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      errorEl.innerHTML = 'Please enter a valid email address.';
       errorEl.style.display = 'block';
       btn.disabled = false; btn.textContent = 'Join the waitlist →';
       return;
@@ -289,7 +300,7 @@
 
     try{
       const { error } = await sb.from('applicants').insert({
-        name, phone: normalizedPhone, college_or_company: college || null, track, level,
+        name, phone: normalizedPhone, email, college_or_company: college || null, track, level,
         referral_code, referred_by: referredBy || null, verify_code
       });
       if(error) throw error;

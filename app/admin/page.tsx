@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalHeader } from "@/components/PortalHeader";
 import { formatDate, formatDateTime } from "@/lib/formatDate";
@@ -11,6 +11,7 @@ type Applicant = {
   id: string;
   name: string;
   phone: string;
+  email: string | null;
   college_or_company: string | null;
   track: string;
   level: string;
@@ -139,6 +140,16 @@ export default function AdminPage() {
   const [inviteMsg, setInviteMsg] = useState<{ type: "error" | "ok"; text: string } | null>(
     null,
   );
+  const inviteFormRef = useRef<HTMLDivElement | null>(null);
+  const inviteEmailRef = useRef<HTMLInputElement | null>(null);
+
+  function prefillInvite(r: Applicant) {
+    setInviteMsg(null);
+    setInviteName(r.name || "");
+    setInviteEmail(r.email || "");
+    inviteFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!r.email) setTimeout(() => inviteEmailRef.current?.focus(), 300);
+  }
 
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -452,7 +463,7 @@ export default function AdminPage() {
 
       {tab === "applicants" && (
         <>
-          <div className="card" style={{ marginBottom: 20 }}>
+          <div className="card" style={{ marginBottom: 20 }} ref={inviteFormRef}>
             <h2>Invite a candidate</h2>
             <div className="muted" style={{ fontSize: 12.5, marginBottom: 14 }}>
               Candidate accounts are invite-only. Sends a sign-in link to their
@@ -471,6 +482,7 @@ export default function AdminPage() {
               <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 200 }}>
                 <label>Email</label>
                 <input
+                  ref={inviteEmailRef}
                   type="email"
                   required
                   value={inviteEmail}
@@ -516,6 +528,7 @@ export default function AdminPage() {
                   <tr>
                     <th>Name</th>
                     <th>Phone</th>
+                    <th>Email</th>
                     <th>College / Company</th>
                     <th>Track</th>
                     <th>Level</th>
@@ -547,6 +560,7 @@ export default function AdminPage() {
                         <tr key={r.id}>
                           <td data-label="Name">{r.name || "—"}</td>
                           <td data-label="Phone">{r.phone || "—"}</td>
+                          <td className="muted" data-label="Email">{r.email || "—"}</td>
                           <td data-label="College / Company">{r.college_or_company || "—"}</td>
                           <td data-label="Track">{r.track || "—"}</td>
                           <td data-label="Level">{r.level || "—"}</td>
@@ -567,7 +581,7 @@ export default function AdminPage() {
                           <td className="muted" data-label="Applied">
                             {formatDateTime(r.created_at)}
                           </td>
-                          <td data-label="">
+                          <td data-label="" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                             {phoneDigits && (
                               <a
                                 className="btn-ghost btn-sm"
@@ -578,6 +592,13 @@ export default function AdminPage() {
                                 Message
                               </a>
                             )}
+                            <button
+                              type="button"
+                              className="btn-ghost btn-sm"
+                              onClick={() => prefillInvite(r)}
+                            >
+                              Invite
+                            </button>
                           </td>
                         </tr>
                       );
