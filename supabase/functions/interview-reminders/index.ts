@@ -31,7 +31,10 @@ Deno.serve(async (req) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     const fromEmail = Deno.env.get("NUDGE_FROM_EMAIL") || "noreply@pritamkamble.com";
     const siteUrl = Deno.env.get("SITE_URL") || "https://pritamkamble.com";
-    const slackHook = await getSecret("slack_waitlist_webhook_url");
+    // Prefer a dedicated interview Slack channel; fall back to the waitlist one.
+    const slackHook =
+      (await getSecret("slack_interview_webhook_url")) ||
+      (await getSecret("slack_waitlist_webhook_url"));
     const now = Date.now();
 
     const email = async (to: string, subject: string, html: string) => {

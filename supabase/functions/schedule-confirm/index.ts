@@ -55,6 +55,10 @@ Deno.serve(async (req) => {
       if (error || !data) throw new Error(`missing secret ${name}`);
       return data as string;
     };
+    const getSecretOpt = async (name: string) => {
+      const { data } = await svc.rpc("read_vault_secret", { p_name: name });
+      return (data as string | null) ?? null;
+    };
 
     const body = await req.json().catch(() => ({}));
     const startISO: string | undefined = body.start;
@@ -142,10 +146,13 @@ Deno.serve(async (req) => {
       .single();
     if (insErr) return json({ error: insErr.message }, 500);
 
-    // --- Slack alert to the admin (best-effort).
+    // --- Slack alert to the admin (best-effort). Prefer a dedicated interview
+    // channel; fall back to the shared waitlist webhook if not configured.
     try {
-      const hook = await getSecret("slack_waitlist_webhook_url");
-      await fetch(hook, {
+      const hook =
+        (await getSecretOpt("slack_interview_webhook_url")) ||
+        (await getSecretOpt("slack_waitlist_webhook_url"));
+      if (hook) await fetch(hook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
