@@ -1,4 +1,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { Annotation, END, START, StateGraph } from "npm:@langchain/langgraph";
+import { ChatAnthropic } from "npm:@langchain/anthropic";
+import { HumanMessage, SystemMessage } from "npm:@langchain/core/messages";
 
 const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
@@ -6,6 +9,7 @@ const SERPER_API_KEY = Deno.env.get("SERPER_API_KEY");
 
 type Source = { title: string; url: string; snippet: string };
 type BlogType = "hiring_digest" | "interview_questions" | "ai_roadmap" | "tech_update";
+type DraftPost = { title: string; slug: string; summary: string; content: string };
 
 // One post a day, rotating through types so admin review load stays at
 // one post to check per day instead of four.
@@ -105,73 +109,110 @@ async function fetchRemoteOkSources(): Promise<Source[]> {
 
 const PUNE_GUARDRAIL = `Write for freshers and engineering students, with Pune woven in naturally throughout (Pune's college/hiring scene, Pune-based companies, local meetups or job market context) - but ONLY state a Pune-specific fact if it actually appears in the sources below. If the sources don't mention Pune, keep the framing general ("freshers across India, including Pune") rather than inventing local statistics or company names.`;
 
-type TypeConfig = {
-  requiresSerper: boolean;
-  gatherSources: () => Promise<Source[]>;
+type TypeMeta = {
+  // Fixed-source types (free APIs, no query) skip the search/evaluate loop
+  // entirely - there's nothing to refine, the whole point of that loop is
+  // steering a *query*.
+  freeSources?: () => Promise<Source[]>;
+  seedQuery?: string;
   promptInstructions: string;
 };
 
-const TYPE_CONFIG: Record<BlogType, TypeConfig> = {
+const TYPE_META: Record<BlogType, TypeMeta> = {
   hiring_digest: {
-    requiresSerper: false,
-    gatherSources: async () => {
+    freeSources: async () => {
       const [hn, jobs] = await Promise.all([fetchHackerNewsSources(), fetchRemoteOkSources()]);
       return [...hn, ...jobs];
     },
     promptInstructions: `Write a weekly hiring-trends digest: who's hiring, what skills are spiking, what freshers should notice this week.`,
   },
   interview_questions: {
-    requiresSerper: true,
-    gatherSources: () =>
-      serperSearch("fresher software engineer interview questions India 2026 real experience"),
+    seedQuery: "fresher software engineer interview questions India 2026 real experience",
     promptInstructions: `Write an "interview question of the week" roundup: pick 3-5 real, currently-circulating interview questions for fresher/entry-level software or GenAI roles from the sources, and write a model answer for each in a mentor's voice - practical, not textbook.`,
   },
   ai_roadmap: {
-    requiresSerper: true,
-    gatherSources: () =>
-      serperSearch("AI engineer roadmap 2026 skills to learn GenAI beginners"),
+    seedQuery: "AI engineer roadmap 2026 skills to learn GenAI beginners",
     promptInstructions: `Write a practical "what to learn next" AI/GenAI roadmap post for a fresher, grounded in the current sources - what's actually in demand right now, not a generic syllabus.`,
   },
   tech_update: {
-    requiresSerper: true,
-    gatherSources: async () => {
-      const [gh, search] = await Promise.all([
-        fetchGithubReleaseSources(),
-        serperSearch("latest technology updates developers should know this week"),
-      ]);
-      return [...gh, ...search];
-    },
+    seedQuery: "latest technology updates developers should know this week",
     promptInstructions: `Write a "what changed this week in tech" update for freshers - new tool/framework releases and why a fresher building their portfolio should care.`,
   },
 };
 
-Deno.serve(async (req: Request) => {
-  if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
-    return new Response("Unauthorized", { status: 401 });
+// --- LangGraph agent -------------------------------------------------
+// search -> evaluate -> (loop back to search with a refined query, or
+// move on to write) -> write. Fixed-source types short-circuit straight
+// to "sufficient" since there's no query to refine.
+
+const MAX_SEARCH_ATTEMPTS = 2;
+
+const AgentState = Annotation.Root({
+  blogType: Annotation<BlogType>,
+  query: Annotation<string>,
+  sources: Annotation<Source[]>({
+    reducer: (existing, incoming) => [...existing, ...incoming],
+    default: () => [],
+  }),
+  attempts: Annotation<number>({ reducer: (_prev, next) => next, default: () => 0 }),
+  sufficient: Annotation<boolean>({ reducer: (_prev, next) => next, default: () => false }),
+  post: Annotation<DraftPost | null>({ reducer: (_prev, next) => next, default: () => null }),
+});
+type State = typeof AgentState.State;
+
+function model(maxTokens: number) {
+  return new ChatAnthropic({
+    apiKey: ANTHROPIC_API_KEY,
+    model: "claude-sonnet-4-5-20250929",
+    maxTokens,
+  });
+}
+
+async function searchNode(state: State) {
+  const meta = TYPE_META[state.blogType];
+  const results = meta.freeSources ? await meta.freeSources() : await serperSearch(state.query);
+  return { sources: results, attempts: state.attempts + 1 };
+}
+
+async function evaluateNode(state: State) {
+  const meta = TYPE_META[state.blogType];
+  // Fixed-source types aren't query-driven - nothing to refine, accept
+  // whatever came back.
+  if (meta.freeSources) return { sufficient: true };
+  if (state.attempts >= MAX_SEARCH_ATTEMPTS) return { sufficient: true };
+
+  const sourcesBlock = state.sources.map((s, i) => `[${i + 1}] ${s.title}\n${s.snippet}`).join("\n\n");
+  const res = await model(300).invoke([
+    new SystemMessage(
+      "You judge whether web search results are specific and current enough to write a genuinely useful, non-generic blog post from - not generic evergreen advice. Respond with ONLY JSON, no commentary: " +
+        '{"sufficient": boolean, "refinedQuery": string | null}',
+    ),
+    new HumanMessage(
+      `Blog type: ${state.blogType}\nSearch query used: ${state.query}\n\nResults:\n${sourcesBlock || "(no results)"}\n\nAre these good enough? If not, give a narrower/better search query.`,
+    ),
+  ]);
+
+  try {
+    const judged = JSON.parse(String(res.content));
+    return {
+      sufficient: !!judged.sufficient,
+      query: judged.refinedQuery || state.query,
+    };
+  } catch {
+    // Fail open rather than looping forever on a parse error.
+    return { sufficient: true };
   }
-  if (!ANTHROPIC_API_KEY) {
-    return new Response(JSON.stringify({ error: "ANTHROPIC_API_KEY not configured" }), { status: 500 });
-  }
+}
 
-  const blogType = todaysBlogType();
-  const config = TYPE_CONFIG[blogType];
+function routeAfterEvaluate(state: State): "search" | "write" {
+  return state.sufficient ? "write" : "search";
+}
 
-  if (config.requiresSerper && !SERPER_API_KEY) {
-    return new Response(
-      JSON.stringify({ error: "SERPER_API_KEY not configured", blogType, note: "required for this post type" }),
-      { status: 500 },
-    );
-  }
+async function writeNode(state: State) {
+  const meta = TYPE_META[state.blogType];
+  if (state.sources.length === 0) return { post: null };
 
-  const sources = await config.gatherSources();
-
-  if (sources.length === 0) {
-    return new Response(JSON.stringify({ skipped: true, reason: "no sources found today", blogType }), {
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const sourcesBlock = sources
+  const sourcesBlock = state.sources
     .map((s, i) => `[${i + 1}] ${s.title}\nURL: ${s.url}\n${s.snippet}`)
     .join("\n\n");
 
@@ -181,7 +222,7 @@ Tone: direct, practical, no hype, matches a working engineer talking to someone 
 
 ${PUNE_GUARDRAIL}
 
-${config.promptInstructions}
+${meta.promptInstructions}
 
 Using ONLY the sources below (do not invent facts, companies, or numbers not present in them), write a blog post. Cite sources inline as markdown links using the URLs given.
 
@@ -196,35 +237,68 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with these e
   "content": "the full post body in markdown, 400-700 words, with a few section headings"
 }`;
 
-  const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-5-20250929",
-      max_tokens: 2048,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
+  const res = await model(2048).invoke([new HumanMessage(prompt)]);
+  try {
+    return { post: JSON.parse(String(res.content)) as DraftPost };
+  } catch {
+    throw new Error(`Failed to parse model output: ${String(res.content).slice(0, 500)}`);
+  }
+}
 
-  if (!aiRes.ok) {
-    const errText = await aiRes.text();
-    return new Response(JSON.stringify({ error: `Anthropic API error: ${aiRes.status}`, detail: errText }), {
-      status: 502,
-    });
+const agent = new StateGraph(AgentState)
+  .addNode("search", searchNode)
+  .addNode("evaluate", evaluateNode)
+  .addNode("write", writeNode)
+  .addEdge(START, "search")
+  .addEdge("search", "evaluate")
+  .addConditionalEdges("evaluate", routeAfterEvaluate, { search: "search", write: "write" })
+  .addEdge("write", END)
+  .compile();
+
+// --- HTTP handler ------------------------------------------------------
+
+Deno.serve(async (req: Request) => {
+  if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  if (!ANTHROPIC_API_KEY) {
+    return new Response(JSON.stringify({ error: "ANTHROPIC_API_KEY not configured" }), { status: 500 });
   }
 
-  const aiData = await aiRes.json();
-  const rawText = aiData?.content?.[0]?.text || "";
+  const blogType = todaysBlogType();
+  const meta = TYPE_META[blogType];
 
-  let parsed: { title: string; slug: string; summary: string; content: string };
+  if (!meta.freeSources && !SERPER_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: "SERPER_API_KEY not configured", blogType, note: "required for this post type" }),
+      { status: 500 },
+    );
+  }
+
+  let result: State;
   try {
-    parsed = JSON.parse(rawText);
-  } catch {
-    return new Response(JSON.stringify({ error: "Failed to parse model output", raw: rawText }), { status: 502 });
+    result = (await agent.invoke({
+      blogType,
+      query: meta.seedQuery ?? "",
+      sources: [],
+      attempts: 0,
+      sufficient: false,
+      post: null,
+    })) as State;
+  } catch (e) {
+    return new Response(
+      JSON.stringify({ error: "Agent run failed", detail: e instanceof Error ? e.message : String(e) }),
+      { status: 502 },
+    );
+  }
+
+  if (result.sources.length === 0) {
+    return new Response(JSON.stringify({ skipped: true, reason: "no sources found today", blogType }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (!result.post) {
+    return new Response(JSON.stringify({ error: "Agent produced no post", blogType }), { status: 502 });
   }
 
   const supabase = createClient(
@@ -232,18 +306,19 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with these e
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const slugBase = parsed.slug || parsed.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const slugBase =
+    result.post.slug || result.post.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   const slug = `${slugBase}-${new Date().toISOString().slice(0, 10)}`;
 
   const { data: inserted, error } = await supabase
     .from("blog_posts")
     .insert({
-      title: parsed.title,
+      title: result.post.title,
       slug,
-      summary: parsed.summary,
-      content: parsed.content,
+      summary: result.post.summary,
+      content: result.post.content,
       blog_type: blogType,
-      sources,
+      sources: result.sources,
       status: "pending",
     })
     .select("id")
@@ -253,7 +328,13 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with these e
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ created: inserted.id, blogType, sourceCount: sources.length }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  return new Response(
+    JSON.stringify({
+      created: inserted.id,
+      blogType,
+      sourceCount: result.sources.length,
+      searchAttempts: result.attempts,
+    }),
+    { headers: { "Content-Type": "application/json" } },
+  );
 });
