@@ -2,8 +2,41 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const SERPER_API_KEY = Deno.env.get("SERPER_API_KEY");
 
 type Source = { title: string; url: string; snippet: string };
+type BlogType = "hiring_digest" | "interview_questions" | "ai_roadmap" | "tech_update";
+
+// One post a day, rotating through types so admin review load stays at
+// one post to check per day instead of four.
+const ROTATION: BlogType[] = ["hiring_digest", "interview_questions", "ai_roadmap", "tech_update"];
+
+function todaysBlogType(): BlogType {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000,
+  );
+  return ROTATION[dayOfYear % ROTATION.length];
+}
+
+async function serperSearch(query: string, num = 6): Promise<Source[]> {
+  if (!SERPER_API_KEY) return [];
+  try {
+    const res = await fetch("https://google.serper.dev/search", {
+      method: "POST",
+      headers: { "X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ q: query, num }),
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.organic || []).map((r: { title: string; link: string; snippet?: string }) => ({
+      title: r.title,
+      url: r.link,
+      snippet: r.snippet || "",
+    }));
+  } catch {
+    return [];
+  }
+}
 
 async function fetchHackerNewsSources(): Promise<Source[]> {
   const keywords = [
@@ -70,6 +103,48 @@ async function fetchRemoteOkSources(): Promise<Source[]> {
   }
 }
 
+const PUNE_GUARDRAIL = `Write for freshers and engineering students, with Pune woven in naturally throughout (Pune's college/hiring scene, Pune-based companies, local meetups or job market context) - but ONLY state a Pune-specific fact if it actually appears in the sources below. If the sources don't mention Pune, keep the framing general ("freshers across India, including Pune") rather than inventing local statistics or company names.`;
+
+type TypeConfig = {
+  requiresSerper: boolean;
+  gatherSources: () => Promise<Source[]>;
+  promptInstructions: string;
+};
+
+const TYPE_CONFIG: Record<BlogType, TypeConfig> = {
+  hiring_digest: {
+    requiresSerper: false,
+    gatherSources: async () => {
+      const [hn, jobs] = await Promise.all([fetchHackerNewsSources(), fetchRemoteOkSources()]);
+      return [...hn, ...jobs];
+    },
+    promptInstructions: `Write a weekly hiring-trends digest: who's hiring, what skills are spiking, what freshers should notice this week.`,
+  },
+  interview_questions: {
+    requiresSerper: true,
+    gatherSources: () =>
+      serperSearch("fresher software engineer interview questions India 2026 real experience"),
+    promptInstructions: `Write an "interview question of the week" roundup: pick 3-5 real, currently-circulating interview questions for fresher/entry-level software or GenAI roles from the sources, and write a model answer for each in a mentor's voice - practical, not textbook.`,
+  },
+  ai_roadmap: {
+    requiresSerper: true,
+    gatherSources: () =>
+      serperSearch("AI engineer roadmap 2026 skills to learn GenAI beginners"),
+    promptInstructions: `Write a practical "what to learn next" AI/GenAI roadmap post for a fresher, grounded in the current sources - what's actually in demand right now, not a generic syllabus.`,
+  },
+  tech_update: {
+    requiresSerper: true,
+    gatherSources: async () => {
+      const [gh, search] = await Promise.all([
+        fetchGithubReleaseSources(),
+        serperSearch("latest technology updates developers should know this week"),
+      ]);
+      return [...gh, ...search];
+    },
+    promptInstructions: `Write a "what changed this week in tech" update for freshers - new tool/framework releases and why a fresher building their portfolio should care.`,
+  },
+};
+
 Deno.serve(async (req: Request) => {
   if (req.headers.get("x-cron-secret") !== CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -78,15 +153,20 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ error: "ANTHROPIC_API_KEY not configured" }), { status: 500 });
   }
 
-  const [hn, gh, jobs] = await Promise.all([
-    fetchHackerNewsSources(),
-    fetchGithubReleaseSources(),
-    fetchRemoteOkSources(),
-  ]);
-  const sources = [...hn, ...gh, ...jobs];
+  const blogType = todaysBlogType();
+  const config = TYPE_CONFIG[blogType];
+
+  if (config.requiresSerper && !SERPER_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: "SERPER_API_KEY not configured", blogType, note: "required for this post type" }),
+      { status: 500 },
+    );
+  }
+
+  const sources = await config.gatherSources();
 
   if (sources.length === 0) {
-    return new Response(JSON.stringify({ skipped: true, reason: "no sources found today" }), {
+    return new Response(JSON.stringify({ skipped: true, reason: "no sources found today", blogType }), {
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -95,9 +175,13 @@ Deno.serve(async (req: Request) => {
     .map((s, i) => `[${i + 1}] ${s.title}\nURL: ${s.url}\n${s.snippet}`)
     .join("\n\n");
 
-  const prompt = `You write the weekly hiring & tech-trends digest for "Pritam Mentor", a 1-on-1 mentorship program that turns freshers into job-ready Full-Stack + GenAI engineers. The audience is engineering students and freshers preparing for their first job.
+  const prompt = `You write for the "Pritam Mentor" blog, a 1-on-1 mentorship program that turns freshers into job-ready Full-Stack + GenAI engineers.
 
 Tone: direct, practical, no hype, matches a working engineer talking to someone they're mentoring - not corporate blog voice.
+
+${PUNE_GUARDRAIL}
+
+${config.promptInstructions}
 
 Using ONLY the sources below (do not invent facts, companies, or numbers not present in them), write a blog post. Cite sources inline as markdown links using the URLs given.
 
@@ -158,7 +242,7 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with these e
       slug,
       summary: parsed.summary,
       content: parsed.content,
-      blog_type: "hiring_digest",
+      blog_type: blogType,
       sources,
       status: "pending",
     })
@@ -169,7 +253,7 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with these e
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ created: inserted.id, sourceCount: sources.length }), {
+  return new Response(JSON.stringify({ created: inserted.id, blogType, sourceCount: sources.length }), {
     headers: { "Content-Type": "application/json" },
   });
 });
