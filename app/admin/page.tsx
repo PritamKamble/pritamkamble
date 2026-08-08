@@ -681,11 +681,12 @@ export default function AdminPage() {
                       <td>
                         <button
                           className="btn-ghost btn-sm"
-                          onClick={() =>
-                            setScheduleFor(
-                              scheduleFor === c.user_id ? null : c.user_id,
-                            )
-                          }
+                          onClick={() => {
+                            const next = scheduleFor === c.user_id ? null : c.user_id;
+                            setScheduleFor(next);
+                            setAiSlots([]);
+                            setAiNote("");
+                          }}
                         >
                           {scheduleFor === c.user_id ? "Cancel" : "Schedule interview"}
                         </button>
