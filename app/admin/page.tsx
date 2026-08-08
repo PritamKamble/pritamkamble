@@ -39,6 +39,8 @@ type Interview = {
   score: number | null;
   notes: string | null;
   meeting_link: string | null;
+  candidate_feedback: string | null;
+  candidate_self_score: number | null;
   profiles: { full_name: string; email: string } | null;
 };
 
@@ -102,6 +104,13 @@ export default function AdminPage() {
   const [scheduleNotes, setScheduleNotes] = useState("");
   const [scheduleMeetingLink, setScheduleMeetingLink] = useState("");
   const [scheduleToast, setScheduleToast] = useState("");
+
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiSlots, setAiSlots] = useState<
+    { start: string; end: string; label: string; reason: string }[]
+  >([]);
+  const [aiNote, setAiNote] = useState("");
+  const [aiBookingStart, setAiBookingStart] = useState<string | null>(null);
 
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [interviewFilter, setInterviewFilter] = useState<
@@ -314,6 +323,39 @@ export default function AdminPage() {
       loadInterviews();
     }
     setTimeout(() => setScheduleToast(""), 2500);
+  }
+
+  async function aiSuggest(candidateId: string) {
+    setAiBusy(true);
+    setAiNote("");
+    setAiSlots([]);
+    const { data, error } = await supabase.functions.invoke("schedule-suggest", {
+      body: { candidate_id: candidateId },
+    });
+    setAiBusy(false);
+    if (error) {
+      setAiNote(error.message);
+      return;
+    }
+    setAiSlots(data?.slots ?? []);
+    if (!data?.slots?.length) setAiNote(data?.note || "No times available.");
+  }
+
+  async function aiBook(candidateId: string, startISO: string) {
+    setAiBookingStart(startISO);
+    const { error } = await supabase.functions.invoke("schedule-confirm", {
+      body: { candidate_id: candidateId, start: startISO },
+    });
+    setAiBookingStart(null);
+    if (error) {
+      setAiNote(error.message);
+      return;
+    }
+    setAiSlots([]);
+    setScheduleFor(null);
+    setScheduleToast("Interview booked ✓ (Meet link created)");
+    loadInterviews();
+    setTimeout(() => setScheduleToast(""), 3000);
   }
 
   async function handleComplete(interviewId: string) {
@@ -662,7 +704,7 @@ export default function AdminPage() {
                             }}
                           >
                             <div className="field" style={{ marginBottom: 0 }}>
-                              <label>When</label>
+                              <label>When (IST)</label>
                               <input
                                 type="datetime-local"
                                 value={scheduleAt}
@@ -701,6 +743,54 @@ export default function AdminPage() {
                               Confirm
                             </button>
                           </div>
+
+                          <div style={{ marginTop: 12 }}>
+                            <button
+                              className="btn-ghost btn-sm"
+                              disabled={aiBusy}
+                              onClick={() => aiSuggest(c.user_id)}
+                            >
+                              {aiBusy ? "Finding times..." : "✦ AI suggest times"}
+                            </button>
+                            {aiNote && (
+                              <span className="muted" style={{ marginLeft: 10 }}>
+                                {aiNote}
+                              </span>
+                            )}
+                            {aiSlots.map((s) => (
+                              <div
+                                key={s.start}
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  gap: 12,
+                                  flexWrap: "wrap",
+                                  border: "1px solid var(--line)",
+                                  borderRadius: 8,
+                                  padding: 10,
+                                  marginTop: 8,
+                                }}
+                              >
+                                <div>
+                                  <div style={{ fontFamily: "var(--mono)", fontSize: 13.5 }}>
+                                    {s.label}
+                                  </div>
+                                  <div className="muted" style={{ fontSize: 12 }}>
+                                    {s.reason}
+                                  </div>
+                                </div>
+                                <button
+                                  className="btn btn-sm"
+                                  disabled={aiBookingStart === s.start}
+                                  onClick={() => aiBook(c.user_id, s.start)}
+                                >
+                                  {aiBookingStart === s.start ? "Booking..." : "Book (Meet)"}
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
                           {scheduleToast && (
                             <div className="muted" style={{ color: "var(--green)" }}>
                               {scheduleToast}
@@ -756,6 +846,7 @@ export default function AdminPage() {
                     <th>Score</th>
                     <th>Notes</th>
                     <th>Call</th>
+                    <th>Candidate feedback</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -786,6 +877,20 @@ export default function AdminPage() {
                             <span className="muted">—</span>
                           )}
                         </td>
+                        <td className="muted">
+                          {i.candidate_feedback ? (
+                            <>
+                              {i.candidate_self_score != null && (
+                                <div style={{ color: "var(--amber)" }}>
+                                  self: {i.candidate_self_score}/10
+                                </div>
+                              )}
+                              {i.candidate_feedback}
+                            </>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
                         <td>
                           {i.status === "scheduled" && (
                             <button
@@ -804,7 +909,7 @@ export default function AdminPage() {
                       </tr>
                       {completingId === i.id && (
                         <tr>
-                          <td colSpan={7}>
+                          <td colSpan={8}>
                             <div
                               style={{
                                 display: "flex",

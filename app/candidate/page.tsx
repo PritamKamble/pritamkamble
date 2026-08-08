@@ -40,7 +40,18 @@ type DailyLog = {
   content: string;
 };
 
-const TABS = ["progress", "jobs", "applications", "dailylog", "account"] as const;
+type Interview = {
+  id: string;
+  scheduled_at: string;
+  status: string;
+  score: number | null;
+  notes: string | null;
+  meeting_link: string | null;
+  candidate_feedback: string | null;
+  candidate_self_score: number | null;
+};
+
+const TABS = ["progress", "jobs", "interviews", "applications", "dailylog", "account"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function CandidatePage() {
@@ -72,6 +83,23 @@ export default function CandidatePage() {
     scheduled_at: string;
     meeting_link: string | null;
   } | null>(null);
+
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [fbDraft, setFbDraft] = useState<
+    Record<string, { feedback: string; self: string }>
+  >({});
+  const [fbSavingId, setFbSavingId] = useState<string | null>(null);
+  const [fbToast, setFbToast] = useState("");
+
+  const [availText, setAvailText] = useState("");
+  const [availToast, setAvailToast] = useState("");
+  const [slotSuggestions, setSlotSuggestions] = useState<
+    { start: string; end: string; label: string; reason: string }[]
+  >([]);
+  const [suggestBusy, setSuggestBusy] = useState(false);
+  const [suggestNote, setSuggestNote] = useState("");
+  const [bookingStart, setBookingStart] = useState<string | null>(null);
+  const [rescheduleFrom, setRescheduleFrom] = useState<string | null>(null);
 
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
   const [logDraft, setLogDraft] = useState("");
@@ -120,6 +148,8 @@ export default function CandidatePage() {
       loadOpenJobs();
       loadMyApplications(user.id);
       loadUpcomingInterview(user.id);
+      loadInterviews(user.id);
+      loadAvailability(user.id);
       loadDailyLogs(user.id);
       loadCompletedScores(user.id);
       loadLatestSuggestion(user.id);
@@ -156,6 +186,95 @@ export default function CandidatePage() {
       .limit(1)
       .maybeSingle();
     setUpcomingInterview(data);
+  }
+
+  async function loadInterviews(userId: string) {
+    const { data } = await supabase
+      .from("interviews")
+      .select(
+        "id, scheduled_at, status, score, notes, meeting_link, candidate_feedback, candidate_self_score",
+      )
+      .eq("candidate_id", userId)
+      .order("scheduled_at", { ascending: false });
+    setInterviews((data as Interview[]) || []);
+  }
+
+  async function loadAvailability(userId: string) {
+    const { data } = await supabase
+      .from("candidate_availability")
+      .select("raw_text")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (data?.raw_text) setAvailText(data.raw_text);
+  }
+
+  async function saveAvailability() {
+    if (!profile) return;
+    const { error } = await supabase.from("candidate_availability").upsert({
+      user_id: profile.id,
+      raw_text: availText.trim(),
+      windows: [],
+      updated_at: new Date().toISOString(),
+    });
+    setAvailToast(error ? `Error: ${error.message}` : "Availability saved ✓");
+    setTimeout(() => setAvailToast(""), 2500);
+  }
+
+  async function findTimes(forRescheduleId?: string) {
+    setSuggestBusy(true);
+    setSuggestNote("");
+    setSlotSuggestions([]);
+    setRescheduleFrom(forRescheduleId ?? null);
+    const { data, error } = await supabase.functions.invoke("schedule-suggest", {
+      body: {},
+    });
+    setSuggestBusy(false);
+    if (error) {
+      setSuggestNote(error.message);
+      return;
+    }
+    setSlotSuggestions(data?.slots ?? []);
+    if (!data?.slots?.length) {
+      setSuggestNote(data?.note || "No times available right now.");
+    }
+  }
+
+  async function bookSlot(startISO: string) {
+    setBookingStart(startISO);
+    const { error } = await supabase.functions.invoke("schedule-confirm", {
+      body: {
+        start: startISO,
+        rescheduled_from: rescheduleFrom,
+      },
+    });
+    setBookingStart(null);
+    if (error) {
+      setSuggestNote(error.message);
+      return;
+    }
+    setSlotSuggestions([]);
+    setRescheduleFrom(null);
+    setFbToast("Interview booked ✓ Check your email for the invite.");
+    if (profile) {
+      loadInterviews(profile.id);
+      loadUpcomingInterview(profile.id);
+    }
+    setTimeout(() => setFbToast(""), 3500);
+  }
+
+  async function handleSubmitFeedback(interviewId: string) {
+    const draft = fbDraft[interviewId];
+    if (!draft || !draft.feedback.trim()) return;
+    setFbSavingId(interviewId);
+    const { error } = await supabase.rpc("submit_interview_feedback", {
+      p_interview_id: interviewId,
+      p_feedback: draft.feedback.trim(),
+      p_self_score: draft.self ? parseFloat(draft.self) : null,
+    });
+    setFbSavingId(null);
+    setFbToast(error ? `Error: ${error.message}` : "Feedback saved ✓");
+    if (!error && profile) loadInterviews(profile.id);
+    setTimeout(() => setFbToast(""), 2500);
   }
 
   async function loadDailyLogs(userId: string) {
@@ -414,6 +533,13 @@ export default function CandidatePage() {
           onClick={() => setTab("jobs")}
         >
           Job Listings
+        </button>
+        <button
+          type="button"
+          className={`tabbtn ${tab === "interviews" ? "active" : ""}`}
+          onClick={() => setTab("interviews")}
+        >
+          Interviews
         </button>
         <button
           type="button"
@@ -793,6 +919,234 @@ export default function CandidatePage() {
               </div>
             )}
           </form>
+          </div>
+        </>
+      )}
+
+      {tab === "interviews" && (
+        <>
+          {fbToast && <div className="msg">{fbToast}</div>}
+
+          <div className="card">
+            <h2>Your availability</h2>
+            <div className="muted" style={{ fontSize: 12.5, marginBottom: 12 }}>
+              Tell us when you&apos;re generally free (IST) and we&apos;ll
+              suggest interview times that fit — e.g. &quot;weekday evenings
+              after 6pm, weekend afternoons&quot;.
+            </div>
+            <div className="field">
+              <textarea
+                value={availText}
+                onChange={(e) => setAvailText(e.target.value)}
+                placeholder="Weekday evenings after 6pm, Saturday afternoons..."
+              />
+            </div>
+            <button className="btn btn-sm" onClick={saveAvailability}>
+              Save availability
+            </button>
+            {availToast && (
+              <span className="muted" style={{ marginLeft: 12, color: "var(--green)" }}>
+                {availToast}
+              </span>
+            )}
+          </div>
+
+          <div className="card">
+            <h2>Book a mock interview</h2>
+            <div className="muted" style={{ fontSize: 12.5, marginBottom: 12 }}>
+              We match your availability with the mentor&apos;s open calendar and
+              suggest the best times.
+            </div>
+            <button
+              className="btn btn-sm"
+              disabled={suggestBusy}
+              onClick={() => findTimes()}
+            >
+              {suggestBusy ? "Finding times..." : "Suggest times"}
+            </button>
+            {suggestNote && (
+              <div className="muted" style={{ marginTop: 10 }}>
+                {suggestNote}
+              </div>
+            )}
+            {slotSuggestions.map((s) => (
+              <div
+                key={s.start}
+                style={{
+                  border: "1px solid var(--line)",
+                  borderRadius: 8,
+                  padding: 12,
+                  marginTop: 10,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 12,
+                  flexWrap: "wrap",
+                }}
+              >
+                <div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 14 }}>
+                    {s.label}
+                  </div>
+                  <div className="muted" style={{ fontSize: 12.5 }}>
+                    {s.reason}
+                  </div>
+                </div>
+                <button
+                  className="btn btn-sm"
+                  disabled={bookingStart === s.start}
+                  onClick={() => bookSlot(s.start)}
+                >
+                  {bookingStart === s.start ? "Booking..." : "Book this"}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="card">
+            <h2>Mock interviews</h2>
+            {interviews.length === 0 ? (
+              <div className="empty">
+                No interviews yet. Book a slot above, or wait for your mentor to
+                schedule one.
+              </div>
+            ) : (
+              interviews.map((iv) => {
+                const draft = fbDraft[iv.id] || {
+                  feedback: iv.candidate_feedback || "",
+                  self:
+                    iv.candidate_self_score != null
+                      ? String(iv.candidate_self_score)
+                      : "",
+                };
+                return (
+                  <div
+                    key={iv.id}
+                    style={{
+                      border: "1px solid var(--line)",
+                      borderRadius: 8,
+                      padding: 16,
+                      marginBottom: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 12,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>
+                        {formatDateTime(iv.scheduled_at)}
+                      </span>
+                      <span
+                        className="muted"
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 11.5,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {iv.status}
+                      </span>
+                    </div>
+
+                    {iv.status === "scheduled" && (
+                      <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        {iv.meeting_link && (
+                          <a
+                            className="btn btn-sm"
+                            href={iv.meeting_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Join meeting →
+                          </a>
+                        )}
+                        <button
+                          className="btn-ghost btn-sm"
+                          disabled={suggestBusy}
+                          onClick={() => findTimes(iv.id)}
+                        >
+                          Reschedule
+                        </button>
+                      </div>
+                    )}
+
+                    {iv.status === "completed" && (
+                      <div style={{ marginTop: 12 }}>
+                        <div
+                          style={{
+                            borderLeft: "2px solid var(--amber)",
+                            paddingLeft: 12,
+                            marginBottom: 14,
+                          }}
+                        >
+                          <div className="muted" style={{ fontSize: 12.5 }}>
+                            Mentor&apos;s feedback
+                            {iv.score != null && (
+                              <>
+                                {" "}
+                                ·{" "}
+                                <b style={{ color: "var(--amber)" }}>
+                                  {iv.score}/10
+                                </b>
+                              </>
+                            )}
+                          </div>
+                          <div style={{ fontSize: 13.5, marginTop: 4 }}>
+                            {iv.notes || "No written feedback."}
+                          </div>
+                        </div>
+
+                        <div className="field">
+                          <label>Your feedback on this interview</label>
+                          <textarea
+                            value={draft.feedback}
+                            onChange={(e) =>
+                              setFbDraft({
+                                ...fbDraft,
+                                [iv.id]: { ...draft, feedback: e.target.value },
+                              })
+                            }
+                            placeholder="How did it go for you? What will you work on?"
+                          />
+                        </div>
+                        <div className="field" style={{ maxWidth: 200 }}>
+                          <label>Your self-rating (/10)</label>
+                          <input
+                            type="number"
+                            min={0}
+                            max={10}
+                            step={0.5}
+                            value={draft.self}
+                            onChange={(e) =>
+                              setFbDraft({
+                                ...fbDraft,
+                                [iv.id]: { ...draft, self: e.target.value },
+                              })
+                            }
+                          />
+                        </div>
+                        <button
+                          className="btn btn-sm"
+                          disabled={fbSavingId === iv.id || !draft.feedback.trim()}
+                          onClick={() => handleSubmitFeedback(iv.id)}
+                        >
+                          {fbSavingId === iv.id
+                            ? "Saving..."
+                            : iv.candidate_feedback
+                              ? "Update my feedback"
+                              : "Submit my feedback"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         </>
       )}
