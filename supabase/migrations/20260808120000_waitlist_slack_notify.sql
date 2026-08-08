@@ -57,6 +57,7 @@ begin
 end;
 $$;
 
+drop trigger if exists on_new_applicant_notify_slack on public.applicants;
 create trigger on_new_applicant_notify_slack
   after insert on public.applicants
   for each row
