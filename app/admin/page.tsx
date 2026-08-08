@@ -68,6 +68,13 @@ export default function AdminPage() {
   const [scheduleNotes, setScheduleNotes] = useState("");
   const [scheduleToast, setScheduleToast] = useState("");
 
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiSlots, setAiSlots] = useState<
+    { start: string; end: string; label: string; reason: string }[]
+  >([]);
+  const [aiNote, setAiNote] = useState("");
+  const [aiBookingStart, setAiBookingStart] = useState<string | null>(null);
+
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [interviewFilter, setInterviewFilter] = useState<
     "upcoming" | "completed" | "all"
@@ -181,6 +188,39 @@ export default function AdminPage() {
       loadInterviews();
     }
     setTimeout(() => setScheduleToast(""), 2500);
+  }
+
+  async function aiSuggest(candidateId: string) {
+    setAiBusy(true);
+    setAiNote("");
+    setAiSlots([]);
+    const { data, error } = await supabase.functions.invoke("schedule-suggest", {
+      body: { candidate_id: candidateId },
+    });
+    setAiBusy(false);
+    if (error) {
+      setAiNote(error.message);
+      return;
+    }
+    setAiSlots(data?.slots ?? []);
+    if (!data?.slots?.length) setAiNote(data?.note || "No times available.");
+  }
+
+  async function aiBook(candidateId: string, startISO: string) {
+    setAiBookingStart(startISO);
+    const { error } = await supabase.functions.invoke("schedule-confirm", {
+      body: { candidate_id: candidateId, start: startISO },
+    });
+    setAiBookingStart(null);
+    if (error) {
+      setAiNote(error.message);
+      return;
+    }
+    setAiSlots([]);
+    setScheduleFor(null);
+    setScheduleToast("Interview booked ✓ (Meet link created)");
+    loadInterviews();
+    setTimeout(() => setScheduleToast(""), 3000);
   }
 
   async function handleComplete(interviewId: string) {
@@ -488,6 +528,54 @@ export default function AdminPage() {
                               Confirm
                             </button>
                           </div>
+
+                          <div style={{ marginTop: 12 }}>
+                            <button
+                              className="btn-ghost btn-sm"
+                              disabled={aiBusy}
+                              onClick={() => aiSuggest(c.user_id)}
+                            >
+                              {aiBusy ? "Finding times..." : "✦ AI suggest times"}
+                            </button>
+                            {aiNote && (
+                              <span className="muted" style={{ marginLeft: 10 }}>
+                                {aiNote}
+                              </span>
+                            )}
+                            {aiSlots.map((s) => (
+                              <div
+                                key={s.start}
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  gap: 12,
+                                  flexWrap: "wrap",
+                                  border: "1px solid var(--line)",
+                                  borderRadius: 8,
+                                  padding: 10,
+                                  marginTop: 8,
+                                }}
+                              >
+                                <div>
+                                  <div style={{ fontFamily: "var(--mono)", fontSize: 13.5 }}>
+                                    {s.label}
+                                  </div>
+                                  <div className="muted" style={{ fontSize: 12 }}>
+                                    {s.reason}
+                                  </div>
+                                </div>
+                                <button
+                                  className="btn btn-sm"
+                                  disabled={aiBookingStart === s.start}
+                                  onClick={() => aiBook(c.user_id, s.start)}
+                                >
+                                  {aiBookingStart === s.start ? "Booking..." : "Book (Meet)"}
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
                           {scheduleToast && (
                             <div className="muted" style={{ color: "var(--green)" }}>
                               {scheduleToast}
