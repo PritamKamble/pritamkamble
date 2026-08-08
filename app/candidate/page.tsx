@@ -37,8 +37,18 @@ type DailyLog = {
   log_date: string;
   content: string;
 };
+type Interview = {
+  id: string;
+  scheduled_at: string;
+  status: string;
+  score: number | null;
+  notes: string | null;
+  meeting_link: string | null;
+  candidate_feedback: string | null;
+  candidate_self_score: number | null;
+};
 
-const TABS = ["progress", "jobs", "applications", "dailylog", "account"] as const;
+const TABS = ["progress", "jobs", "interviews", "applications", "dailylog", "account"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function CandidatePage() {
@@ -63,17 +73,19 @@ export default function CandidatePage() {
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [jobsToast, setJobsToast] = useState("");
-  const [upcomingInterview, setUpcomingInterview] = useState<{
-    scheduled_at: string;
-  } | null>(null);
+
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [fbDraft, setFbDraft] = useState<
+    Record<string, { feedback: string; self: string }>
+  >({});
+  const [fbSavingId, setFbSavingId] = useState<string | null>(null);
+  const [fbToast, setFbToast] = useState("");
 
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
   const [logDraft, setLogDraft] = useState("");
   const [logToast, setLogToast] = useState("");
   const [editingToday, setEditingToday] = useState(false);
   const [historyLimit, setHistoryLimit] = useState(14);
-
-  const [completedScores, setCompletedScores] = useState<number[]>([]);
 
   const [newFullName, setNewFullName] = useState("");
   const [nameToast, setNameToast] = useState("");
@@ -101,9 +113,8 @@ export default function CandidatePage() {
 
       loadOpenJobs();
       loadMyApplications(user.id);
-      loadUpcomingInterview(user.id);
+      loadInterviews(user.id);
       loadDailyLogs(user.id);
-      loadCompletedScores(user.id);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -126,17 +137,30 @@ export default function CandidatePage() {
     setApplications((data as unknown as Application[]) || []);
   }
 
-  async function loadUpcomingInterview(userId: string) {
+  async function loadInterviews(userId: string) {
     const { data } = await supabase
       .from("interviews")
-      .select("scheduled_at")
+      .select(
+        "id, scheduled_at, status, score, notes, meeting_link, candidate_feedback, candidate_self_score",
+      )
       .eq("candidate_id", userId)
-      .eq("status", "scheduled")
-      .gte("scheduled_at", new Date().toISOString())
-      .order("scheduled_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    setUpcomingInterview(data);
+      .order("scheduled_at", { ascending: false });
+    setInterviews((data as Interview[]) || []);
+  }
+
+  async function handleSubmitFeedback(interviewId: string) {
+    const draft = fbDraft[interviewId];
+    if (!draft || !draft.feedback.trim()) return;
+    setFbSavingId(interviewId);
+    const { error } = await supabase.rpc("submit_interview_feedback", {
+      p_interview_id: interviewId,
+      p_feedback: draft.feedback.trim(),
+      p_self_score: draft.self ? parseFloat(draft.self) : null,
+    });
+    setFbSavingId(null);
+    setFbToast(error ? `Error: ${error.message}` : "Feedback saved ✓");
+    if (!error && profile) loadInterviews(profile.id);
+    setTimeout(() => setFbToast(""), 2500);
   }
 
   async function loadDailyLogs(userId: string) {
@@ -169,16 +193,6 @@ export default function CandidatePage() {
       loadDailyLogs(profile.id);
     }
     setTimeout(() => setLogToast(""), 2500);
-  }
-
-  async function loadCompletedScores(userId: string) {
-    const { data } = await supabase
-      .from("interviews")
-      .select("score")
-      .eq("candidate_id", userId)
-      .eq("status", "completed")
-      .not("score", "is", null);
-    setCompletedScores((data || []).map((r) => r.score as number));
   }
 
   async function handleProgressSubmit(e: React.FormEvent) {
@@ -258,6 +272,19 @@ export default function CandidatePage() {
     historyDays.reverse();
   }
 
+  const nowMs = Date.now();
+  const upcomingInterview =
+    interviews
+      .filter(
+        (i) =>
+          i.status === "scheduled" &&
+          new Date(i.scheduled_at).getTime() >= nowMs,
+      )
+      .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))[0] || null;
+  const completedScores = interviews
+    .filter((i) => i.status === "completed" && i.score != null)
+    .map((i) => i.score as number);
+
   const readiness = computeReadinessScore(
     dailyLogs.length,
     dailyLogs[0]?.log_date || null,
@@ -290,6 +317,12 @@ export default function CandidatePage() {
           onClick={() => setTab("jobs")}
         >
           Job Listings
+        </div>
+        <div
+          className={`tabbtn ${tab === "interviews" ? "active" : ""}`}
+          onClick={() => setTab("interviews")}
+        >
+          Interviews
         </div>
         <div
           className={`tabbtn ${tab === "applications" ? "active" : ""}`}
@@ -354,6 +387,17 @@ export default function CandidatePage() {
               <div style={{ fontFamily: "var(--mono)", fontSize: 15 }}>
                 {formatDateTime(upcomingInterview.scheduled_at)}
               </div>
+              {upcomingInterview.meeting_link && (
+                <a
+                  className="btn btn-sm"
+                  href={upcomingInterview.meeting_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ marginTop: 10 }}
+                >
+                  Join meeting →
+                </a>
+              )}
             </div>
           )}
           <div className="card">
@@ -518,6 +562,145 @@ export default function CandidatePage() {
                         ? "Applying..."
                         : "Apply"}
                   </button>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {tab === "interviews" && (
+        <div className="card">
+          <h2>Mock interviews</h2>
+          {fbToast && <div className="msg">{fbToast}</div>}
+          {interviews.length === 0 ? (
+            <div className="empty">
+              No interviews yet. Your mentor will schedule mock interviews as you
+              progress.
+            </div>
+          ) : (
+            interviews.map((iv) => {
+              const draft = fbDraft[iv.id] || {
+                feedback: iv.candidate_feedback || "",
+                self:
+                  iv.candidate_self_score != null
+                    ? String(iv.candidate_self_score)
+                    : "",
+              };
+              return (
+                <div
+                  key={iv.id}
+                  style={{
+                    border: "1px solid var(--line)",
+                    borderRadius: 8,
+                    padding: 16,
+                    marginBottom: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 12,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>
+                      {formatDateTime(iv.scheduled_at)}
+                    </span>
+                    <span
+                      className="muted"
+                      style={{
+                        fontFamily: "var(--mono)",
+                        fontSize: 11.5,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {iv.status}
+                    </span>
+                  </div>
+
+                  {iv.status === "scheduled" && iv.meeting_link && (
+                    <a
+                      className="btn btn-sm"
+                      href={iv.meeting_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ marginTop: 10 }}
+                    >
+                      Join meeting →
+                    </a>
+                  )}
+
+                  {iv.status === "completed" && (
+                    <div style={{ marginTop: 12 }}>
+                      <div
+                        style={{
+                          borderLeft: "2px solid var(--amber)",
+                          paddingLeft: 12,
+                          marginBottom: 14,
+                        }}
+                      >
+                        <div className="muted" style={{ fontSize: 12.5 }}>
+                          Mentor&apos;s feedback
+                          {iv.score != null && (
+                            <>
+                              {" "}
+                              ·{" "}
+                              <b style={{ color: "var(--amber)" }}>
+                                {iv.score}/10
+                              </b>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 13.5, marginTop: 4 }}>
+                          {iv.notes || "No written feedback."}
+                        </div>
+                      </div>
+
+                      <div className="field">
+                        <label>Your feedback on this interview</label>
+                        <textarea
+                          value={draft.feedback}
+                          onChange={(e) =>
+                            setFbDraft({
+                              ...fbDraft,
+                              [iv.id]: { ...draft, feedback: e.target.value },
+                            })
+                          }
+                          placeholder="How did it go for you? What will you work on?"
+                        />
+                      </div>
+                      <div className="field" style={{ maxWidth: 200 }}>
+                        <label>Your self-rating (/10)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={10}
+                          step={0.5}
+                          value={draft.self}
+                          onChange={(e) =>
+                            setFbDraft({
+                              ...fbDraft,
+                              [iv.id]: { ...draft, self: e.target.value },
+                            })
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn btn-sm"
+                        disabled={fbSavingId === iv.id || !draft.feedback.trim()}
+                        onClick={() => handleSubmitFeedback(iv.id)}
+                      >
+                        {fbSavingId === iv.id
+                          ? "Saving..."
+                          : iv.candidate_feedback
+                            ? "Update my feedback"
+                            : "Submit my feedback"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })

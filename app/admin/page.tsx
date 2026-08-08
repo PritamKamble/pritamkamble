@@ -36,6 +36,9 @@ type Interview = {
   status: string;
   score: number | null;
   notes: string | null;
+  meeting_link: string | null;
+  candidate_feedback: string | null;
+  candidate_self_score: number | null;
   profiles: { full_name: string; email: string } | null;
 };
 
@@ -61,6 +64,7 @@ export default function AdminPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [scheduleFor, setScheduleFor] = useState<string | null>(null);
   const [scheduleAt, setScheduleAt] = useState("");
+  const [scheduleLink, setScheduleLink] = useState("");
   const [scheduleNotes, setScheduleNotes] = useState("");
   const [scheduleToast, setScheduleToast] = useState("");
 
@@ -165,12 +169,14 @@ export default function AdminPage() {
       candidate_id: candidateId,
       interviewer_id: profile.id,
       scheduled_at: new Date(scheduleAt).toISOString(),
+      meeting_link: scheduleLink.trim() || null,
       notes: scheduleNotes.trim() || null,
     });
     setScheduleToast(error ? `Error: ${error.message}` : "Interview scheduled ✓");
     if (!error) {
       setScheduleFor(null);
       setScheduleAt("");
+      setScheduleLink("");
       setScheduleNotes("");
       loadInterviews();
     }
@@ -443,11 +449,23 @@ export default function AdminPage() {
                             }}
                           >
                             <div className="field" style={{ marginBottom: 0 }}>
-                              <label>When</label>
+                              <label>When (IST)</label>
                               <input
                                 type="datetime-local"
                                 value={scheduleAt}
                                 onChange={(e) => setScheduleAt(e.target.value)}
+                              />
+                            </div>
+                            <div
+                              className="field"
+                              style={{ marginBottom: 0, flex: 1, minWidth: 200 }}
+                            >
+                              <label>Meeting link (optional)</label>
+                              <input
+                                type="url"
+                                value={scheduleLink}
+                                onChange={(e) => setScheduleLink(e.target.value)}
+                                placeholder="https://meet.google.com/..."
                               />
                             </div>
                             <div
@@ -521,6 +539,7 @@ export default function AdminPage() {
                     <th>Status</th>
                     <th>Score</th>
                     <th>Notes</th>
+                    <th>Candidate feedback</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -533,10 +552,39 @@ export default function AdminPage() {
                           <br />
                           <span className="muted">{i.profiles?.email || ""}</span>
                         </td>
-                        <td>{formatDateTime(i.scheduled_at)}</td>
+                        <td>
+                          {formatDateTime(i.scheduled_at)}
+                          {i.meeting_link && (
+                            <>
+                              <br />
+                              <a
+                                href={i.meeting_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: "var(--amber)", fontSize: 12 }}
+                              >
+                                meeting link →
+                              </a>
+                            </>
+                          )}
+                        </td>
                         <td>{i.status}</td>
                         <td>{i.score != null ? i.score : "—"}</td>
                         <td className="muted">{i.notes || "—"}</td>
+                        <td className="muted">
+                          {i.candidate_feedback ? (
+                            <>
+                              {i.candidate_self_score != null && (
+                                <div style={{ color: "var(--amber)" }}>
+                                  self: {i.candidate_self_score}/10
+                                </div>
+                              )}
+                              {i.candidate_feedback}
+                            </>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
                         <td>
                           {i.status === "scheduled" && (
                             <button
@@ -555,7 +603,7 @@ export default function AdminPage() {
                       </tr>
                       {completingId === i.id && (
                         <tr>
-                          <td colSpan={6}>
+                          <td colSpan={7}>
                             <div
                               style={{
                                 display: "flex",
